@@ -55,17 +55,20 @@ public class Autonomous_OpMode extends LinearOpMode {
 
         float heading = 0;
         waitForStart();
-
+//while (waitForStart();) {
         telemetry.addData("Status", "Wait for start");
+//        }
         while (opModeIsActive()) {
+
             heading = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+            heading = heading / 100;
             bl.setPower(heading);
             br.setPower(heading);
             fr.setPower(heading);
             fl.setPower(heading);
 
 
-            while (opModeIsActive()) {
+            if (opModeIsActive()) {
                 telemetry.addData("Status", "OpMode Active");
                 telemetry.update();
 
@@ -142,11 +145,11 @@ public class Autonomous_OpMode extends LinearOpMode {
                 .addData("Heading", new Func<Float>() {
                     @Override
                     public Float value() {
-                        float stuffypower = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-                        fl.setPower(stuffypower);
-                        fr.setPower(stuffypower);
-                        bl.setPower(stuffypower);
-                        br.setPower(stuffypower);
+//                        float stuffypower = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+//                        fl.setPower(stuffypower);
+//                        fr.setPower(stuffypower);
+//                        bl.setPower(stuffypower);
+//                        br.setPower(stuffypower);
                         return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
 
                     }
