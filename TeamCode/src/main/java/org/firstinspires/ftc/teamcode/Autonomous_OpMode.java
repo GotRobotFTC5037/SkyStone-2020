@@ -45,6 +45,10 @@ public class Autonomous_OpMode extends LinearOpMode {
         parameters.loggingTag = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
+        bl.setDirection(DcMotor.Direction.FORWARD);
+        br.setDirection(DcMotor.Direction.REVERSE);
+        fl.setDirection(DcMotor.Direction.FORWARD);
+        fr.setDirection(DcMotor.Direction.REVERSE);
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
         // and named "imu".
@@ -54,18 +58,41 @@ public class Autonomous_OpMode extends LinearOpMode {
         composeTelemetry();
 
         float heading = 0;
+        float encoderValue = 0;
         waitForStart();
 //while (waitForStart();) {
         telemetry.addData("Status", "Wait for start");
 //        }
         while (opModeIsActive()) {
+            float oldEncoder = 0;
+            float distance = 20000;
+            oldEncoder = fl.getCurrentPosition();
+            telemetry.update();
+            while ((oldEncoder + distance > fl.getCurrentPosition()) && opModeIsActive()) {
+                heading = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+                heading = heading / 50;
+                telemetry.addData("Encoder", "Works");
+                telemetry.update();
+                bl.setPower(0.3 + heading);
+                br.setPower(0.3 - heading);
+                fr.setPower(0.3 - heading);
+                fl.setPower(0.3 + heading);
 
-            heading = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-            heading = heading / 100;
-            bl.setPower(heading);
-            br.setPower(heading);
-            fr.setPower(heading);
-            fl.setPower(heading);
+            }
+
+            bl.setPower(0.0);
+            br.setPower(0.0);
+            fr.setPower(0.0);
+            fl.setPower(0.0);
+
+
+            sleep(250);
+//            heading = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+//            heading = heading / 100;
+//            bl.setPower(heading);
+//            br.setPower(heading);
+//            fr.setPower(heading);
+//            fl.setPower(heading);
 
 
             if (opModeIsActive()) {
@@ -74,6 +101,7 @@ public class Autonomous_OpMode extends LinearOpMode {
 
             }
         }
+
     }
 
     void composeTelemetry() {
