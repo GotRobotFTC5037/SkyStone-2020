@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
-
+import org.firstinspires.ftc.teamcode.DriveTrain_Class;
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -16,8 +16,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
-
 import java.util.Locale;
+
+
 
 @Autonomous(name = "Autonomous", group = "linearOpMode")
 
@@ -30,6 +31,7 @@ public class Autonomous_OpMode extends LinearOpMode {
     Orientation angles;
     Acceleration gravity;
 
+    DriveTrain_Class d = new DriveTrain_Class();
     @Override
     public void runOpMode() throws InterruptedException {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -64,24 +66,24 @@ public class Autonomous_OpMode extends LinearOpMode {
         telemetry.addData("Status", "Wait for start");
 //        }
         while (opModeIsActive()) {
-            float oldEncoder = 0;
-            float distance = 20000;
-            oldEncoder = fl.getCurrentPosition();
-            telemetry.update();
-            while ((oldEncoder + distance > fl.getCurrentPosition()) && opModeIsActive()) {
-                heading = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-                heading = heading / 50;
-                telemetry.addData("Encoder", "Works");
-                telemetry.update();
-                bl.setPower(0.3 + heading);
-                br.setPower(0.3 - heading);
-                fr.setPower(0.3 - heading);
-                fl.setPower(0.3 + heading);
+//            float oldEncoder = 0;
+//            float distance = 20000;
+//            oldEncoder = fl.getCurrentPosition();
+//            telemetry.update();
+//            while ((oldEncoder + distance > fl.getCurrentPosition()) && opModeIsActive()) {
+//                heading = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+//                heading = heading / 50;
+//                telemetry.addData("Encoder", "Works");
+//                telemetry.update();
+//                bl.setPower(0.3 + heading);
+//                br.setPower(0.3 - heading);
+//                fr.setPower(0.3 - heading);
+//                fl.setPower(0.3 + heading);
+//
+//            }
 
-            }
-
-            bl.setPower(0.0);
-            br.setPower(0.0);
+            bl.setPower(d.headingDriveLeft(15.0, 0.5, 500.0));
+            br.setPower(d.headingDriveLeft(15.0, 0.5,500.0));
             fr.setPower(0.0);
             fl.setPower(0.0);
 
