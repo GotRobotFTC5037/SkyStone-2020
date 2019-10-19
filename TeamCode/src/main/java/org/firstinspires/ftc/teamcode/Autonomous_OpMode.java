@@ -83,9 +83,9 @@ public class Autonomous_OpMode extends LinearOpMode {
 //            }
 
             bl.setPower(d.headingDriveLeft(15.0, 0.5, 500.0));
-            br.setPower(d.headingDriveLeft(15.0, 0.5,500.0));
-            fr.setPower(0.0);
-            fl.setPower(0.0);
+            br.setPower(d.headingDriveRight(15.0, 0.5,500.0));
+            fr.setPower(d.headingDriveRight(15.0,0.5,500.0));
+            fl.setPower(d.headingDriveLeft(15.0,0.5,500.0));
 
 
             sleep(250);
