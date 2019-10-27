@@ -136,13 +136,18 @@ public class AutoDriveEncoder extends LinearOpMode {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-
+        telemetry.addData("ServoPos", robot.armServo.getPosition());
+        telemetry.addData("ServoPosGrip", robot.gripperServo.getPosition());
+        telemetry.update();
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
        // encoderDrive(DRIVE_SPEED, 100, 100, 9.0);  // S1: Forward 47 Inches with 5 Sec timeout
         //encoderDrive(TURN_SPEED, 12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
         //encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
-        gyroTurn(45.0,10.0);
+//        gyroTurn(45.0,3.0);
+//        gyroDrive(45.0,100000,0.5,20.0);
+          arm(0.75,0.0,30.0);
+
 
 
         telemetry.addData("Path", "Complete");
@@ -157,15 +162,87 @@ public class AutoDriveEncoder extends LinearOpMode {
      *  2) Move runs out of time
      *  3) Driver stops the opmode running.
      */
+    public void resetEncoders () {
+        robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+    // 0.25 MAX & 1.0 MIN
+    public void arm (double armPos,
+                     double gripperPos,
+                     double timeoutS) {
+       runtime.reset();
+       while (opModeIsActive() && (runtime.seconds() < timeoutS)) {
+           robot.gripperServo.setPosition(gripperPos);
+           robot.armServo.setPosition(armPos);
+       }
+    }
+
+    public void gyroDrive (double heading,
+                           double distance,
+                           double power,
+                           double timeoutS) {
+        resetEncoders();
+        double currentHeading;
+        double drvPower = power;
+        double adjPower;
+        double currentDistance;
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < timeoutS)) {
+            currentHeading = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+            adjPower = (currentHeading - heading) / 50;
+            currentDistance = robot.leftDrive.getCurrentPosition();
+            if (currentDistance > distance) {
+                robot.leftDrive.setPower(0);
+                robot.leftBackDrive.setPower(0);
+                robot.rightDrive.setPower(0);
+                robot.rightBackDrive.setPower(0);
+                return;
+            }
+            robot.leftDrive.setPower(drvPower - adjPower);
+            robot.leftBackDrive.setPower(drvPower - adjPower);
+            robot.rightDrive.setPower(drvPower + adjPower);
+            robot.rightBackDrive.setPower(drvPower + adjPower);
+
+        }
+    }
+
     public void gyroTurn (double heading,
                           double timeoutS) {
         double currentHeading;
         double power;
+//        double p = 0;
+//        double i = 0;
+//        double d = 0;
+//        double pK = .05;
+//        double iK = .5;
+//        double dK = .05;
+//        double oldHeading = 0;
         runtime.reset();
         while (opModeIsActive() &&
                 (runtime.seconds() < timeoutS)) {
             currentHeading = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-            power = (currentHeading - heading) / 100;
+//            p = (currentHeading - heading) * pK;
+//            i = p * iK + i;
+//            d = (oldHeading - currentHeading) * dK;
+//            power = p+i+d;
+            power = (currentHeading - heading) / 50;
+            if (power < 0) {
+                power = -Math.max( 0.1, Math.abs(power));
+            }
+            else{
+                power = Math.max(0.1, Math.abs(power));
+            }
+            if (Math.abs(currentHeading - heading) < 2.0) {
+                return;
+            }
+
             robot.leftDrive.setPower(-power);
             robot.leftBackDrive.setPower(-power);
             robot.rightDrive.setPower(power);

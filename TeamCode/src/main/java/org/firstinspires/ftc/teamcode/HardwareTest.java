@@ -57,13 +57,15 @@ public class HardwareTest {
     public DcMotor leftBackDrive = null;
     public DcMotor rightDrive = null;
     public DcMotor rightBackDrive = null;
-//    public DcMotor  leftArm     = null;
-//    public Servo    leftClaw    = null;
-//    public Servo    rightClaw   = null;
+    //    public DcMotor  leftArm     = null;
+    public Servo armServo = null;
+    public Servo gripperServo = null;
 
     public static final double MID_SERVO = 0.5;
-    public static final double ARM_UP_POWER = 0.45;
-    public static final double ARM_DOWN_POWER = -0.45;
+    public static final double MIN_SERVO = 0.0;
+    public static final double MAX_SERVO = 1.0;
+    public static final double ARM_UP_POWER = 0.25;
+    public static final double ARM_DOWN_POWER = 1.0;
 
     /* local OpMode members. */
     HardwareMap hwMap = null;
@@ -84,6 +86,9 @@ public class HardwareTest {
         leftBackDrive = hwMap.get(DcMotor.class, "bl");
         rightDrive = hwMap.get(DcMotor.class, "fr");
         rightBackDrive = hwMap.get(DcMotor.class, "br");
+        armServo =  hwMap.get(Servo.class, "armServo");
+        gripperServo = hwMap.get(Servo.class, "gripperServo");
+
 //        leftArm    = hwMap.get(DcMotor.class, "left_arm");
         leftDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -107,10 +112,12 @@ public class HardwareTest {
 //        leftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Define and initialize ALL installed servos.
-//        leftClaw  = hwMap.get(Servo.class, "left_hand");
-//        rightClaw = hwMap.get(Servo.class, "right_hand");
-//        leftClaw.setPosition(MID_SERVO);
-//        rightClaw.setPosition(MID_SERVO);
+        armServo = hwMap.get(Servo.class, "armServo");
+        gripperServo = hwMap.get(Servo.class, "gripperServo");
+        armServo.setPosition(1.0);
+        gripperServo.setPosition(0.0);
+
+
     }
 }
 
