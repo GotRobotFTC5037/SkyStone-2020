@@ -5,6 +5,7 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
@@ -17,7 +18,7 @@ import java.util.Locale;
 
 @TeleOp(name = "TeleOopSKSKS", group = "Linear Opmode")
 public class TeleOopSKSKS extends LinearOpMode {
-
+HardwareTest robot = new HardwareTest();
     BNO055IMU imu;
     private DcMotor bl;
     private DcMotor br;
@@ -74,10 +75,21 @@ public class TeleOopSKSKS extends LinearOpMode {
             final double v3 = r * Math.sin(robotAngle) + rightX;
             final double v4 = r * Math.cos(robotAngle) - rightX;
 
-            fl.setPower(v1);
-            fr.setPower(v2);
-            bl.setPower(v3);
-            br.setPower(v4);
+            robot.leftDrive.setPower(v1);
+            robot.rightDrive.setPower(v2);
+            robot.leftBackDrive.setPower(v3);
+            robot.rightBackDrive.setPower(v4);
+
+
+            armPos();
+
+            gripperPos();
+
+
+
+
+
+
 
 //            double drive_right = gamepad1.right_stick_y;
 //            double drive_left = gamepad1.left_stick_y;
@@ -90,6 +102,42 @@ public class TeleOopSKSKS extends LinearOpMode {
             telemetry.update();
         }
         // run until the end of the match (driver presses STOP)
+    }
+    public void gripperPos () {
+        double closed = 0.0;
+        double open = 0.5;
+        while (opModeIsActive()) {
+            if (gamepad2.a) {
+                robot.armServo.setPosition(open);
+                return;
+            }
+            else if (gamepad2.b) {
+                robot.armServo.setPosition(closed);
+                return;
+            }
+            else {
+                robot.armServo.setPosition(closed);
+                return;
+            }
+        }
+    }
+    public void armPos () {
+double currentPos;
+while (opModeIsActive()) {
+    currentPos = robot.armServo.getPosition();
+    if (gamepad2.dpad_up) {
+        robot.armServo.setPosition(currentPos - 0.2);
+        return;
+    }
+    else if (gamepad2.dpad_down) {
+        robot.armServo.setPosition(currentPos + 0.2);
+        return;
+    }
+    else {
+        robot.armServo.setPosition(currentPos);
+        return;
+    }
+        }
     }
 
     void composeTelemetry() {
