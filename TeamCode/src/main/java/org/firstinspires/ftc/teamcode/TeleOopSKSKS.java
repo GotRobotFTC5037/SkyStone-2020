@@ -20,20 +20,13 @@ import java.util.Locale;
 public class TeleOopSKSKS extends LinearOpMode {
 HardwareTest robot = new HardwareTest();
     BNO055IMU imu;
-    private DcMotor bl;
-    private DcMotor br;
-    private DcMotor fl;
-    private DcMotor fr;
     Orientation angles;
     Acceleration gravity;
 
     @Override
     public void runOpMode() {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
-        bl = hardwareMap.get(DcMotor.class, "bl");
-        br = hardwareMap.get(DcMotor.class, "br");
-        fl = hardwareMap.get(DcMotor.class, "fl");
-        fr = hardwareMap.get(DcMotor.class, "fr");
+        robot.init(hardwareMap);
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -53,10 +46,10 @@ HardwareTest robot = new HardwareTest();
         telemetry.addData("Hydroflask", "Initialized");
         telemetry.update();
 
-        bl.setDirection(DcMotor.Direction.FORWARD);
-        br.setDirection(DcMotor.Direction.REVERSE);
-        fl.setDirection(DcMotor.Direction.FORWARD);
-        fr.setDirection(DcMotor.Direction.REVERSE);
+        robot.leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        robot.rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        robot.leftDrive.setDirection(DcMotor.Direction.FORWARD);
+        robot.rightDrive.setDirection(DcMotor.Direction.REVERSE);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -79,10 +72,9 @@ HardwareTest robot = new HardwareTest();
             robot.rightDrive.setPower(v2);
             robot.leftBackDrive.setPower(v3);
             robot.rightBackDrive.setPower(v4);
-
-
+            //dpad up/down
             armPos();
-
+            //buttons a & b
             gripperPos();
 
 
