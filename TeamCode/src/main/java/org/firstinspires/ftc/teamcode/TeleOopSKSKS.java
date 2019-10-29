@@ -54,7 +54,8 @@ HardwareTest robot = new HardwareTest();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         while (opModeIsActive()) {
-            telemetry.addData("Can't stop", "Won't Stop");
+            telemetry.addData("ServoPos", robot.armServo.getPosition());
+            telemetry.addData("ServoPosGrip", robot.gripperServo.getPosition());
             telemetry.update();
 //            double blPower;
 //            double brPower;
@@ -78,11 +79,6 @@ HardwareTest robot = new HardwareTest();
             gripperPos();
 
 
-
-
-
-
-
 //            double drive_right = gamepad1.right_stick_y;
 //            double drive_left = gamepad1.left_stick_y;
 
@@ -90,11 +86,13 @@ HardwareTest robot = new HardwareTest();
 //            br.setPower(drive_right);
 //            fl.setPower(drive_left);
 //            fr.setPower(drive_right);
+            composeTelemetry();
             telemetry.addData("Status", "And I Oops skskskskskskrunchi");
             telemetry.update();
         }
         // run until the end of the match (driver presses STOP)
     }
+
     public void gripperPos () {
         double closed = 0.0;
         double open = 0.5;
@@ -115,6 +113,7 @@ HardwareTest robot = new HardwareTest();
     }
     public void armPos () {
 double currentPos;
+double resetPos = 1.0;
 while (opModeIsActive()) {
     currentPos = robot.armServo.getPosition();
     if (gamepad2.dpad_up) {
@@ -124,6 +123,9 @@ while (opModeIsActive()) {
     else if (gamepad2.dpad_down) {
         robot.armServo.setPosition(currentPos + 0.2);
         return;
+    }
+    else if (gamepad2.dpad_right) {
+        robot.armServo.setPosition(resetPos);
     }
     else {
         robot.armServo.setPosition(currentPos);
