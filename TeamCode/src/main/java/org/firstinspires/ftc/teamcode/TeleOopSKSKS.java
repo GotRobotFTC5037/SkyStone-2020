@@ -5,6 +5,7 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Func;
@@ -18,10 +19,11 @@ import java.util.Locale;
 
 @TeleOp(name = "TeleOopSKSKS", group = "Linear Opmode")
 public class TeleOopSKSKS extends LinearOpMode {
-HardwareTest robot = new HardwareTest();
+    HardwareTest robot = new HardwareTest();
     BNO055IMU imu;
     Orientation angles;
     Acceleration gravity;
+    double oldTime = 0.0;
 
     @Override
     public void runOpMode() {
@@ -46,17 +48,15 @@ HardwareTest robot = new HardwareTest();
         telemetry.addData("Hydroflask", "Initialized");
         telemetry.update();
 
-        robot.leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
-        robot.rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        robot.leftDrive.setDirection(DcMotor.Direction.FORWARD);
-        robot.rightDrive.setDirection(DcMotor.Direction.REVERSE);
+        robot.leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        robot.rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        robot.leftDrive.setDirection(DcMotor.Direction.REVERSE);
+        robot.rightDrive.setDirection(DcMotor.Direction.FORWARD);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         while (opModeIsActive()) {
-            telemetry.addData("ServoPos", robot.armServo.getPosition());
-            telemetry.addData("ServoPosGrip", robot.gripperServo.getPosition());
-            telemetry.update();
+
 //            double blPower;
 //            double brPower;
 //            double flPower;
@@ -64,19 +64,61 @@ HardwareTest robot = new HardwareTest();
             double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
             double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
             double rightX = gamepad1.right_stick_x;
-            final double v1 = r * Math.cos(robotAngle) + rightX;
-            final double v2 = r * Math.sin(robotAngle) - rightX;
-            final double v3 = r * Math.sin(robotAngle) + rightX;
-            final double v4 = r * Math.cos(robotAngle) - rightX;
+            final double v1 = r * Math.cos(robotAngle) - rightX;
+            final double v2 = r * Math.sin(robotAngle) + rightX;
+            final double v3 = r * Math.sin(robotAngle) - rightX;
+            final double v4 = r * Math.cos(robotAngle) + rightX;
 
             robot.leftDrive.setPower(v1);
             robot.rightDrive.setPower(v2);
             robot.leftBackDrive.setPower(v3);
             robot.rightBackDrive.setPower(v4);
             //dpad up/down
-            armPos();
+
+            if (time > oldTime + 0.01) {
+                oldTime = time;
+
+                double currentPos;
+                double resetPos = 0.5;
+                currentPos = robot.armServo.getPosition();
+
+                if (gamepad2.dpad_up) {
+                    //robot.armServo.setPosition(currentPos - 0.005)
+                    currentPos -= 0.005;
+                } else if (gamepad2.dpad_down) {
+                    //robot.armServo.setPosition(currentPos + 0.005);
+                    currentPos += 0.005;
+                } else if (gamepad2.dpad_right) {
+                    //robot.armServo.setPosition(resetPos);
+                    currentPos = resetPos;
+                } else {
+                    //robot.armServo.setPosition(currentPos);
+                    telemetry.update();
+                    telemetry.addData("Time", time);
+                }
+                currentPos = Math.min(currentPos, 1.0);
+                currentPos = Math.max(currentPos, 0.25);
+                robot.armServo.setPosition(currentPos);
+//Josh is cool
+// Raymond is less cool :)
+// still cool tho
+                telemetry.addData("ServoPos", robot.armServo.getPosition());
+                telemetry.addData("ServoPosGrip", robot.gripperServo.getPosition());
+                telemetry.update();
+            }
+            /**
+             * May need to change these values for both & ask Josh about controls
+             */
             //buttons a & b
-            gripperPos();
+
+            double closed = 1.0;
+            double open = 0.5;
+
+            if (gamepad2.a) {
+                robot.gripperServo.setPosition(closed);
+            } else if (gamepad2.b) {
+                robot.gripperServo.setPosition(open);
+            }
 
 
 //            double drive_right = gamepad1.right_stick_y;
@@ -86,53 +128,51 @@ HardwareTest robot = new HardwareTest();
 //            br.setPower(drive_right);
 //            fl.setPower(drive_left);
 //            fr.setPower(drive_right);
-            composeTelemetry();
-            telemetry.addData("Status", "And I Oops skskskskskskrunchi");
-            telemetry.update();
+
         }
         // run until the end of the match (driver presses STOP)
     }
 
-    public void gripperPos () {
-        double closed = 0.0;
-        double open = 0.5;
-        while (opModeIsActive()) {
-            if (gamepad2.a) {
-                robot.armServo.setPosition(open);
-                return;
-            }
-            else if (gamepad2.b) {
-                robot.armServo.setPosition(closed);
-                return;
-            }
-            else {
-                robot.armServo.setPosition(closed);
-                return;
-            }
-        }
-    }
-    public void armPos () {
-double currentPos;
-double resetPos = 1.0;
-while (opModeIsActive()) {
-    currentPos = robot.armServo.getPosition();
-    if (gamepad2.dpad_up) {
-        robot.armServo.setPosition(currentPos - 0.2);
-        return;
-    }
-    else if (gamepad2.dpad_down) {
-        robot.armServo.setPosition(currentPos + 0.2);
-        return;
-    }
-    else if (gamepad2.dpad_right) {
-        robot.armServo.setPosition(resetPos);
-    }
-    else {
-        robot.armServo.setPosition(currentPos);
-        return;
-    }
-        }
-    }
+//    public void gripperPos () {
+//        double closed = 0.0;
+//        double open = 0.5;
+//        while (opModeIsActive()) {
+//            if (gamepad2.a) {
+//                robot.armServo.setPosition(open);
+//                return;
+//            }
+//            else if (gamepad2.b) {
+//                robot.armServo.setPosition(closed);
+//                return;
+//            }
+//            else {
+//                robot.armServo.setPosition(closed);
+//                return;
+//            }
+//        }
+//    }
+//    public void armPos () {
+//double currentPos;
+//double resetPos = 1.0;
+//while (opModeIsActive()) {
+//    currentPos = robot.armServo.getPosition();
+//    if (gamepad2.dpad_up) {
+//        robot.armServo.setPosition(currentPos - 0.2);
+//        return;
+//    }
+//    else if (gamepad2.dpad_down) {
+//        robot.armServo.setPosition(currentPos + 0.2);
+//        return;
+//    }
+//    else if (gamepad2.dpad_right) {
+//        robot.armServo.setPosition(resetPos);
+//    }
+//    else {
+//        robot.armServo.setPosition(currentPos);
+//        return;
+//    }
+//        }
+//    }
 
     void composeTelemetry() {
 

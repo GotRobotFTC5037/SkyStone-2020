@@ -114,6 +114,7 @@ public class HardwareTest {
         // Define and initialize ALL installed servos.
         armServo = hwMap.get(Servo.class, "armServo");
         gripperServo = hwMap.get(Servo.class, "gripperServo");
+
         armServo.setPosition(1.0);
         gripperServo.setPosition(0.0);
 

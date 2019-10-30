@@ -74,7 +74,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name = "Autonomous", group = "OpMode")
+@Autonomous(name = "SkyStoneAutonomous", group = "OpMode")
 //@Disabled
 public class SkyStone_Autonomous extends LinearOpMode {
 
@@ -146,7 +146,7 @@ public class SkyStone_Autonomous extends LinearOpMode {
         //encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
 //        gyroTurn(45.0,3.0);
 //        gyroDrive(45.0,100000,0.5,20.0);
-          arm(0.75,0.0,30.0);
+          arm(0.75,0.5,30.0);
 
 
 
