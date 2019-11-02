@@ -24,7 +24,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 @TeleOp(name = "VisionConcept", group = "Concept")
 //@Disabled
 public class TensorFlowEX extends LinearOpMode {
-    private static final Camera CAMERA = "Camera";
+   // private static final Camera CAMERA = "Camera";
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_SKYSTONE = "Skystone";
     private static final String LABEL_STONE = "Stone";
