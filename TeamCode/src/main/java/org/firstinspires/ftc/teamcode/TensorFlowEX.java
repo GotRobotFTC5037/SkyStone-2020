@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import java.util.List;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.Camera;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
@@ -23,6 +24,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 @TeleOp(name = "VisionConcept", group = "Concept")
 //@Disabled
 public class TensorFlowEX extends LinearOpMode {
+    private static final Camera CAMERA = "Camera";
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_SKYSTONE = "Skystone";
     private static final String LABEL_STONE = "Stone";
@@ -97,12 +99,15 @@ public class TensorFlowEX extends LinearOpMode {
                                 }
                             }
                             if (SkyStoneX != -1 && stone1X != -1 && stone2X != -1) {
-                                if (SkyStoneX < stone1X && SkyStoneX < stone2X) {
-                                    telemetry.addData("SkyStone Position", "Left");
-                                } else if (SkyStoneX > stone1X && SkyStoneX > stone2X) {
-                                    telemetry.addData("SkyStone Position", "Right");
-                                } else {
+                                if (SkyStoneX < stone1X) {
                                     telemetry.addData("SkyStone Position", "Center");
+                                    return;
+                                } else if (SkyStoneX > stone1X) {
+                                    telemetry.addData("SkyStone Position", "Right");
+                                    return;
+                                } else {
+                                    telemetry.addData("SkyStone Position", "Left");
+                                    return;
                                 }
                             }
                         }

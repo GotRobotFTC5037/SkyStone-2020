@@ -29,6 +29,9 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.graphics.Camera;
+import android.hardware.camera2.CameraDevice;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -57,6 +60,7 @@ public class HardwareTest {
     public DcMotor leftBackDrive = null;
     public DcMotor rightDrive = null;
     public DcMotor rightBackDrive = null;
+    public Camera webCamera = null;
     //    public DcMotor  leftArm     = null;
     public Servo armServo = null;
     public Servo gripperServo = null;
@@ -88,6 +92,7 @@ public class HardwareTest {
         rightBackDrive = hwMap.get(DcMotor.class, "br");
         armServo =  hwMap.get(Servo.class, "armServo");
         gripperServo = hwMap.get(Servo.class, "gripperServo");
+        webCamera = hwMap.get(Camera.class, "Camera");
 
 //        leftArm    = hwMap.get(DcMotor.class, "left_arm");
         leftDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
