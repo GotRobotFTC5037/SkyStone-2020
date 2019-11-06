@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import java.util.List;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.Camera;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
@@ -22,9 +23,11 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
  * is explained below.
  */
 @TeleOp(name = "VisionConcept", group = "Concept")
-//@Disabled
+//@Disable
 public class TensorFlowEX extends LinearOpMode {
-   // private static final Camera CAMERA = "Camera";
+    private static Camera CAMERA = null;
+    private static CameraName camera = null;
+
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_SKYSTONE = "Skystone";
     private static final String LABEL_STONE = "Stone";
@@ -132,6 +135,8 @@ public class TensorFlowEX extends LinearOpMode {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        parameters.camera = CAMERA;
+        parameters.cameraName = camera;
         parameters.cameraDirection = CameraDirection.BACK;
 
         //  Instantiate the Vuforia engine

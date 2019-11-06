@@ -86,11 +86,11 @@ public class SkyStone_Autonomous extends LinearOpMode {
     Acceleration gravity;
 
 
-    static final double COUNTS_PER_MOTOR_REV = 537.6;    // eg: TETRIX Motor Encoder
+    static final double COUNTS_PER_MOTOR_REV = 1120;    // eg: TETRIX Motor Encoder
     static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
-    static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
-    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-            (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double WHEEL_DIAMETER_CENTIMETERS = 10.16;     // For figuring circumference
+    static final double COUNTS_PER_CENTIMETER = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_CENTIMETERS * 3.1415);
     static final double DRIVE_SPEED = 1.0;
     static final double TURN_SPEED = 0.8;
 
@@ -185,7 +185,7 @@ public class SkyStone_Autonomous extends LinearOpMode {
     }
 
     public void gyroDrive (double heading,
-                           double distance,
+                           double distanceCM,
                            double power,
                            double timeoutS) {
         resetEncoders();
@@ -193,12 +193,14 @@ public class SkyStone_Autonomous extends LinearOpMode {
         double drvPower = power;
         double adjPower;
         double currentDistance;
+        double distanceTicks;
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < timeoutS)) {
             currentHeading = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
             adjPower = (currentHeading - heading) / 50;
             currentDistance = robot.leftDrive.getCurrentPosition();
-            if (currentDistance > distance) {
+            distanceTicks = (distanceCM * COUNTS_PER_CENTIMETER);
+            if (currentDistance > distanceTicks) {
                 robot.leftDrive.setPower(0);
                 robot.leftBackDrive.setPower(0);
                 robot.rightDrive.setPower(0);
@@ -251,7 +253,7 @@ public class SkyStone_Autonomous extends LinearOpMode {
         }
     }
     public void encoderDrive(double speed,
-                             double leftInches, double rightInches,
+                             double leftCentimeters, double rightCentimeters,
                              double timeoutS) {
         int newLeftTarget;
         int newRightTarget;
@@ -260,8 +262,8 @@ public class SkyStone_Autonomous extends LinearOpMode {
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            newLeftTarget = robot.leftDrive.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
-            newRightTarget = robot.rightDrive.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            newLeftTarget = robot.leftDrive.getCurrentPosition() + (int) (leftCentimeters * COUNTS_PER_CENTIMETER);
+            newRightTarget = robot.rightDrive.getCurrentPosition() + (int) (rightCentimeters * COUNTS_PER_CENTIMETER);
             robot.leftDrive.setTargetPosition(newLeftTarget);
             robot.leftBackDrive.setTargetPosition(newLeftTarget);
             robot.rightDrive.setTargetPosition(newRightTarget);
