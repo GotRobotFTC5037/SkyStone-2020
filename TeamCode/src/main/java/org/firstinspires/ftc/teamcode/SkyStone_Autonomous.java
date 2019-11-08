@@ -145,13 +145,33 @@ public class SkyStone_Autonomous extends LinearOpMode {
         //encoderDrive(TURN_SPEED, 12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
         //encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
 //        gyroTurn(45.0,3.0);
-//        gyroDrive(45.0,100000,0.5,20.0);
-          arm(0.75,0.5,30.0);
+//        gyroDrive(45.0,100000,0.5,20.0);\
+//        while (opModeIsActive() && time < 120) {
+//            stoneDetection();
+//            double redU = (double) robot.colorSensor.red() / (double) robot.colorSensor.alpha();
+//            double greenU = (double) robot.colorSensor.green() / (double) robot.colorSensor.alpha();
+//            double blueU = (double) robot.colorSensor.blue() / (double) robot.colorSensor.alpha();
+//            telemetry.addData("Distance?", imu.getPosition());
+//            telemetry.addData("ColorSensor Red", robot.colorSensor.red());
+//            telemetry.addData("ColorSensor Light", robot.colorSensor.alpha());
+//            telemetry.addData("ColorSensor Red Calibrated", redU);
+//            telemetry.addData("Time", getRuntime());
+//            telemetry.update();
+//
+//        }
+
+        while (true) {
+            double hueValue = 0.4;
+            double redU = (double) robot.colorSensor.red() / (double) robot.colorSensor.alpha();
+            double greenU = (double) robot.colorSensor.green() / (double) robot.colorSensor.alpha();
+            double blueU = (double) robot.colorSensor.blue() / (double) robot.colorSensor.alpha();
+            telemetry.addData("Block Hue", ((greenU + redU) * hueValue));
+            telemetry.addData("Blue", blueU);
+            telemetry.update();
+        }
 
 
 
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
     }
 
     /*
@@ -314,5 +334,51 @@ public class SkyStone_Autonomous extends LinearOpMode {
 
             //  sleep(250);   // optional pause after each move
         }
+    }
+    public void stoneDetection () {
+        double timeoutS = 6.0;
+        double hueValue = 0.4;
+        double redU = (double) robot.colorSensor.red() / (double) robot.colorSensor.alpha();
+        double greenU = (double) robot.colorSensor.green() / (double) robot.colorSensor.alpha();
+        double blueU = (double) robot.colorSensor.blue() / (double) robot.colorSensor.alpha();
+        boolean center = false;
+        boolean right = false;
+        boolean left = false;
+        while (true) {
+            telemetry.addData("Block Hue", ((greenU + redU) * hueValue));
+            telemetry.update();
+        }
+//        while (opModeIsActive() && (runtime.seconds() < timeoutS)){
+//         //   gyroDrive(0.0,25.0,0.6,0.0);
+//            telemetry.addData("TimeColor", runtime.seconds());
+//
+//            if ((greenU + redU) * hueValue > blueU) {
+//                telemetry.addLine("Straffing");
+//                telemetry.update();
+//                //strafe here
+//            }
+//            else {
+//                    //grab block
+//                telemetry.addLine("right");
+//                telemetry.update();
+//                right = true;
+//                return;
+//                }
+//            if ((greenU + redU) * hueValue > blueU) {
+//                telemetry.addLine("left");
+//                telemetry.update();
+//                left = true;
+//                return;
+//                //strafe and grab
+//            }
+//            else {
+//                telemetry.addLine("center");
+//                telemetry.update();
+//                center = true;
+//                return;  //grab block
+//            }
+//
+//
+//        }
     }
 }

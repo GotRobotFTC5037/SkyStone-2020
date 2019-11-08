@@ -30,8 +30,10 @@
 package org.firstinspires.ftc.teamcode;
 
 import android.graphics.Camera;
+import android.hardware.Sensor;
 import android.hardware.camera2.CameraDevice;
 
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -60,10 +62,11 @@ public class HardwareTest {
     public DcMotor leftBackDrive = null;
     public DcMotor rightDrive = null;
     public DcMotor rightBackDrive = null;
-    public Camera webCamera = null;
     //    public DcMotor  leftArm     = null;
     public Servo armServo = null;
     public Servo gripperServo = null;
+
+    public ColorSensor colorSensor = null;
 
     public static final double MID_SERVO = 0.5;
     public static final double MIN_SERVO = 0.0;
@@ -90,9 +93,7 @@ public class HardwareTest {
         leftBackDrive = hwMap.get(DcMotor.class, "bl");
         rightDrive = hwMap.get(DcMotor.class, "fr");
         rightBackDrive = hwMap.get(DcMotor.class, "br");
-        armServo =  hwMap.get(Servo.class, "armServo");
-        gripperServo = hwMap.get(Servo.class, "gripperServo");
-        webCamera = hwMap.get(Camera.class, "Camera");
+
 
 //        leftArm    = hwMap.get(DcMotor.class, "left_arm");
         leftDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
@@ -122,6 +123,10 @@ public class HardwareTest {
 
         armServo.setPosition(1.0);
         gripperServo.setPosition(0.0);
+
+        // Define and initialize ALL installed Sensors.
+        colorSensor = hwMap.get(ColorSensor.class, "colorSensor");
+
 
 
     }

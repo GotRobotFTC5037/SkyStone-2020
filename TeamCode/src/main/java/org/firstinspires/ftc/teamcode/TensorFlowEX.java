@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import java.util.List;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.Camera;
@@ -23,14 +25,12 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
  * is explained below.
  */
 @TeleOp(name = "VisionConcept", group = "Concept")
-//@Disable
+@Disabled
 public class TensorFlowEX extends LinearOpMode {
-    private static Camera CAMERA = null;
-    private static CameraName camera = null;
-
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_SKYSTONE = "Skystone";
     private static final String LABEL_STONE = "Stone";
+    private ElapsedTime runtime = new ElapsedTime();
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -80,42 +80,56 @@ public class TensorFlowEX extends LinearOpMode {
             if (tfod != null) {
                 tfod.activate();
             }
+            boolean position;
 
             while (opModeIsActive()) {
                 if (tfod != null) {
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                    if (updatedRecognitions != null) {
-                        telemetry.addData("# Object Detected", updatedRecognitions.size());
-                        if (updatedRecognitions.size() == 3) {
-                            int SkyStoneX = -1;
-                            int stone1X = -1;
-                            int stone2X = -1;
-                            for (Recognition recognition : updatedRecognitions) {
-                                if (recognition.getLabel().equals(LABEL_SKYSTONE)) {
-                                    SkyStoneX = (int) recognition.getLeft();
-                                } else if (stone1X == -1) {
-                                    stone1X = (int) recognition.getLeft();
-                                } else {
-                                    stone2X = (int) recognition.getLeft();
-                                }
-                            }
-                            if (SkyStoneX != -1 && stone1X != -1 && stone2X != -1) {
-                                if (SkyStoneX < stone1X) {
-                                    telemetry.addData("SkyStone Position", "Center");
-                                    return;
-                                } else if (SkyStoneX > stone1X) {
-                                    telemetry.addData("SkyStone Position", "Right");
-                                    return;
-                                } else {
-                                    telemetry.addData("SkyStone Position", "Left");
-                                    return;
-                                }
-                            }
-                        }
-                        telemetry.update();
-                    }
+                    runtime.reset();
+                 // while (runtime.seconds() < 4.55) {
+                      if (updatedRecognitions != null) {
+                          telemetry.addData("# Object Detected", updatedRecognitions.size());
+                          if (updatedRecognitions.size() <= 2) {
+                              int SkyStoneX = -1;
+                              int stone1X = -1;
+                              int stone2X = -1;
+                              for (Recognition recognition : updatedRecognitions) {
+                                  if (recognition.getLabel().equals(LABEL_STONE)) {
+                                      SkyStoneX = (int) recognition.getLeft();
+                                  } else if (stone1X == -1) {
+                                      stone1X = (int) recognition.getLeft();
+                                  } else {
+                                      stone2X = (int) recognition.getLeft();
+                                  }
+                              }
+                              if ((stone1X != -1) && (SkyStoneX != -1)) {
+                                  if (SkyStoneX < stone1X) {
+                                      telemetry.addData("SkyStone Position", "Center");
+                                      telemetry.update();
+                                      position = false;
+                                      return;
+                                  } else if (SkyStoneX > stone1X) {
+                                      telemetry.addData("SkyStone Position", "Right");
+                                      telemetry.update();
+                                      position = false;
+                                      return;
+                                  } else {
+                                      telemetry.addData("SkyStone Position", "Left");
+                                      telemetry.update();
+                                      return;
+                                  }
+                              }
+                          }
+                          telemetry.update();
+                      }
+                    //  if ((runtime.seconds() > 4.5) && (position = true)) {
+                      //    telemetry.addData("SkyStone Position", "Left");
+                        //  telemetry.update();
+                          //return;
+                      //}
+
                 }
             }
         }
@@ -135,8 +149,6 @@ public class TensorFlowEX extends LinearOpMode {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.camera = CAMERA;
-        parameters.cameraName = camera;
         parameters.cameraDirection = CameraDirection.BACK;
 
         //  Instantiate the Vuforia engine
