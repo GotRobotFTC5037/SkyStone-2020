@@ -93,6 +93,7 @@ public class SkyStone_Autonomous extends LinearOpMode {
             (WHEEL_DIAMETER_CENTIMETERS * 3.1415);
     static final double DRIVE_SPEED = 1.0;
     static final double TURN_SPEED = 0.8;
+    static final double DIST_PER_REV = (4 * 2.54 * Math.PI) / 1120;
 
     @Override
     public void runOpMode() {
@@ -141,38 +142,14 @@ public class SkyStone_Autonomous extends LinearOpMode {
         telemetry.update();
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
-       // encoderDrive(DRIVE_SPEED, 100, 100, 9.0);  // S1: Forward 47 Inches with 5 Sec timeout
-        //encoderDrive(TURN_SPEED, 12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-        //encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
-//        gyroTurn(45.0,3.0);
-//        gyroDrive(45.0,100000,0.5,20.0);\
-//        while (opModeIsActive() && time < 120) {
-//            stoneDetection();
-//            double redU = (double) robot.colorSensor.red() / (double) robot.colorSensor.alpha();
-//            double greenU = (double) robot.colorSensor.green() / (double) robot.colorSensor.alpha();
-//            double blueU = (double) robot.colorSensor.blue() / (double) robot.colorSensor.alpha();
-//            telemetry.addData("Distance?", imu.getPosition());
-//            telemetry.addData("ColorSensor Red", robot.colorSensor.red());
-//            telemetry.addData("ColorSensor Light", robot.colorSensor.alpha());
-//            telemetry.addData("ColorSensor Red Calibrated", redU);
-//            telemetry.addData("Time", getRuntime());
-//            telemetry.update();
-//
-//        }
-
-        while (true) {
-            double hueValue = 0.4;
-            double redU = (double) robot.colorSensor.red() / (double) robot.colorSensor.alpha();
-            double greenU = (double) robot.colorSensor.green() / (double) robot.colorSensor.alpha();
-            double blueU = (double) robot.colorSensor.blue() / (double) robot.colorSensor.alpha();
-            telemetry.addData("Block Hue", ((greenU + redU) * hueValue));
-            telemetry.addData("Blue", blueU);
-            telemetry.update();
-        }
-
-
-
+        stoneDetection();
+        gyroStrafe(-1.571,0.0, 30, 0.5,5.0);
+        gyroStrafe(3.1416,90.0,165,0.6,10.0);
+        robot.gripperServo.setPosition(0.1);
+        waitMilis(100);
+        gyroStrafe(0.0,90,60,0.8,5.0);
     }
+
 
     /*
      *  Method to perform a relative move, based on encoder counts.
@@ -182,6 +159,7 @@ public class SkyStone_Autonomous extends LinearOpMode {
      *  2) Move runs out of time
      *  3) Driver stops the opmode running.
      */
+
     public void resetEncoders () {
         robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -199,6 +177,7 @@ public class SkyStone_Autonomous extends LinearOpMode {
                      double timeoutS) {
        runtime.reset();
        while (opModeIsActive() && (runtime.seconds() < timeoutS)) {
+
            robot.gripperServo.setPosition(gripperPos);
            robot.armServo.setPosition(armPos);
        }
@@ -272,6 +251,89 @@ public class SkyStone_Autonomous extends LinearOpMode {
             telemetry.addData("Gyro","Running");
         }
     }
+    public double subtractAngle(double angleA,
+                                double angleB){
+        double result;
+        result = angleA - angleB;
+        if (result > 180){
+            result = result - 360;
+        }
+        return result;
+    }
+    public void gyroStrafe (double heading,
+                            double pose,
+                            double distance,
+                            double power,
+                            double timeoutS) {
+        resetEncoders();
+        double currentHeading;
+        double drvPower = power;
+        double adjPower;
+        double currentDistance;
+        double driveAngle;
+        double headingRadians;
+        double distX = 0;
+        double distY = 0;
+        double dY;
+        double dX;
+        double oldLeft = 0;
+        double oldRight = 0;
+        double oldBackLeft = 0;
+        double oldBackRight = 0;
+        double newLeft = 0;
+        double newRight = 0;
+        double newBackLeft = 0;
+        double newBackRight = 0;
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < timeoutS)) {
+            currentHeading = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+            headingRadians = ((-currentHeading/180)*3.1416)+(1/2*3.1416);
+            driveAngle = subtractAngle(pose,currentHeading);
+            adjPower = subtractAngle(pose,currentHeading) / 80;
+            newLeft = robot.leftDrive.getCurrentPosition();
+            newRight = robot.rightDrive.getCurrentPosition();
+            newBackRight = robot.rightBackDrive.getCurrentPosition();
+            newBackLeft = robot.leftBackDrive.getCurrentPosition();
+
+            dX = ((((newLeft - oldLeft) - (newBackLeft - oldBackLeft)
+                    - (newRight - oldRight) + (newBackRight - oldBackRight)) * Math.sin(Math.PI/4)) / 4.0) * DIST_PER_REV;
+            dY = (((newLeft - oldLeft) + (newBackLeft - oldBackLeft)
+                    + (newRight - oldRight) + (newBackRight - oldBackRight)) / 4.0) * DIST_PER_REV;
+            distX += (Math.sin(headingRadians) * dX + Math.cos(headingRadians) * dY);
+            distY += (Math.sin(headingRadians) * dY + Math.cos(headingRadians) * dX);
+            oldLeft = newLeft;
+            oldRight = newRight;
+            oldBackLeft = newBackLeft;
+            oldBackRight = newBackRight;
+
+            currentDistance = Math.sqrt(distX * distX + distY * distY);
+            if (currentDistance > distance) {
+                robot.leftDrive.setPower(0);
+                robot.leftBackDrive.setPower(0);
+                robot.rightDrive.setPower(0);
+                robot.rightBackDrive.setPower(0);
+                return;
+            }
+
+            driveAngle = ((-currentHeading/180)*3.1416)+(1/2*3.1416)+heading;
+//            driveAngle = 0.5*Math.PI;
+//            adjPower = 0;
+
+            double robotAngle = driveAngle - Math.PI / 4;
+            final double v1 = power * Math.cos(robotAngle) - adjPower;
+            final double v2 = power * Math.sin(robotAngle) + adjPower;
+            final double v3 = power * Math.sin(robotAngle) - adjPower;
+            final double v4 = power * Math.cos(robotAngle) + adjPower;
+
+            telemetry.addData("gyro angle", currentHeading);
+            telemetry.update();
+
+            robot.leftDrive.setPower(v1);
+            robot.rightDrive.setPower(v2);
+            robot.leftBackDrive.setPower(v3);
+            robot.rightBackDrive.setPower(v4);
+        }
+    }
     public void encoderDrive(double speed,
                              double leftCentimeters, double rightCentimeters,
                              double timeoutS) {
@@ -335,50 +397,47 @@ public class SkyStone_Autonomous extends LinearOpMode {
             //  sleep(250);   // optional pause after each move
         }
     }
+    public void waitMilis (double timeOutMs) {
+
+        runtime.reset();
+        while (runtime.milliseconds() < timeOutMs);
+    }
     public void stoneDetection () {
-        double timeoutS = 6.0;
+        double timeoutS = 7.0;
         double hueValue = 0.4;
-        double redU = (double) robot.colorSensor.red() / (double) robot.colorSensor.alpha();
-        double greenU = (double) robot.colorSensor.green() / (double) robot.colorSensor.alpha();
-        double blueU = (double) robot.colorSensor.blue() / (double) robot.colorSensor.alpha();
-        boolean center = false;
-        boolean right = false;
-        boolean left = false;
-        while (true) {
-            telemetry.addData("Block Hue", ((greenU + redU) * hueValue));
-            telemetry.update();
+        double redU = 0.0;
+        double greenU = 0.0;
+        double blueU = 0.0;
+        boolean foundPos = false;
+        int run = 0;
+        runtime.reset();
+        gyroStrafe(0,0,50,0.5,400.0);
+        gyroStrafe(1.571,0.0,60,0.5, 20.0);
+        while (opModeIsActive() && (!foundPos) && (timeoutS > runtime.seconds())) {
+            redU = (double) robot.colorSensor.red() / (double) robot.colorSensor.alpha();
+            greenU = (double) robot.colorSensor.green() / (double) robot.colorSensor.alpha();
+            blueU = (double) robot.colorSensor.blue() / (double) robot.colorSensor.alpha();
+
+            if (((greenU + redU) * hueValue) < blueU) {
+                //Sees skystone
+                telemetry.addData("Skystone Scunchied", "Retreving");
+                telemetry.update();
+                //stafe to pos?
+                robot.armServo.setPosition(0.9);
+                gyroDrive(0.0,4,0.5,0.5);
+                robot.gripperServo.setPosition(1.0);
+                waitMilis(600);
+                robot.armServo.setPosition(0.6);
+                foundPos = true;
+
+                return;
+            }
+            else {
+                gyroStrafe(3.1416,0.0,5,0.5,100000.0);
+                run++;
+                telemetry.addData("NoSkystone", "moving");
+                telemetry.update();
+            }
         }
-//        while (opModeIsActive() && (runtime.seconds() < timeoutS)){
-//         //   gyroDrive(0.0,25.0,0.6,0.0);
-//            telemetry.addData("TimeColor", runtime.seconds());
-//
-//            if ((greenU + redU) * hueValue > blueU) {
-//                telemetry.addLine("Straffing");
-//                telemetry.update();
-//                //strafe here
-//            }
-//            else {
-//                    //grab block
-//                telemetry.addLine("right");
-//                telemetry.update();
-//                right = true;
-//                return;
-//                }
-//            if ((greenU + redU) * hueValue > blueU) {
-//                telemetry.addLine("left");
-//                telemetry.update();
-//                left = true;
-//                return;
-//                //strafe and grab
-//            }
-//            else {
-//                telemetry.addLine("center");
-//                telemetry.update();
-//                center = true;
-//                return;  //grab block
-//            }
-//
-//
-//        }
     }
 }
