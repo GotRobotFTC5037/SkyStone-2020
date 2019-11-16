@@ -29,13 +29,10 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import android.graphics.Camera;
 import android.hardware.Sensor;
-import android.hardware.camera2.CameraDevice;
 
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -67,6 +64,8 @@ public class HardwareTest {
     public Servo gripperServo = null;
 
     public ColorSensor colorSensor = null;
+    public ColorSensor colorSensorRed = null;
+  //  public Sensor soundGenerator = null;
 
     public static final double MID_SERVO = 0.5;
     public static final double MIN_SERVO = 0.0;
@@ -125,7 +124,10 @@ public class HardwareTest {
         gripperServo.setPosition(0.0);
 
         // Define and initialize ALL installed Sensors.
-        colorSensor = hwMap.get(ColorSensor.class, "colorSensor");
+        colorSensor = hwMap.get(ColorSensor.class, "colorSensorRight");
+        colorSensorRed = hwMap.get(ColorSensor.class, "colorSensorLeft");
+      //  soundGenerator = hwMap.get(Sensor.class, "sound");
+
 
 
 

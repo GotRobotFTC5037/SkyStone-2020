@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -21,7 +22,7 @@ import java.util.Locale;
 
 
 @Autonomous(name = "Autonomous", group = "linearOpMode")
-
+@Disabled
 public class Autonomous_OpMode extends LinearOpMode {
     BNO055IMU imu;
     private DcMotor bl;
@@ -88,7 +89,7 @@ public class Autonomous_OpMode extends LinearOpMode {
 //            fl.setPower(d.headingDriveLeft(15.0,0.5,500.0));
 
 
-            sleep(250);
+
 //            heading = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
 //            heading = heading / 100;
 //            bl.setPower(heading);

@@ -1,32 +1,3 @@
-/* Copyright (c) 2017 FIRST. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted (subject to the limitations in the disclaimer below) provided that
- * the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice, this list
- * of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice, this
- * list of conditions and the following disclaimer in the documentation and/or
- * other materials provided with the distribution.
- *
- * Neither the name of FIRST nor the names of its contributors may be used to endorse or
- * promote products derived from this software without specific prior written permission.
- *
- * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
- * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -47,44 +18,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
-/**
- * This file illustrates the concept of driving a path based on encoder counts.
- * It uses the common Pushbot hardware class to define the drive on the robot.
- * The code is structured as a LinearOpMode
- * <p>
- * The code REQUIRES that you DO have encoders on the wheels,
- * otherwise you would use: PushbotAutoDriveByTime;
- * <p>
- * This code ALSO requires that the drive Motors have been configured such that a positive
- * power command moves them forwards, and causes the encoders to count UP.
- * <p>
- * The desired path in this example is:
- * - Drive forward for 48 inches
- * - Spin right for 12 Inches
- * - Drive Backwards for 24 inches
- * - Stop and close the claw.
- * <p>
- * The code is written using a method called: encoderDrive(speed, leftMillimeters, rightMillimeters, timeoutS)
- * that performs the actual movement.
- * This methods assumes that each movement is relative to the last stopping place.
- * There are other ways to perform encoder based moves, but this method is probably the simplest.
- * This code uses the RUN_TO_POSITION mode to enable the Motor controllers to generate the run profile
- * <p>
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
 
-@Autonomous(name = "SkyStoneAutonomous", group = "OpMode")
-//@Disabled
-public class SkyStone_Autonomous extends LinearOpMode {
-
-    /* Declare OpMode members. */
-    HardwareTest robot = new HardwareTest();   // Use a Pushbot's hardware
+@Autonomous(name = "Functions", group = "OpMode")
+@Disabled
+public class Functions extends LinearOpMode {
+    HardwareTest robot = new HardwareTest();
     private ElapsedTime runtime = new ElapsedTime();
     BNO055IMU imu;
     Orientation angles;
     Acceleration gravity;
-
 
     static final double COUNTS_PER_MOTOR_REV = 1120;    // eg: TETRIX Motor Encoder
     static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
@@ -95,13 +37,7 @@ public class SkyStone_Autonomous extends LinearOpMode {
     static final double TURN_SPEED = 0.8;
     static final double DIST_PER_REV = (4 * 2.54 * Math.PI) / 1120;
 
-    @Override
     public void runOpMode() {
-
-        /*
-         * Initialize the drive system variables.
-         * The init() method of the hardware class does all the work here
-         */
         robot.init(hardwareMap);
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -110,57 +46,11 @@ public class SkyStone_Autonomous extends LinearOpMode {
         parameters.loggingEnabled = true;
         parameters.loggingTag = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
-        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
-        // and named "imu".
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
-        // Send telemetry message to signify robot waiting;
-        telemetry.addData("Status", "Resetting Encoders");    //
-        telemetry.update();
-
-        robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        // Send telemetry message to indicate successful Encoder reset
-        telemetry.addData("Path0", "Starting at %7d :%7d",
-                robot.leftDrive.getCurrentPosition(),
-                robot.rightDrive.getCurrentPosition());
-        telemetry.update();
-
-        // Wait for the game to start (driver presses PLAY)
-        waitForStart();
-        telemetry.addData("ServoPos", robot.armServo.getPosition());
-        telemetry.addData("ServoPosGrip", robot.gripperServo.getPosition());
-        telemetry.update();
-        // Step through each leg of the path,
-        // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        stoneDetection();
-        gyroStrafe(-1.571,0.0, 30, 0.5,5.0);
-        gyroStrafe(3.1416,90.0,165,0.6,10.0);
-        robot.gripperServo.setPosition(0.1);
-        waitMilis(100);
-        gyroStrafe(0.0,90,60,0.8,5.0);
     }
 
-
-    /*
-     *  Method to perform a relative move, based on encoder counts.
-     *  Encoders are not reset as the move is based on the current position.
-     *  Move will stop if any of three conditions occur:
-     *  1) Move gets to the desired position
-     *  2) Move runs out of time
-     *  3) Driver stops the opmode running.
-     */
-
-    public void resetEncoders () {
+    public void resetEncoders() {
         robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -171,22 +61,23 @@ public class SkyStone_Autonomous extends LinearOpMode {
         robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
+
     // 0.25 MAX & 1.0 MIN
-    public void arm (double armPos,
-                     double gripperPos,
-                     double timeoutS) {
-       runtime.reset();
-       while (opModeIsActive() && (runtime.seconds() < timeoutS)) {
+    public void arm(double armPos,
+                    double gripperPos,
+                    double timeoutS) {
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < timeoutS)) {
 
-           robot.gripperServo.setPosition(gripperPos);
-           robot.armServo.setPosition(armPos);
-       }
+            robot.gripperServo.setPosition(gripperPos);
+            robot.armServo.setPosition(armPos);
+        }
     }
 
-    public void gyroDrive (double heading,
-                           double distanceCM,
-                           double power,
-                           double timeoutS) {
+    public void gyroDrive(double heading,
+                          double distanceCM,
+                          double power,
+                          double timeoutS) {
         resetEncoders();
         double currentHeading;
         double drvPower = power;
@@ -214,8 +105,8 @@ public class SkyStone_Autonomous extends LinearOpMode {
         }
     }
 
-    public void gyroTurn (double heading,
-                          double timeoutS) {
+    public void gyroTurn(double heading,
+                         double timeoutS) {
         double currentHeading;
         double power;
 //        double p = 0;
@@ -235,9 +126,8 @@ public class SkyStone_Autonomous extends LinearOpMode {
 //            power = p+i+d;
             power = (currentHeading - heading) / 50;
             if (power < 0) {
-                power = -Math.max( 0.1, Math.abs(power));
-            }
-            else{
+                power = -Math.max(0.1, Math.abs(power));
+            } else {
                 power = Math.max(0.1, Math.abs(power));
             }
             if (Math.abs(currentHeading - heading) < 2.0) {
@@ -248,23 +138,25 @@ public class SkyStone_Autonomous extends LinearOpMode {
             robot.leftBackDrive.setPower(-power);
             robot.rightDrive.setPower(power);
             robot.rightBackDrive.setPower(power);
-            telemetry.addData("Gyro","Running");
+            telemetry.addData("Gyro", "Running");
         }
     }
+
     public double subtractAngle(double angleA,
-                                double angleB){
+                                double angleB) {
         double result;
         result = angleA - angleB;
-        if (result > 180){
+        if (result > 180) {
             result = result - 360;
         }
         return result;
     }
-    public void gyroStrafe (double heading,
-                            double pose,
-                            double distance,
-                            double power,
-                            double timeoutS) {
+
+    public void gyroStrafe(double heading,
+                           double pose,
+                           double distance,
+                           double power,
+                           double timeoutS) {
         resetEncoders();
         double currentHeading;
         double drvPower = power;
@@ -287,16 +179,16 @@ public class SkyStone_Autonomous extends LinearOpMode {
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < timeoutS)) {
             currentHeading = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-            headingRadians = ((-currentHeading/180)*3.1416)+(1/2*3.1416);
-            driveAngle = subtractAngle(pose,currentHeading);
-            adjPower = subtractAngle(pose,currentHeading) / 80;
+            headingRadians = ((-currentHeading / 180) * 3.1416) + (1 / 2 * 3.1416);
+            driveAngle = subtractAngle(pose, currentHeading);
+            adjPower = subtractAngle(pose, currentHeading) / 80;
             newLeft = robot.leftDrive.getCurrentPosition();
             newRight = robot.rightDrive.getCurrentPosition();
             newBackRight = robot.rightBackDrive.getCurrentPosition();
             newBackLeft = robot.leftBackDrive.getCurrentPosition();
 
             dX = ((((newLeft - oldLeft) - (newBackLeft - oldBackLeft)
-                    - (newRight - oldRight) + (newBackRight - oldBackRight)) * Math.sin(Math.PI/4)) / 4.0) * DIST_PER_REV;
+                    - (newRight - oldRight) + (newBackRight - oldBackRight)) * Math.sin(Math.PI / 4)) / 4.0) * DIST_PER_REV;
             dY = (((newLeft - oldLeft) + (newBackLeft - oldBackLeft)
                     + (newRight - oldRight) + (newBackRight - oldBackRight)) / 4.0) * DIST_PER_REV;
             distX += (Math.sin(headingRadians) * dX + Math.cos(headingRadians) * dY);
@@ -315,7 +207,7 @@ public class SkyStone_Autonomous extends LinearOpMode {
                 return;
             }
 
-            driveAngle = ((-currentHeading/180)*3.1416)+(1/2*3.1416)+heading;
+            driveAngle = ((-currentHeading / 180) * 3.1416) + (1 / 2 * 3.1416) + heading;
 //            driveAngle = 0.5*Math.PI;
 //            adjPower = 0;
 
@@ -334,6 +226,7 @@ public class SkyStone_Autonomous extends LinearOpMode {
             robot.rightBackDrive.setPower(v4);
         }
     }
+
     public void encoderDrive(double speed,
                              double leftCentimeters, double rightCentimeters,
                              double timeoutS) {
@@ -397,12 +290,14 @@ public class SkyStone_Autonomous extends LinearOpMode {
             //  sleep(250);   // optional pause after each move
         }
     }
-    public void waitMilis (double timeOutMs) {
+
+    public void waitMilis(double timeOutMs) {
 
         runtime.reset();
-        while (runtime.milliseconds() < timeOutMs);
+        while (runtime.milliseconds() < timeOutMs) ;
     }
-    public void stoneDetection () {
+
+    public void stoneDetection() {
         double timeoutS = 7.0;
         double hueValue = 0.4;
         double redU = 0.0;
@@ -411,8 +306,8 @@ public class SkyStone_Autonomous extends LinearOpMode {
         boolean foundPos = false;
         int run = 0;
         runtime.reset();
-        gyroStrafe(0,0,50,0.5,400.0);
-        gyroStrafe(1.571,0.0,60,0.5, 20.0);
+        gyroStrafe(0, 0, 50, 0.5, 400.0);
+        gyroStrafe(1.571, 0.0, 60, 0.5, 20.0);
         while (opModeIsActive() && (!foundPos) && (timeoutS > runtime.seconds())) {
             redU = (double) robot.colorSensor.red() / (double) robot.colorSensor.alpha();
             greenU = (double) robot.colorSensor.green() / (double) robot.colorSensor.alpha();
@@ -424,16 +319,16 @@ public class SkyStone_Autonomous extends LinearOpMode {
                 telemetry.update();
                 //stafe to pos?
                 robot.armServo.setPosition(0.9);
-                gyroDrive(0.0,4,0.5,0.5);
+//                gyroDrive(0.0,4,0.5,0.5);
+                gyroStrafe(.785, 0, 5.657, 0.5, 20.0);
                 robot.gripperServo.setPosition(1.0);
                 waitMilis(600);
                 robot.armServo.setPosition(0.6);
                 foundPos = true;
 
                 return;
-            }
-            else {
-                gyroStrafe(3.1416,0.0,5,0.5,100000.0);
+            } else {
+                gyroStrafe(3.1416, 0.0, 5, 0.5, 100000.0);
                 run++;
                 telemetry.addData("NoSkystone", "moving");
                 telemetry.update();
