@@ -113,12 +113,28 @@ public class TeleOopSKSKS extends LinearOpMode {
 
             double closed = 1.0;
             double open = 0.5;
+            boolean right_trigger;
+            boolean left_trigger;
 
             if (gamepad2.a) {
                 robot.gripperServo.setPosition(closed);
             } else if (gamepad2.b) {
                 robot.gripperServo.setPosition(open);
             }
+            if (gamepad1.right_trigger > 0.5) {
+                right_trigger = true;
+            }
+            if (gamepad1.left_trigger > 0.5) {
+                left_trigger = true;
+            }
+            if (right_trigger = true) {
+                robot.rightFoundation.setPosition(closed);
+                robot.leftFoundation.setPosition(closed);
+            } else if (left_trigger = true) {
+                robot.rightFoundation.setPosition(open);
+                robot.leftFoundation.setPosition(open);
+            }
+        }
 
 
 //            double drive_right = gamepad1.right_stick_y;
@@ -129,9 +145,9 @@ public class TeleOopSKSKS extends LinearOpMode {
 //            fl.setPower(drive_left);
 //            fr.setPower(drive_right);
 
-        }
-        // run until the end of the match (driver presses STOP)
     }
+    // run until the end of the match (driver presses STOP)
+
 
 //    public void gripperPos () {
 //        double closed = 0.0;
