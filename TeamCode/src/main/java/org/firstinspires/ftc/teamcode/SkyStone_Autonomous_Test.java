@@ -34,6 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Hardware;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -95,7 +96,11 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
 
         waitForStart();
 
-        functions.gyroStrafe(1.52, 90,30.0, 0.8, 10.0);
+      functions.makemework();
+
+
+//        functions.gyroStrafe(0, 0.0,30.0, 0.2, 10.0);
+//        functions.gyroDrive(0, 60.0, 0.1, 3000.0);
 
 
     }
@@ -109,4 +114,3 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
      *  2) Move runs out of time
      *  3) Driver stops the opmode running.
      */
-

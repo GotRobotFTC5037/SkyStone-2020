@@ -48,11 +48,6 @@ public class TeleOopSKSKS extends LinearOpMode {
         telemetry.addData("Hydroflask", "Initialized");
         telemetry.update();
 
-        robot.leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        robot.rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
-        robot.leftDrive.setDirection(DcMotor.Direction.REVERSE);
-        robot.rightDrive.setDirection(DcMotor.Direction.FORWARD);
-
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         while (opModeIsActive()) {
@@ -127,13 +122,13 @@ public class TeleOopSKSKS extends LinearOpMode {
             if (gamepad1.left_trigger > 0.5) {
                 left_trigger = true;
             }
-            if (right_trigger = true) {
-                robot.rightFoundation.setPosition(closed);
-                robot.leftFoundation.setPosition(closed);
-            } else if (left_trigger = true) {
-                robot.rightFoundation.setPosition(open);
-                robot.leftFoundation.setPosition(open);
-            }
+//            if (right_trigger = true) {
+//                robot.rightFoundation.setPosition(closed);
+//                robot.leftFoundation.setPosition(closed);
+//            } else if (left_trigger = true) {
+//                robot.rightFoundation.setPosition(open);
+//                robot.leftFoundation.setPosition(open);
+//            }
         }
 
 

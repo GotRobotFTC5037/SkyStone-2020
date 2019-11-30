@@ -27,7 +27,7 @@ public class Functions {
     Acceleration gravity;
     private HardwareTest robot;
 
-    Functions(HardwareTest robot, BNO055IMU imu){
+    Functions(HardwareTest robot, BNO055IMU imu) {
         this.robot = robot;
         this.imu = imu;
     }
@@ -82,13 +82,13 @@ public class Functions {
         resetEncoders();
         double currentHeading;
         double drvPower = power;
-        double adjPower;
+        double adjPower = 0;
         double currentDistance;
         double distanceTicks;
         runtime.reset();
         while (runtime.seconds() < timeoutS) {
             currentHeading = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-            adjPower = (currentHeading - heading) / 50;
+            //  adjPower = (currentHeading - heading) / 500;
             currentDistance = robot.leftDrive.getCurrentPosition();
             distanceTicks = (distanceCM * COUNTS_PER_CENTIMETER);
             if (currentDistance > distanceTicks) {
@@ -163,6 +163,7 @@ public class Functions {
         double currentDistance;
         double driveAngle;
         double headingRadians;
+//        double poseDegrees;
         double distX = 0;
         double distY = 0;
         double dY;
@@ -179,8 +180,15 @@ public class Functions {
         while ((runtime.seconds() < timeoutS)) {
             currentHeading = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
             headingRadians = ((-currentHeading / 180) * 3.1416) + (1 / 2 * 3.1416);
-            driveAngle = subtractAngle(pose, currentHeading);
-            adjPower = subtractAngle(pose, currentHeading) / 80;
+//            poseDegrees = ((pose - 3.1416 / 2) % (2 * 3.1416)) * (360 / (2 * 3.1416)) ;
+//            if (poseDegrees > 180) {
+//                poseDegrees -= 360;
+//            }
+//            if (poseDegrees < -180) {
+//                poseDegrees += 360;
+//            }
+            driveAngle = subtractAngle(/*poseDegrees*/pose, currentHeading);
+            adjPower = subtractAngle(/*poseDegrees*/pose, currentHeading) / 80;
             newLeft = robot.leftDrive.getCurrentPosition();
             newRight = robot.rightDrive.getCurrentPosition();
             newBackRight = robot.rightBackDrive.getCurrentPosition();
@@ -316,5 +324,24 @@ public class Functions {
                 run++;
             }
         }
+    }
+
+    public void makemework() {
+        resetEncoders();
+        double currentDistance = 0;
+        double distanceTicks = 4480;
+        while (distanceTicks > currentDistance) {
+            currentDistance = robot.rightBackDrive.getCurrentPosition();
+            robot.leftDrive.setPower(0.1);
+            //robot.leftBackDrive.setPower(0.1);
+            robot.rightDrive.setPower(0.1);
+            robot.rightBackDrive.setPower(0.1);
+            waitMilis(100);
+        }
+        robot.leftDrive.setPower(0.0);
+        robot.leftBackDrive.setPower(0.0);
+        robot.rightDrive.setPower(0.0);
+        robot.rightBackDrive.setPower(0.0);
+        return;
     }
 }

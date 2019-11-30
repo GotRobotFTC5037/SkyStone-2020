@@ -140,7 +140,7 @@ functions.init(functions);
         // Step through each leg of the path,
 //       telemetry.addData("Type", robot.soundGenerator.getType());
 //       telemetry.update();
-       functions.gyroDrive(0.0,0.0,0.0,200);
+       gyroDrive(0.0,30.0,0.1,200);
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
 //        functions.stoneDetection();
 //        functions.gyroStrafe(-1.571,0.0, 30, 0.5,5.0);

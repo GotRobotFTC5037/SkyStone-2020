@@ -63,8 +63,8 @@ public class HardwareTest {
     //    public DcMotor  leftArm     = null;
     public Servo armServo = null;
     public Servo gripperServo = null;
-    public Servo leftFoundation = null;
-    public Servo rightFoundation = null;
+//    public Servo leftFoundation = null;
+//    public Servo rightFoundation = null;
 
     public ColorSensor colorSensor = null;
     public ColorSensor colorSensorRed = null;
@@ -122,13 +122,13 @@ public class HardwareTest {
         // Define and initialize ALL installed servos.
         armServo = hwMap.get(Servo.class, "armServo");
         gripperServo = hwMap.get(Servo.class, "gripperServo");
-        leftFoundation = hwMap.get(Servo.class, "leftFoundation");
-        rightFoundation = hwMap.get(Servo.class, "rightFoundation");
+//        leftFoundation = hwMap.get(Servo.class, "leftFoundation");
+//        rightFoundation = hwMap.get(Servo.class, "rightFoundation");
 
         armServo.setPosition(1.0);
         gripperServo.setPosition(0.0);
-        leftFoundation.setPosition(0.0);
-        rightFoundation.setPosition(0.0);
+//        leftFoundation.setPosition(0.0);
+//        rightFoundation.setPosition(0.0);
 
         // Define and initialize ALL installed Sensors.
         colorSensor = hwMap.get(ColorSensor.class, "colorSensorRight");
