@@ -1,0 +1,9 @@
+<application>
+  <component name="NotificationConfiguration">
+    <notification groupId="Build sync orphan modules" displayType="NONE" shouldLog="false" />
+    <notification groupId="Code style settings migration" displayType="STICKY_BALLOON" shouldLog="false" />
+    <notification groupId="Configure Kotlin in Project" displayType="STICKY_BALLOON" shouldLog="false" />
+    <notification groupId="External Executable Critical Failures" displayType="STICKY_BALLOON" shouldLog="false" />
+    <notification groupId="Plugins Suggestion" displayType="STICKY_BALLOON" shouldLog="false" />
+  </component>
+</application>
