@@ -5,9 +5,7 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import com.qualcomm.robotcore.hardware.Gyroscope;
@@ -20,28 +18,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
-public class Functions {
+
+@Autonomous(name = "Functions", group = "OpMode")
+@Disabled
+public class Functions extends LinearOpMode {
+    HardwareTest robot = new HardwareTest();
     private ElapsedTime runtime = new ElapsedTime();
-    private BNO055IMU imu;
+    BNO055IMU imu;
     Orientation angles;
     Acceleration gravity;
-    private HardwareTest robot;
 
-    Functions(HardwareTest robot, BNO055IMU imu) {
-        this.robot = robot;
-        this.imu = imu;
-    }
-
-
-    Functions func = null;
-
-    public Functions() {
-    }
-
-    public void init(Functions func) {
-    }
-
-    static final double COUNTS_PER_MOTOR_REV = 560;    // eg: TETRIX Motor Encoder
+    static final double COUNTS_PER_MOTOR_REV = 1120;    // eg: TETRIX Motor Encoder
     static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
     static final double WHEEL_DIAMETER_CENTIMETERS = 10.16;     // For figuring circumference
     static final double COUNTS_PER_CENTIMETER = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
@@ -50,6 +37,18 @@ public class Functions {
     static final double TURN_SPEED = 0.8;
     static final double DIST_PER_REV = (4 * 2.54 * Math.PI) / 1120;
 
+    public void runOpMode() {
+        robot.init(hardwareMap);
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+    }
 
     public void resetEncoders() {
         robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -68,7 +67,7 @@ public class Functions {
                     double gripperPos,
                     double timeoutS) {
         runtime.reset();
-        while (runtime.seconds() < timeoutS) {
+        while (opModeIsActive() && (runtime.seconds() < timeoutS)) {
 
             robot.gripperServo.setPosition(gripperPos);
             robot.armServo.setPosition(armPos);
@@ -82,13 +81,13 @@ public class Functions {
         resetEncoders();
         double currentHeading;
         double drvPower = power;
-        double adjPower = 0;
+        double adjPower;
         double currentDistance;
         double distanceTicks;
         runtime.reset();
-        while (runtime.seconds() < timeoutS) {
+        while (opModeIsActive() && (runtime.seconds() < timeoutS)) {
             currentHeading = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-            //  adjPower = (currentHeading - heading) / 500;
+            adjPower = (currentHeading - heading) / 50;
             currentDistance = robot.leftDrive.getCurrentPosition();
             distanceTicks = (distanceCM * COUNTS_PER_CENTIMETER);
             if (currentDistance > distanceTicks) {
@@ -118,7 +117,8 @@ public class Functions {
 //        double dK = .05;
 //        double oldHeading = 0;
         runtime.reset();
-        while (runtime.seconds() < timeoutS) {
+        while (opModeIsActive() &&
+                (runtime.seconds() < timeoutS)) {
             currentHeading = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
 //            p = (currentHeading - heading) * pK;
 //            i = p * iK + i;
@@ -138,6 +138,7 @@ public class Functions {
             robot.leftBackDrive.setPower(-power);
             robot.rightDrive.setPower(power);
             robot.rightBackDrive.setPower(power);
+            telemetry.addData("Gyro", "Running");
         }
     }
 
@@ -163,7 +164,6 @@ public class Functions {
         double currentDistance;
         double driveAngle;
         double headingRadians;
-//        double poseDegrees;
         double distX = 0;
         double distY = 0;
         double dY;
@@ -177,18 +177,11 @@ public class Functions {
         double newBackLeft = 0;
         double newBackRight = 0;
         runtime.reset();
-        while ((runtime.seconds() < timeoutS)) {
+        while (opModeIsActive() && (runtime.seconds() < timeoutS)) {
             currentHeading = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
             headingRadians = ((-currentHeading / 180) * 3.1416) + (1 / 2 * 3.1416);
-//            poseDegrees = ((pose - 3.1416 / 2) % (2 * 3.1416)) * (360 / (2 * 3.1416)) ;
-//            if (poseDegrees > 180) {
-//                poseDegrees -= 360;
-//            }
-//            if (poseDegrees < -180) {
-//                poseDegrees += 360;
-//            }
-            driveAngle = subtractAngle(/*poseDegrees*/pose, currentHeading);
-            adjPower = subtractAngle(/*poseDegrees*/pose, currentHeading) / 80;
+            driveAngle = subtractAngle(pose, currentHeading);
+            adjPower = subtractAngle(pose, currentHeading) / 80;
             newLeft = robot.leftDrive.getCurrentPosition();
             newRight = robot.rightDrive.getCurrentPosition();
             newBackRight = robot.rightBackDrive.getCurrentPosition();
@@ -224,6 +217,8 @@ public class Functions {
             final double v3 = power * Math.sin(robotAngle) - adjPower;
             final double v4 = power * Math.cos(robotAngle) + adjPower;
 
+            telemetry.addData("gyro angle", currentHeading);
+            telemetry.update();
 
             robot.leftDrive.setPower(v1);
             robot.rightDrive.setPower(v2);
@@ -239,7 +234,7 @@ public class Functions {
         int newRightTarget;
 
         // Ensure that the opmode is still active
-        if (true) {
+        if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
             newLeftTarget = robot.leftDrive.getCurrentPosition() + (int) (leftCentimeters * COUNTS_PER_CENTIMETER);
@@ -268,6 +263,17 @@ public class Functions {
             // always end the motion as soon as possible.
             // However, if you require that BOTH motors have finished their moves before the robot continues
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (robot.leftDrive.isBusy() && robot.rightDrive.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("Path1", "Running to %7d :%7d", newLeftTarget, newRightTarget);
+                telemetry.addData("Path2", "Running at %7d :%7d",
+                        robot.leftDrive.getCurrentPosition(),
+                        robot.rightDrive.getCurrentPosition());
+                telemetry.update();
+            }
 
             // Stop all motion;
             robot.leftDrive.setPower(0);
@@ -302,13 +308,15 @@ public class Functions {
         runtime.reset();
         gyroStrafe(0, 0, 50, 0.5, 400.0);
         gyroStrafe(1.571, 0.0, 60, 0.5, 20.0);
-        while ((!foundPos) && (timeoutS > runtime.seconds())) {
+        while (opModeIsActive() && (!foundPos) && (timeoutS > runtime.seconds())) {
             redU = (double) robot.colorSensor.red() / (double) robot.colorSensor.alpha();
             greenU = (double) robot.colorSensor.green() / (double) robot.colorSensor.alpha();
             blueU = (double) robot.colorSensor.blue() / (double) robot.colorSensor.alpha();
 
             if (((greenU + redU) * hueValue) < blueU) {
                 //Sees skystone
+                telemetry.addData("Skystone Scunchied", "Retreving");
+                telemetry.update();
                 //stafe to pos?
                 robot.armServo.setPosition(0.9);
 //                gyroDrive(0.0,4,0.5,0.5);
@@ -322,26 +330,9 @@ public class Functions {
             } else {
                 gyroStrafe(3.1416, 0.0, 5, 0.5, 100000.0);
                 run++;
+                telemetry.addData("NoSkystone", "moving");
+                telemetry.update();
             }
         }
-    }
-
-    public void makemework() {
-        resetEncoders();
-        double currentDistance = 0;
-        double distanceTicks = 4480;
-        while (distanceTicks > currentDistance) {
-            currentDistance = robot.rightBackDrive.getCurrentPosition();
-            robot.leftDrive.setPower(0.1);
-            //robot.leftBackDrive.setPower(0.1);
-            robot.rightDrive.setPower(0.1);
-            robot.rightBackDrive.setPower(0.1);
-            waitMilis(100);
-        }
-        robot.leftDrive.setPower(0.0);
-        robot.leftBackDrive.setPower(0.0);
-        robot.rightDrive.setPower(0.0);
-        robot.rightBackDrive.setPower(0.0);
-        return;
     }
 }

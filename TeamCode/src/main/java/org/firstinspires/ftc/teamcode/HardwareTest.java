@@ -33,7 +33,6 @@ import android.hardware.Sensor;
 
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -63,8 +62,6 @@ public class HardwareTest {
     //    public DcMotor  leftArm     = null;
     public Servo armServo = null;
     public Servo gripperServo = null;
-//    public Servo leftFoundation = null;
-//    public Servo rightFoundation = null;
 
     public ColorSensor colorSensor = null;
     public ColorSensor colorSensorRed = null;
@@ -98,10 +95,10 @@ public class HardwareTest {
 
 
 //        leftArm    = hwMap.get(DcMotor.class, "left_arm");
-        leftDrive.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
-        leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightDrive.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
-        rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
+        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightDrive.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
+        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
 
         // Set all motors to zero power
@@ -122,18 +119,14 @@ public class HardwareTest {
         // Define and initialize ALL installed servos.
         armServo = hwMap.get(Servo.class, "armServo");
         gripperServo = hwMap.get(Servo.class, "gripperServo");
-//        leftFoundation = hwMap.get(Servo.class, "leftFoundation");
-//        rightFoundation = hwMap.get(Servo.class, "rightFoundation");
 
         armServo.setPosition(1.0);
         gripperServo.setPosition(0.0);
-//        leftFoundation.setPosition(0.0);
-//        rightFoundation.setPosition(0.0);
 
         // Define and initialize ALL installed Sensors.
         colorSensor = hwMap.get(ColorSensor.class, "colorSensorRight");
         colorSensorRed = hwMap.get(ColorSensor.class, "colorSensorLeft");
-
+      //  soundGenerator = hwMap.get(Sensor.class, "sound");
 
 
 
