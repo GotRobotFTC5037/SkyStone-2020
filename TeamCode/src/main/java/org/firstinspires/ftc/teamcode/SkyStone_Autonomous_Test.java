@@ -92,11 +92,10 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
         parameters.loggingTag = "IMU";
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
-        Functions functions = new Functions(robot, imu);
+        Functions fun = new Functions(robot, imu);
 
         waitForStart();
-
-      functions.makemework();
+        fun.gyroStrafe(1.57, 3.14, 100,0.1,20);
 
 
 //        functions.gyroStrafe(0, 0.0,30.0, 0.2, 10.0);

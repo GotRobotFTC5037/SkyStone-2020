@@ -51,7 +51,7 @@ public class Functions {
     static final double DIST_PER_REV = (4 * 2.54 * Math.PI) / 1120;
 
 
-    public void resetEncoders() {
+    public void resetEncoders() { /** DO NOT USE FOR GENERAL PURPOSE **/
         robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -79,7 +79,7 @@ public class Functions {
                           double distanceCM,
                           double power,
                           double timeoutS) {
-        resetEncoders();
+
         double currentHeading;
         double drvPower = power;
         double adjPower = 0;
@@ -105,6 +105,8 @@ public class Functions {
 
         }
     }
+
+
 
     public void gyroTurn(double heading,
                          double timeoutS) {
@@ -156,22 +158,22 @@ public class Functions {
                            double distance,
                            double power,
                            double timeoutS) {
-        resetEncoders();
+
         double currentHeading;
         double drvPower = power;
         double adjPower;
         double currentDistance;
         double driveAngle;
         double headingRadians;
-//        double poseDegrees;
+        double poseDegrees;
         double distX = 0;
         double distY = 0;
         double dY;
         double dX;
-        double oldLeft = 0;
-        double oldRight = 0;
-        double oldBackLeft = 0;
-        double oldBackRight = 0;
+        double oldLeft = robot.leftDrive.getCurrentPosition();
+        double oldRight = robot.rightDrive.getCurrentPosition();
+        double oldBackLeft = robot.leftBackDrive.getCurrentPosition();
+        double oldBackRight = robot.rightBackDrive.getCurrentPosition();
         double newLeft = 0;
         double newRight = 0;
         double newBackLeft = 0;
@@ -180,15 +182,15 @@ public class Functions {
         while ((runtime.seconds() < timeoutS)) {
             currentHeading = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
             headingRadians = ((-currentHeading / 180) * 3.1416) + (1 / 2 * 3.1416);
-//            poseDegrees = ((pose - 3.1416 / 2) % (2 * 3.1416)) * (360 / (2 * 3.1416)) ;
-//            if (poseDegrees > 180) {
-//                poseDegrees -= 360;
-//            }
-//            if (poseDegrees < -180) {
-//                poseDegrees += 360;
-//            }
-            driveAngle = subtractAngle(/*poseDegrees*/pose, currentHeading);
-            adjPower = subtractAngle(/*poseDegrees*/pose, currentHeading) / 80;
+            poseDegrees = ((pose - 3.1416 / 2) % (2 * 3.1416)) * (360 / (2 * 3.1416)) ;
+            if (poseDegrees > 180) {
+                poseDegrees -= 360;
+            }
+            if (poseDegrees < -180) {
+                poseDegrees += 360;
+            }
+            driveAngle = subtractAngle(poseDegrees, currentHeading);
+            adjPower = subtractAngle(poseDegrees, currentHeading) / 80;
             newLeft = robot.leftDrive.getCurrentPosition();
             newRight = robot.rightDrive.getCurrentPosition();
             newBackRight = robot.rightBackDrive.getCurrentPosition();
@@ -327,21 +329,18 @@ public class Functions {
     }
 
     public void makemework() {
-        resetEncoders();
-        double currentDistance = 0;
-        double distanceTicks = 4480;
-        while (distanceTicks > currentDistance) {
-            currentDistance = robot.rightBackDrive.getCurrentPosition();
-            robot.leftDrive.setPower(0.1);
-            //robot.leftBackDrive.setPower(0.1);
-            robot.rightDrive.setPower(0.1);
-            robot.rightBackDrive.setPower(0.1);
-            waitMilis(100);
+        double TheCount;
+        double power;
+        TheCount = 0;
+        runtime.reset();
+        while (runtime.seconds() < 12) {
+            waitMilis(10);
+            TheCount+= 0.00025;
+            power = Math.sin(TheCount);
+            robot.leftBackDrive.setPower(power);
+            robot.rightBackDrive.setPower(power);
+            robot.leftDrive.setPower(power);
+            robot.rightDrive.setPower(power);
         }
-        robot.leftDrive.setPower(0.0);
-        robot.leftBackDrive.setPower(0.0);
-        robot.rightDrive.setPower(0.0);
-        robot.rightBackDrive.setPower(0.0);
-        return;
     }
 }
