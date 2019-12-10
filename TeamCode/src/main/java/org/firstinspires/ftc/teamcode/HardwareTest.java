@@ -68,7 +68,7 @@ public class HardwareTest {
 
     public ColorSensor colorSensorBlue = null;
     public ColorSensor colorSensorRed = null;
-    public ColorSensor bottomColorSensor = null;
+   // public ColorSensor bottomColorSensor = null;
   //  public Sensor soundGenerator = null;
 
     public static final double MID_SERVO = 0.5;
@@ -148,7 +148,7 @@ public class HardwareTest {
         // Define and initialize ALL installed Sensors.
         colorSensorBlue = hwMap.get(ColorSensor.class, "colorSensorRight");
         colorSensorRed = hwMap.get(ColorSensor.class, "colorSensorLeft");
-        bottomColorSensor = hwMap.get(ColorSensor.class, "bottomColorSensor");
+       // bottomColorSensor = hwMap.get(ColorSensor.class, "bottomColorSensor");
 
 
 

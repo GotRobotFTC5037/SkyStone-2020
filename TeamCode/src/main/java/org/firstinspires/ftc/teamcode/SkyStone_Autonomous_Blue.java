@@ -74,12 +74,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 public class SkyStone_Autonomous_Blue extends LinearOpMode {
 
     /* Declare OpMode members. */
-    HardwareTest robot = new HardwareTest();   // Use a Pushbot's hardware
-    Functions functions = new Functions();
-    private ElapsedTime runtime = new ElapsedTime();
     BNO055IMU imu;
+    HardwareTest robot = new HardwareTest();   // Use a Pushbot's hardware
+    private ElapsedTime runtime = new ElapsedTime();
     Orientation angles;
     Acceleration gravity;
+
 
     static final double COUNTS_PER_MOTOR_REV = 1120;    // eg: TETRIX Motor Encoder
     static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
@@ -92,8 +92,6 @@ public class SkyStone_Autonomous_Blue extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Functions fun = new Functions(robot, imu);
-
         /*
          * Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
@@ -105,9 +103,11 @@ public class SkyStone_Autonomous_Blue extends LinearOpMode {
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
         parameters.loggingEnabled = true;
         parameters.loggingTag = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
+        Functions fun = new Functions(robot, imu);
+        fun.resetEncoders();
+        fun.waitMilis(50);
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Resetting Encoders");    //
         telemetry.update();
@@ -127,6 +127,14 @@ public class SkyStone_Autonomous_Blue extends LinearOpMode {
         telemetry.addData("ServoPos", robot.armServo.getPosition());
         telemetry.addData("ServoPosGrip", robot.gripperServo.getPosition());
         telemetry.update();
+        // Step through each leg of the path,
+        // Note: Reverse movement is obtained by setting a negative distance (not speed)
+            fun.stoneDetectionBlue();
+//        fun.gyroStrafe(1.571,0.0, 30, 0.5,5.0);
+//        fun.gyroStrafe(3.1416,-90.0,165,0.6,10.0);
+//        robot.gripperServo.setPosition(0.1);
+//        fun.waitMilis(100);
+//        fun.gyroStrafe(0,-90,60,0.8,5.0);
     }
 
     /*
