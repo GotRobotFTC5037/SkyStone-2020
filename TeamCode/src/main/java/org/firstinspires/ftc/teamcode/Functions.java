@@ -294,7 +294,7 @@ public class Functions {
         while (runtime.milliseconds() < timeOutMs) ;
     }
 
-    public void stoneDetection() {
+    public void stoneDetectionBlue() {
         double timeoutS = 7.0;
         double hueValue = 0.4;
         double redU = 0.0;
@@ -306,9 +306,9 @@ public class Functions {
         gyroStrafe(0, 0, 50, 0.5, 400.0);
         gyroStrafe(1.571, 0.0, 60, 0.5, 20.0);
         while ((!foundPos) && (timeoutS > runtime.seconds())) {
-            redU = (double) robot.colorSensor.red() / (double) robot.colorSensor.alpha();
-            greenU = (double) robot.colorSensor.green() / (double) robot.colorSensor.alpha();
-            blueU = (double) robot.colorSensor.blue() / (double) robot.colorSensor.alpha();
+            redU = (double) robot.colorSensorBlue.red() / (double) robot.colorSensorBlue.alpha();
+            greenU = (double) robot.colorSensorBlue.green() / (double) robot.colorSensorBlue.alpha();
+            blueU = (double) robot.colorSensorBlue.blue() / (double) robot.colorSensorBlue.alpha();
 
             if (((greenU + redU) * hueValue) < blueU) {
                 //Sees skystone
@@ -325,6 +325,43 @@ public class Functions {
             } else {
                 gyroStrafe(3.1416, 0.0, 5, 0.5, 100000.0);
                 run++;
+            }
+        }
+    }
+    public void stoneDetectionRed () {
+        double timeoutS = 7.0;
+        double hueValue = 0.4;
+        double redU = 0.0;
+        double greenU = 0.0;
+        double blueU = 0.0;
+        boolean foundPos = false;
+        int run = 0;
+        runtime.reset();
+        gyroStrafe(3.1416,0,50,0.5,400.0);
+        gyroStrafe(1.571,0.0,60,0.5, 20.0);
+        while ((!foundPos) && (timeoutS > runtime.seconds())) {
+            redU = (double) robot.colorSensorRed.red() / (double) robot.colorSensorRed.alpha();
+            greenU = (double) robot.colorSensorRed.green() / (double) robot.colorSensorRed.alpha();
+            blueU = (double) robot.colorSensorRed.blue() / (double) robot.colorSensorRed.alpha();
+
+            if (((greenU + redU) * hueValue) < blueU) {
+                //Sees skystone
+
+                //strafe to pos?
+                robot.armServo.setPosition(0.9);
+                // gyroDrive(0.0,4,0.5,0.5);
+                gyroStrafe(2.356, 0, 5.657, 0.5, 20.0);
+                robot.gripperServo.setPosition(1.0);
+                waitMilis(600);
+                robot.armServo.setPosition(0.6);
+                foundPos = true;
+
+                return;
+            }
+            else {
+                gyroStrafe(0.0,0.0,7,0.5,100000.0);
+                run++;
+
             }
         }
     }
