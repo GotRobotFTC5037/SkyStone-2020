@@ -1,7 +1,7 @@
 <application>
   <component name="FindSettings">
-    <option name="customScope" value="File '...\TeamCode\src\main\java\org\firstinspires\ftc\teamcode\OpModes.kt [TeamCode]'" />
-    <option name="defaultScopeName" value="File '...\TeamCode\src\main\java\org\firstinspires\ftc\teamcode\OpModes.kt [TeamCode]'" />
-    <option name="SEARCH_SCOPE" value="File '...\TeamCode\src\main\java\org\firstinspires\ftc\teamcode\OpModes.kt [TeamCode]'" />
+    <option name="customScope" value="All Places" />
+    <option name="defaultScopeName" value="All Places" />
+    <option name="SEARCH_SCOPE" value="All Places" />
   </component>
 </application>
