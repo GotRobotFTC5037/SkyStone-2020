@@ -302,9 +302,10 @@ public class Functions {
         double blueU = 0.0;
         boolean foundPos = false;
         int run = 0;
+        int zero = 0;
         runtime.reset();
-        gyroStrafe(0, 0, 50, 0.5, 400.0);
-        gyroStrafe(1.571, 0.0, 60, 0.5, 20.0);
+        gyroStrafe(1.571,1.571,55.5,0.6,10);
+        gyroStrafe(0,1.571,50,0.6,10);
         while ((!foundPos) && (timeoutS > runtime.seconds())) {
             redU = (double) robot.colorSensorBlue.red() / (double) robot.colorSensorBlue.alpha();
             greenU = (double) robot.colorSensorBlue.green() / (double) robot.colorSensorBlue.alpha();
@@ -313,17 +314,18 @@ public class Functions {
             if (((greenU + redU) * hueValue) < blueU) {
                 //Sees skystone
                 //stafe to pos?
+
+                gyroStrafe(0,1.571,5,0.4,10);
                 robot.armServo.setPosition(0.9);
 //                gyroDrive(0.0,4,0.5,0.5);
-                gyroStrafe(.785, 0, 5.657, 0.5, 20.0);
+                gyroStrafe(1.571, 1.571, 5.657, 0.5, 20.0);
                 robot.gripperServo.setPosition(1.0);
                 waitMilis(600);
-                robot.armServo.setPosition(0.6);
+                robot.armServo.setPosition(0.5);
+                gyroStrafe(4.7126,1.571,20,0.6,10);
                 foundPos = true;
-
-                return;
             } else {
-                gyroStrafe(3.1416, 0.0, 5, 0.5, 100000.0);
+                gyroStrafe(3.1416, 1.571, 7, 0.4, 7.0);
                 run++;
             }
         }
