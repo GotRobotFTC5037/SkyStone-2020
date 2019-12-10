@@ -388,4 +388,7 @@ public class Functions {
         }
         robot.leftBackDrive.setPower(0.0);
     }
+    public void indicatorLight() {
+
+    }
 }

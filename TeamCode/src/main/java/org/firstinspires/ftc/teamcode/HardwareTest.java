@@ -31,10 +31,12 @@ package org.firstinspires.ftc.teamcode;
 
 import android.hardware.Sensor;
 
+import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -60,16 +62,21 @@ public class HardwareTest {
     public DcMotor leftBackDrive = null;
     public DcMotor rightDrive = null;
     public DcMotor rightBackDrive = null;
-    //    public DcMotor  leftArm     = null;
+
+    /** Servos **/
     public Servo armServo = null;
     public Servo gripperServo = null;
-//    public Servo leftFoundation = null;
-//    public Servo rightFoundation = null;
+    public Servo leftFoundation = null;
+    public Servo rightFoundation = null;
 
+    /** Sensors **/
     public ColorSensor colorSensorBlue = null;
     public ColorSensor colorSensorRed = null;
     public ColorSensor bottomColorSensor = null;
-  //  public Sensor soundGenerator = null;
+
+    /** Light Device **/
+    public Servo indicatorLight = null;
+
 
     public static final double MID_SERVO = 0.5;
     public static final double MIN_SERVO = 0.0;
@@ -105,13 +112,13 @@ public class HardwareTest {
         rightBackDrive = hwMap.get(DcMotor.class, "br");
 
 
-//        leftArm    = hwMap.get(DcMotor.class, "left_arm");
+        // Set Drive Motor Direction
         leftDrive.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
         rightDrive.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
 
-        //Initialize braking function
+        // Initialize braking function
             rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -124,7 +131,7 @@ public class HardwareTest {
         leftBackDrive.setPower(0);
         rightDrive.setPower(0);
         rightBackDrive.setPower(0);
-//        leftArm.setPower(0);
+
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
@@ -132,18 +139,19 @@ public class HardwareTest {
         leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        leftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
 
         // Define and initialize ALL installed servos.
         armServo = hwMap.get(Servo.class, "armServo");
         gripperServo = hwMap.get(Servo.class, "gripperServo");
-//        leftFoundation = hwMap.get(Servo.class, "leftFoundation");
-//        rightFoundation = hwMap.get(Servo.class, "rightFoundation");
+        indicatorLight = hwMap.get(Servo.class, "indicatorLight");
+        leftFoundation = hwMap.get(Servo.class, "leftFoundation");
+        rightFoundation = hwMap.get(Servo.class, "rightFoundation");
 
         armServo.setPosition(1.0);
         gripperServo.setPosition(0.0);
-//        leftFoundation.setPosition(0.0);
-//        rightFoundation.setPosition(0.0);
+        leftFoundation.setPosition(0.0);
+        rightFoundation.setPosition(0.0);
 
         // Define and initialize ALL installed Sensors.
         colorSensorBlue = hwMap.get(ColorSensor.class, "colorSensorRight");
