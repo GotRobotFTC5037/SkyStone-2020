@@ -41,6 +41,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 /**
  * This file illustrates the concept of driving a path based on encoder counts.
@@ -92,24 +93,72 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
         parameters.loggingTag = "IMU";
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
+        Odometry odom = new Odometry(robot, imu);
         Functions fun = new Functions(robot, imu);
+        fun.resetEncoders();
+        fun.waitMilis(50);
+
+        robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         waitForStart();
-        fun.gyroStrafe(1.57, 1.57, 50,0.5,30);
+
+
+
+//        odom.start();
+        fun.gyroStrafe(1.57, 1.57, 120, .15, 30);
+//        fun.resetEncoders();
+//        odom.start();
+//        sleep(20);
+//        while (odom.currentDistance < 60) {
+//            robot.rightDrive.setPower(0.3);
+//            robot.rightBackDrive.setPower(0.3);
+//            robot.leftBackDrive.setPower(0.3);
+//            robot.leftDrive.setPower(0.3);
+//            telemetry.addLine();
+//            telemetry.addData("Current Velocity", odom.currentVelocity);
+//            telemetry.addData("Odom Time", odom.currentTime);
+//            telemetry.addData("Main Time", runtime.seconds());
+//            telemetry.update();
+//            sleep(0);
+//        }
+//        robot.rightDrive.setPower(0);
+//        robot.rightBackDrive.setPower(0);
+//        robot.leftBackDrive.setPower(0);
+//        robot.leftDrive.setPower(0);
+//        fun.waitMilis(500);
+//        odom.interrupt();
+
+
+//        while (robot.leftBackDrive.getCurrentPosition() < 538) {
+//            telemetry.addLine();
+//            telemetry.addData("Motor Position", robot.leftBackDrive.getCurrentPosition());
+//            telemetry.update();
+//            robot.leftBackDrive.setPower(0.2);
+//        }
+//        robot.leftBackDrive.setPower(0.0);
+//        fun.waitMilis(2000);
+//        telemetry.addLine();
+//        telemetry.addData("Motor Position", robot.leftBackDrive.getCurrentPosition());
+//        telemetry.update();
+//        fun.waitMilis(5000);
+    }
 
 
 //        functions.gyroStrafe(0, 0.0,30.0, 0.2, 10.0);
 //        functions.gyroDrive(0, 60.0, 0.1, 3000.0);
 
 
-    }
 }
 
-    /*
-     *  Method to perform a relative move, based on encoder counts.
-     *  Encoders are not reset as the move is based on the current position.
-     *  Move will stop if any of three conditions occur:
-     *  1) Move gets to the desired position
-     *  2) Move runs out of time
-     *  3) Driver stops the opmode running.
-     */
+
+/*
+ *  Method to perform a relative move, based on encoder counts.
+ *  Encoders are not reset as the move is based on the current position.
+ *  Move will stop if any of three conditions occur:
+ *  1) Move gets to the desired position
+ *  2) Move runs out of time
+ *  3) Driver stops the opmode running.
+ */

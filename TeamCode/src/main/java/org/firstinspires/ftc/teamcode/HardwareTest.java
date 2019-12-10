@@ -82,8 +82,15 @@ public class HardwareTest {
 
     /* Constructor */
     public HardwareTest() {
-
     }
+        double COUNTS_PER_MOTOR_REV = 537.6;    // eg: TETRIX Motor Encoder
+        double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
+        double WHEEL_DIAMETER_CENTIMETERS = 10.16;     // For figuring circumference
+        double COUNTS_PER_CENTIMETER = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+                (WHEEL_DIAMETER_CENTIMETERS * 3.1415);
+        double DRIVE_SPEED = 1.0;
+        double TURN_SPEED = 0.8;
+        double DIST_PER_REV = (4 * 2.54 * Math.PI) / COUNTS_PER_MOTOR_REV;
 
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap) {
@@ -102,6 +109,13 @@ public class HardwareTest {
         leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
         rightDrive.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
+
+        //Initialize braking function
+            rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
 
         // Set all motors to zero power
@@ -139,5 +153,6 @@ public class HardwareTest {
 
 
     }
+
 }
 
