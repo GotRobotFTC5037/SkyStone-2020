@@ -47,7 +47,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
 @Autonomous(name = "SkyStoneAutonomousRed", group = "OpMode")
 //@Disabled
-public class SkystoneAutonomusRED extends LinearOpMode {
+public class Skystone_Autonomus_Red extends LinearOpMode {
 
     /* Declare OpMode members. */
     HardwareTest robot = new HardwareTest();   // Use a Pushbot's hardware
