@@ -360,8 +360,8 @@ public class Functions {
         boolean foundPos = false;
         int run = 0;
         runtime.reset();
-        gyroStrafe(1.571, 1.571, 55.5, 0.6, 10);
-        gyroStrafe(03.1416, 1.571, 50, 0.6, 10);
+        gyroStrafe(1.571, 1.571, 59, 0.6, 10);
+        gyroStrafe(03.1416, 1.571, 44, 0.6, 10);
         while ((!foundPos) && (timeoutS > runtime.seconds())) {
             redU = (double) robot.colorSensorRed.red() / (double) robot.colorSensorRed.alpha();
             greenU = (double) robot.colorSensorRed.green() / (double) robot.colorSensorRed.alpha();
@@ -381,10 +381,10 @@ public class Functions {
                 waitMilis(600);
                 robot.armServo.setPosition(0.5);
                 gyroStrafe(4.7126, 1.571, 20, 0.6, 10);
-                gyroStrafe(0.0, 3.1416, 140, 0.6, 10);
+                gyroStrafe(0.0, 0, 145, 0.6, 10);
                 robot.gripperServo.setPosition(0.5);
-                gyroStrafe(3.1416, 3.1416, 10, .5, 10);
-                gyroStrafe(1.571, 3.1416, 10, .5, 10);
+                gyroStrafe(3.1416, 0, 10, .5, 10);
+                gyroStrafe(1.571, 0, 10, .5, 10);
             } else {
                 gyroStrafe(0, 1.571, 7, 0.4, 7.0);
                 run++;
@@ -394,21 +394,21 @@ public class Functions {
 
 
 
-    public void makemework() {
-        double TheCount;
-        double power;
-        TheCount = 0;
-        runtime.reset();
-        while (runtime.seconds() < 12) {
-            waitMilis(10);
-            TheCount+= 0.00025;
-            power = Math.sin(TheCount);
-            robot.leftBackDrive.setPower(power);
-            robot.rightBackDrive.setPower(power);
-            robot.leftDrive.setPower(power);
-            robot.rightDrive.setPower(power);
-        }
-    }
+//    public void makemework() {
+//        double TheCount;
+//        double power;
+//        TheCount = 0;
+//        runtime.reset();
+//        while (runtime.seconds() < 12) {
+//            waitMilis(10);
+//            TheCount+= 0.00025;
+//            power = Math.sin(TheCount);
+//            robot.leftBackDrive.setPower(power);
+//            robot.rightBackDrive.setPower(power);
+//            robot.leftDrive.setPower(power);
+//            robot.rightDrive.setPower(power);
+//        }
+//    }
 
     public void velocityControl(int ticks) {
         while (robot.leftBackDrive.getCurrentPosition() < ticks) {

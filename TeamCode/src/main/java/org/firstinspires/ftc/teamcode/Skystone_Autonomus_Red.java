@@ -50,9 +50,9 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 public class Skystone_Autonomus_Red extends LinearOpMode {
 
     /* Declare OpMode members. */
-    HardwareTest robot = new HardwareTest();// Use a Pushbot's hardware
-    private ElapsedTime runtime = new ElapsedTime();
     BNO055IMU imu;
+    HardwareTest robot = new HardwareTest();   // Use a Pushbot's hardware
+    private ElapsedTime runtime = new ElapsedTime();
     Orientation angles;
     Acceleration gravity;
 
@@ -80,14 +80,15 @@ public class Skystone_Autonomus_Red extends LinearOpMode {
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
         parameters.loggingEnabled = true;
         parameters.loggingTag = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        Functions fun = new Functions(robot, imu);
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
+        Functions fun = new Functions(robot, imu);
+        fun.resetEncoders();
+        fun.waitMilis(50);
+        // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Resetting Encoders");    //
         telemetry.update();
 
-        fun.resetEncoders();
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Path0", "Starting at %7d :%7d",
@@ -105,11 +106,6 @@ public class Skystone_Autonomus_Red extends LinearOpMode {
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         fun.stoneDetectionRed();
-        fun.gyroStrafe(-1.571,0.0, 30, 0.5,5.0);
-        fun.gyroStrafe(0.0,-90.0,165,0.6,10.0);
-        robot.gripperServo.setPosition(0.1);
-        fun.waitMilis(100);
-        fun.gyroStrafe(-3.1416,-90,60,0.8,5.0);
     }
 
 
@@ -123,4 +119,3 @@ public class Skystone_Autonomus_Red extends LinearOpMode {
      */
 
 }
-
