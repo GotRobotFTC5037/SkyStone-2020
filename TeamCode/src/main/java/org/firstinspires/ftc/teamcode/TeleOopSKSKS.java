@@ -36,6 +36,7 @@ public class TeleOopSKSKS extends LinearOpMode {
         parameters.loggingEnabled = true;
         parameters.loggingTag = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        Functions fun = new Functions(robot, imu);
 
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
@@ -69,6 +70,7 @@ public class TeleOopSKSKS extends LinearOpMode {
             robot.leftBackDrive.setPower(v3);
             robot.rightBackDrive.setPower(v4);
             //dpad up/down
+
 
             if (time > oldTime + 0.01) {
                 oldTime = time;
@@ -108,19 +110,28 @@ public class TeleOopSKSKS extends LinearOpMode {
 
             double closed = 1.0;
             double open = 0.5;
-            boolean right_trigger;
-            boolean left_trigger;
+            boolean right_trigger1;
+            boolean left_trigger1;
+            if (gamepad1.right_trigger > 0.5) {
+                right_trigger1 = true;
+            } else {
+                right_trigger1 = false;
+            }
+            if (gamepad1.left_trigger > 0.5) {
+                left_trigger1 = true;
+
+            }
+
+            if (right_trigger1) {
+                fun.foundationGrabber(Functions.foundationPos.CLOSED);
+            } else {
+                fun.foundationGrabber(Functions.foundationPos.OPEN);
+            }
 
             if (gamepad2.a) {
                 robot.gripperServo.setPosition(closed);
             } else if (gamepad2.b) {
                 robot.gripperServo.setPosition(open);
-            }
-            if (gamepad1.right_trigger > 0.5) {
-                right_trigger = true;
-            }
-            if (gamepad1.left_trigger > 0.5) {
-                left_trigger = true;
             }
 //            if (right_trigger = true) {
 //                robot.rightFoundation.setPosition(closed);
