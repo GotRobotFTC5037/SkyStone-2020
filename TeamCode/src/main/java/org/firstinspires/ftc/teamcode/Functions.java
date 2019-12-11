@@ -108,7 +108,6 @@ public class Functions {
     }
 
 
-
     public void gyroTurn(double heading,
                          double timeoutS) {
         double currentHeading;
@@ -183,7 +182,7 @@ public class Functions {
         while ((runtime.seconds() < timeoutS)) {
             currentHeading = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
             headingRadians = ((-currentHeading / 180) * 3.1416) + (1 / 2 * 3.1416);
-            poseDegrees = ((pose - 3.1416 / 2) % (2 * 3.1416)) * (360 / (2 * 3.1416)) ;
+            poseDegrees = ((pose - 3.1416 / 2) % (2 * 3.1416)) * (360 / (2 * 3.1416));
             if (poseDegrees > 180) {
                 poseDegrees -= 360;
             }
@@ -304,8 +303,8 @@ public class Functions {
         int run = 0;
         int zero = 0;
         runtime.reset();
-        gyroStrafe(1.571,1.571,55.5,0.6,10);
-        gyroStrafe(0,1.571,50,0.6,10);
+        gyroStrafe(1.571, 1.571, 55.5, 0.6, 10);
+        gyroStrafe(0, 1.571, 50, 0.6, 10);
         while ((!foundPos) && (timeoutS > runtime.seconds())) {
             redU = (double) robot.colorSensorBlue.red() / (double) robot.colorSensorBlue.alpha();
             greenU = (double) robot.colorSensorBlue.green() / (double) robot.colorSensorBlue.alpha();
@@ -314,23 +313,26 @@ public class Functions {
             if (((greenU + redU) * hueValue) < blueU) {
                 //Sees skystone
                 //stafe to pos?
-
-                gyroStrafe(0,1.571,5,0.4,10);
+                foundPos = true;
+                gyroStrafe(0, 1.571, 5, 0.4, 10);
                 robot.armServo.setPosition(0.9);
-//                gyroDrive(0.0,4,0.5,0.5);
                 gyroStrafe(1.571, 1.571, 5.657, 0.5, 20.0);
                 robot.gripperServo.setPosition(1.0);
                 waitMilis(600);
                 robot.armServo.setPosition(0.5);
-                gyroStrafe(4.7126,1.571,20,0.6,10);
-                foundPos = true;
+                gyroStrafe(4.7126, 1.571, 20, 0.6, 10);
+                gyroStrafe(3.1416, 3.1416, 140, 0.6, 10);
+                robot.gripperServo.setPosition(0.5);
+                gyroStrafe(0.0, 3.1416, 10, .5, 10);
+                gyroStrafe(1.571, 3.1416, 10, .5, 10);
             } else {
                 gyroStrafe(3.1416, 1.571, 7, 0.4, 7.0);
                 run++;
             }
         }
     }
-    public void stoneDetectionRed () {
+
+    public void stoneDetectionRed() {
         double timeoutS = 7.0;
         double hueValue = 0.4;
         double redU = 0.0;
@@ -339,8 +341,8 @@ public class Functions {
         boolean foundPos = false;
         int run = 0;
         runtime.reset();
-        gyroStrafe(3.1416,0,50,0.5,400.0);
-        gyroStrafe(1.571,0.0,60,0.5, 20.0);
+        gyroStrafe(1.571, 1.571, 55.5, 0.6, 10);
+        gyroStrafe(03.1416, 1.571, 50, 0.6, 10);
         while ((!foundPos) && (timeoutS > runtime.seconds())) {
             redU = (double) robot.colorSensorRed.red() / (double) robot.colorSensorRed.alpha();
             greenU = (double) robot.colorSensorRed.green() / (double) robot.colorSensorRed.alpha();
@@ -348,25 +350,30 @@ public class Functions {
 
             if (((greenU + redU) * hueValue) < blueU) {
                 //Sees skystone
-
-                //strafe to pos?
-                robot.armServo.setPosition(0.9);
-                // gyroDrive(0.0,4,0.5,0.5);
-                gyroStrafe(2.356, 0, 5.657, 0.5, 20.0);
-                robot.gripperServo.setPosition(1.0);
-                waitMilis(600);
-                robot.armServo.setPosition(0.6);
                 foundPos = true;
 
-                return;
-            }
-            else {
-                gyroStrafe(0.0,0.0,7,0.5,100000.0);
+                //Sees skystone
+                //stafe to pos?
+                foundPos = true;
+                gyroStrafe(3.1416, 1.571, 5, 0.4, 10);
+                robot.armServo.setPosition(0.9);
+                gyroStrafe(1.571, 1.571, 5.657, 0.5, 20.0);
+                robot.gripperServo.setPosition(1.0);
+                waitMilis(600);
+                robot.armServo.setPosition(0.5);
+                gyroStrafe(4.7126, 1.571, 20, 0.6, 10);
+                gyroStrafe(0.0, 3.1416, 140, 0.6, 10);
+                robot.gripperServo.setPosition(0.5);
+                gyroStrafe(3.1416, 3.1416, 10, .5, 10);
+                gyroStrafe(1.571, 3.1416, 10, .5, 10);
+            } else {
+                gyroStrafe(0, 1.571, 7, 0.4, 7.0);
                 run++;
-
             }
         }
     }
+
+
 
     public void makemework() {
         double TheCount;
