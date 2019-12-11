@@ -104,11 +104,16 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
         robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         waitForStart();
-
+        while (opModeIsActive()) {
 
 
 //        odom.start();
-        fun.gyroStrafe(1.57, 1.57, 120, .15, 30);
+            fun.foundationGrabber(Functions.foundationPos.CLOSED);
+            fun.waitMilis(5000);
+            fun.foundationGrabber(Functions.foundationPos.OPEN);
+            telemetry.addData("YEAHHHHHHH", "Zoooom :O");
+            telemetry.update();
+            fun.waitMilis(2000);
 //        fun.resetEncoders();
 //        odom.start();
 //        sleep(20);
@@ -144,6 +149,8 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
 //        telemetry.addData("Motor Position", robot.leftBackDrive.getCurrentPosition());
 //        telemetry.update();
 //        fun.waitMilis(5000);
+            stop();
+        }
     }
 
 
