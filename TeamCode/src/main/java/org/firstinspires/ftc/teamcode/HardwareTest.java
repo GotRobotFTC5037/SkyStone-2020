@@ -72,7 +72,7 @@ public class HardwareTest {
     /** Sensors **/
     public ColorSensor colorSensorBlue = null;
     public ColorSensor colorSensorRed = null;
-   // public ColorSensor bottomColorSensor = null;
+    public ColorSensor bottomColorSensor = null;
 
     /** Light Device **/
    // public Servo indicatorLight = null;
@@ -156,7 +156,7 @@ public class HardwareTest {
         // Define and initialize ALL installed Sensors.
         colorSensorBlue = hwMap.get(ColorSensor.class, "colorSensorRight");
         colorSensorRed = hwMap.get(ColorSensor.class, "colorSensorLeft");
-       // bottomColorSensor = hwMap.get(ColorSensor.class, "bottomColorSensor");
+        bottomColorSensor = hwMap.get(ColorSensor.class, "bottomColorSensor");
 
 
 
