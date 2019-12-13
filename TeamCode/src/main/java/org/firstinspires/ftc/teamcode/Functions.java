@@ -209,7 +209,7 @@ public class Functions {
                 poseDegrees += 360;
             }
             driveAngle = subtractAngle(poseDegrees, currentHeading);
-            adjPower = subtractAngle(poseDegrees, currentHeading) / 80;
+            adjPower = subtractAngle(poseDegrees, currentHeading) / 120;
             newLeft = robot.leftDrive.getCurrentPosition();
             newRight = robot.rightDrive.getCurrentPosition();
             newBackRight = robot.rightBackDrive.getCurrentPosition();

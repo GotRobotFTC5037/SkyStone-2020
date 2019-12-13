@@ -69,9 +69,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name = "SkyStoneAutonomousBlue", group = "OpMode")
+@Autonomous(name = "DepotAutonomousBlue", group = "OpMode")
 //@Disabled
-public class SkyStone_Autonomous_Blue extends LinearOpMode {
+public class Depot_Autonomous_Blue extends LinearOpMode {
 
     /* Declare OpMode members. */
     BNO055IMU imu;

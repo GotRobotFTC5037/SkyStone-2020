@@ -1,22 +1,41 @@
+/* Copyright (c) 2017 FIRST. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted (subject to the limitations in the disclaimer below) provided that
+ * the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this list
+ * of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice, this
+ * list of conditions and the following disclaimer in the documentation and/or
+ * other materials provided with the distribution.
+ *
+ * Neither the name of FIRST nor the names of its contributors may be used to endorse or
+ * promote products derived from this software without specific prior written permission.
+ *
+ * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
+ * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import com.qualcomm.robotcore.hardware.Gyroscope;
-
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-
-import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
 /**
  * This file illustrates the concept of driving a path based on encoder counts.
@@ -45,9 +64,9 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name = "SkyStoneAutonomousRed", group = "OpMode")
+@Autonomous(name = "FoundationAutonomousBlue", group = "OpMode")
 //@Disabled
-public class Skystone_Autonomus_Red extends LinearOpMode {
+public class Foundation_Autonomous_Blue extends LinearOpMode {
 
     /* Declare OpMode members. */
     BNO055IMU imu;
@@ -68,7 +87,6 @@ public class Skystone_Autonomus_Red extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-
         /*
          * Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
@@ -89,6 +107,7 @@ public class Skystone_Autonomus_Red extends LinearOpMode {
         telemetry.addData("Status", "Resetting Encoders");    //
         telemetry.update();
 
+        fun.resetEncoders();
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Path0", "Starting at %7d :%7d",
@@ -105,9 +124,27 @@ public class Skystone_Autonomus_Red extends LinearOpMode {
         telemetry.update();
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        fun.stoneDetectionRed();
-    }
+        fun.gyroStrafe(4.71, 1.57, 69, 0.7, 10);
 
+        //Drive to line up with no encoders
+        robot.leftBackDrive.setPower(-0.1);
+        robot.leftDrive.setPower(-0.1);
+        robot.rightDrive.setPower(-0.1);
+        fun.waitMilis(1000);
+        robot.leftBackDrive.setPower(0);
+        robot.leftDrive.setPower(0);
+        robot.rightDrive.setPower(0);
+
+        fun.waitMilis(500);
+        fun.foundationGrabber(Functions.foundationPos.CLOSED);
+        fun.waitMilis(500);
+        fun.gyroStrafe(3.1416,1.57,40,0.2,10);
+        fun.gyroStrafe(1.57,3.1416,40,0.6,10);
+        fun.waitMilis(500);
+        fun.foundationGrabber(Functions.foundationPos.OPEN);
+        fun.waitMilis(500);
+        fun.gyroStrafe(3.1416,3.1416,80,0.6,10);
+    }
 
     /*
      *  Method to perform a relative move, based on encoder counts.
@@ -117,5 +154,8 @@ public class Skystone_Autonomus_Red extends LinearOpMode {
      *  2) Move runs out of time
      *  3) Driver stops the opmode running.
      */
+
+
+
 
 }
