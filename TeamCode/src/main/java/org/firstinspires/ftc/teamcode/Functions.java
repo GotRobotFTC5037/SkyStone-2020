@@ -33,6 +33,16 @@ public class Functions {
         CLOSED
     }
 
+    public enum direction {
+        FORWARD,
+        REVERSE
+    }
+
+    public enum redOrBlue {
+        RED,
+        BLUE
+    }
+
     Functions(HardwareTest robot, BNO055IMU imu) {
         this.robot = robot;
         this.imu = imu;
@@ -390,8 +400,8 @@ public class Functions {
                 run++;
             }
         }
-    }
 
+    }
 
 
 //    public void makemework() {
@@ -416,7 +426,98 @@ public class Functions {
         }
         robot.leftBackDrive.setPower(0.0);
     }
+
     public void indicatorLight() {
 
+    }
+
+    public void autonomusParking(direction heading,
+                                 redOrBlue color) {
+        double timeoutS = 7.0;
+        double hueValue = 0.5;
+        double power = 0.35;
+        double distance = 2;
+        double motorTimeOutS = 2;
+        double redU = 0.0;
+        double greenU = 0.0;
+        double blueU = 0.0;
+        boolean foundRed = false;
+        boolean foundBlue = false;
+        runtime.reset();
+        switch (heading) {
+            case FORWARD:
+                switch (color) {
+                    case RED:
+                        while ((!foundRed) && (timeoutS > runtime.seconds())) {
+                            redU = (double) robot.bottomColorSensor.red() / (double) robot.bottomColorSensor.alpha();
+                            greenU = (double) robot.bottomColorSensor.green() / (double) robot.bottomColorSensor.alpha();
+                            blueU = (double) robot.bottomColorSensor.blue() / (double) robot.bottomColorSensor.alpha();
+                            if (((greenU + blueU) * hueValue) < redU) {
+                                robot.leftDrive.setPower(0.0);
+                                robot.leftBackDrive.setPower(0.0);
+                                robot.rightDrive.setPower(0.0);
+                                robot.rightBackDrive.setPower(0.0);
+                                foundRed = true;
+                            }
+                            else {
+                                gyroStrafe(1.57, 1.57,distance,power,motorTimeOutS);
+                            }
+                        }
+                        break;
+                    case BLUE:
+                        while ((!foundBlue) && (timeoutS > runtime.seconds())) {
+                            redU = (double) robot.bottomColorSensor.red() / (double) robot.bottomColorSensor.alpha();
+                            greenU = (double) robot.bottomColorSensor.green() / (double) robot.bottomColorSensor.alpha();
+                            blueU = (double) robot.bottomColorSensor.blue() / (double) robot.bottomColorSensor.alpha();
+                            if (((greenU + redU) * hueValue) < blueU) {
+                                robot.leftDrive.setPower(0.0);
+                                robot.leftBackDrive.setPower(0.0);
+                                robot.rightDrive.setPower(0.0);
+                                robot.rightBackDrive.setPower(0.0);
+                                foundBlue = true;
+                            }
+                            else {
+                                gyroStrafe(1.57, 1.57,distance,power,motorTimeOutS);
+                            }
+                        }
+                }
+                break;
+            case REVERSE:
+                switch (color) {
+                    case RED:
+                        while ((!foundRed) && (timeoutS > runtime.seconds())) {
+                            redU = (double) robot.bottomColorSensor.red() / (double) robot.bottomColorSensor.alpha();
+                            greenU = (double) robot.bottomColorSensor.green() / (double) robot.bottomColorSensor.alpha();
+                            blueU = (double) robot.bottomColorSensor.blue() / (double) robot.bottomColorSensor.alpha();
+                            if (((greenU + blueU) * hueValue) < redU) {
+                                robot.leftDrive.setPower(0.0);
+                                robot.leftBackDrive.setPower(0.0);
+                                robot.rightDrive.setPower(0.0);
+                                robot.rightBackDrive.setPower(0.0);
+                                foundRed = true;
+                            }
+                            else {
+                                gyroStrafe(4.71, 1.57,distance,power,motorTimeOutS);
+                            }
+                        }
+                        break;
+                    case BLUE:
+                        while ((!foundBlue) && (timeoutS > runtime.seconds())) {
+                            redU = (double) robot.bottomColorSensor.red() / (double) robot.bottomColorSensor.alpha();
+                            greenU = (double) robot.bottomColorSensor.green() / (double) robot.bottomColorSensor.alpha();
+                            blueU = (double) robot.bottomColorSensor.blue() / (double) robot.bottomColorSensor.alpha();
+                            if (((greenU + redU) * hueValue) < blueU) {
+                                robot.leftDrive.setPower(0.0);
+                                robot.leftBackDrive.setPower(0.0);
+                                robot.rightDrive.setPower(0.0);
+                                robot.rightBackDrive.setPower(0.0);
+                                foundBlue = true;
+                            }
+                            else {
+                                gyroStrafe(4.71, 1.57,distance,power,motorTimeOutS);
+                            }
+                        }
+                };
+        }
     }
 }
