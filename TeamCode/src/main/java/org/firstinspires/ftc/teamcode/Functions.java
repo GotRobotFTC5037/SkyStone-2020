@@ -404,22 +404,6 @@ public class Functions {
     }
 
 
-//    public void makemework() {
-//        double TheCount;
-//        double power;
-//        TheCount = 0;
-//        runtime.reset();
-//        while (runtime.seconds() < 12) {
-//            waitMilis(10);
-//            TheCount+= 0.00025;
-//            power = Math.sin(TheCount);
-//            robot.leftBackDrive.setPower(power);
-//            robot.rightBackDrive.setPower(power);
-//            robot.leftDrive.setPower(power);
-//            robot.rightDrive.setPower(power);
-//        }
-//    }
-
     public void velocityControl(int ticks) {
         while (robot.leftBackDrive.getCurrentPosition() < ticks) {
             robot.leftBackDrive.setPower(0.2);
@@ -427,9 +411,6 @@ public class Functions {
         robot.leftBackDrive.setPower(0.0);
     }
 
-    public void indicatorLight() {
-
-    }
 
     public void autonomusParking(direction heading,
                                  redOrBlue color) {
