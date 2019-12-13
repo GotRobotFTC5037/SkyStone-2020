@@ -431,7 +431,7 @@ public class Functions {
 
     }
 
-    public void autonomusParking(direction heading,
+    public void autonomousParking(direction heading,
                                  redOrBlue color) {
         double timeoutS = 7.0;
         double hueValue = 0.5;
@@ -460,7 +460,10 @@ public class Functions {
                                 foundRed = true;
                             }
                             else {
-                                gyroStrafe(1.57, 1.57,distance,power,motorTimeOutS);
+                                robot.leftDrive.setPower(power);
+                                robot.leftBackDrive.setPower(power);
+                                robot.rightDrive.setPower(power);
+                                robot.rightBackDrive.setPower(power);
                             }
                         }
                         break;
@@ -477,7 +480,10 @@ public class Functions {
                                 foundBlue = true;
                             }
                             else {
-                                gyroStrafe(1.57, 1.57,distance,power,motorTimeOutS);
+                                robot.leftDrive.setPower(power);
+                                robot.leftBackDrive.setPower(power);
+                                robot.rightDrive.setPower(power);
+                                robot.rightBackDrive.setPower(power);
                             }
                         }
                 }
@@ -497,7 +503,10 @@ public class Functions {
                                 foundRed = true;
                             }
                             else {
-                                gyroStrafe(4.71, 1.57,distance,power,motorTimeOutS);
+                                robot.leftDrive.setPower(power);
+                                robot.leftBackDrive.setPower(power);
+                                robot.rightDrive.setPower(power);
+                                robot.rightBackDrive.setPower(power);
                             }
                         }
                         break;
@@ -514,7 +523,10 @@ public class Functions {
                                 foundBlue = true;
                             }
                             else {
-                                gyroStrafe(4.71, 1.57,distance,power,motorTimeOutS);
+                                robot.leftDrive.setPower(power);
+                                robot.leftBackDrive.setPower(power);
+                                robot.rightDrive.setPower(power);
+                                robot.rightBackDrive.setPower(power);
                             }
                         }
                 };

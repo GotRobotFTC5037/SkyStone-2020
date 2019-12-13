@@ -139,11 +139,14 @@ public class Foundation_Autonomous_Blue extends LinearOpMode {
         fun.foundationGrabber(Functions.foundationPos.CLOSED);
         fun.waitMilis(500);
         fun.gyroStrafe(3.1416,1.57,40,0.2,10);
-        fun.gyroStrafe(1.57,3.1416,40,0.6,10);
+        fun.gyroStrafe(1.57,3.1416,30,0.6,10);
         fun.waitMilis(500);
         fun.foundationGrabber(Functions.foundationPos.OPEN);
         fun.waitMilis(500);
-        fun.gyroStrafe(3.1416,3.1416,80,0.6,10);
+        fun.gyroStrafe(3.1416,3.1416,2,0.3,10);
+        fun.autonomousParking(Functions.direction.FORWARD, Functions.redOrBlue.BLUE);
+        fun.waitMilis(1000);
+        //fun.gyroStrafe(3.1416,3.1416,80,0.6,10);
     }
 
     /*
