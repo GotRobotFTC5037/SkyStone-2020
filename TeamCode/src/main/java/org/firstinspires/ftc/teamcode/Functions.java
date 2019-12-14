@@ -79,6 +79,7 @@ public class Functions {
         robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+
     // 0.25 MAX & 1.0 MIN
     public void arm(double armPos,
                     double gripperPos,
@@ -332,8 +333,8 @@ public class Functions {
         int run = 0;
         int zero = 0;
         runtime.reset();
-        gyroStrafe(1.571, 1.571, 55.5, 0.6, 10);
-        gyroStrafe(0, 1.571, 50, 0.6, 10);
+        gyroStrafe(1.571, 1.571, 72, 0.6, 10);
+        gyroStrafe(0, 1.571, 44, 0.6, 10);
         while ((!foundPos) && (timeoutS > runtime.seconds())) {
             redU = (double) robot.colorSensorBlue.red() / (double) robot.colorSensorBlue.alpha();
             greenU = (double) robot.colorSensorBlue.green() / (double) robot.colorSensorBlue.alpha();
@@ -350,10 +351,9 @@ public class Functions {
                 waitMilis(600);
                 robot.armServo.setPosition(0.5);
                 gyroStrafe(4.7126, 1.571, 20, 0.6, 10);
-                gyroStrafe(3.1416, 3.1416, 140, 0.6, 10);
+                gyroStrafe(3.1416, 3.1416, (190 - (run * 8)), 0.6, 10);
                 robot.gripperServo.setPosition(0.5);
-                gyroStrafe(0.0, 3.1416, 10, .5, 10);
-                gyroStrafe(1.571, 3.1416, 10, .5, 10);
+                return;
             } else {
                 gyroStrafe(3.1416, 1.571, 7, 0.4, 7.0);
                 run++;
@@ -363,15 +363,15 @@ public class Functions {
 
     public void stoneDetectionRed() {
         double timeoutS = 7.0;
-        double hueValue = 0.4;
+        double hueValue = 0.35;
         double redU = 0.0;
         double greenU = 0.0;
         double blueU = 0.0;
         boolean foundPos = false;
         int run = 0;
         runtime.reset();
-        gyroStrafe(1.571, 1.571, 59, 0.6, 10);
-        gyroStrafe(03.1416, 1.571, 44, 0.6, 10);
+        gyroStrafe(1.571, 1.571, 72, 0.6, 10);
+        gyroStrafe(3.1416, 1.571, 38, 0.6, 10);
         while ((!foundPos) && (timeoutS > runtime.seconds())) {
             redU = (double) robot.colorSensorRed.red() / (double) robot.colorSensorRed.alpha();
             greenU = (double) robot.colorSensorRed.green() / (double) robot.colorSensorRed.alpha();
@@ -391,12 +391,11 @@ public class Functions {
                 waitMilis(600);
                 robot.armServo.setPosition(0.5);
                 gyroStrafe(4.7126, 1.571, 20, 0.6, 10);
-                gyroStrafe(0.0, 0, 145, 0.6, 10);
+                gyroStrafe(0.0, 0, (190 - (run * 12)), 0.6, 10);
                 robot.gripperServo.setPosition(0.5);
-                gyroStrafe(3.1416, 0, 10, .5, 10);
-                gyroStrafe(1.571, 0, 10, .5, 10);
+                return;
             } else {
-                gyroStrafe(0, 1.571, 7, 0.4, 7.0);
+                gyroStrafe(0, 1.571, 10, 0.4, 7.0);
                 run++;
             }
         }
@@ -415,7 +414,8 @@ public class Functions {
     public void autonomousParking(direction heading,
                                  redOrBlue color) {
         double timeoutS = 7.0;
-        double hueValue = 0.5;
+        double hueValueBlue = 0.5;
+        double hueValueRed = 0.6;
         double power = 0.35;
         double distance = 2;
         double motorTimeOutS = 2;
@@ -433,7 +433,7 @@ public class Functions {
                             redU = (double) robot.bottomColorSensor.red() / (double) robot.bottomColorSensor.alpha();
                             greenU = (double) robot.bottomColorSensor.green() / (double) robot.bottomColorSensor.alpha();
                             blueU = (double) robot.bottomColorSensor.blue() / (double) robot.bottomColorSensor.alpha();
-                            if (((greenU + blueU) * hueValue) < redU) {
+                            if (2 <= redU) {
                                 robot.leftDrive.setPower(0.0);
                                 robot.leftBackDrive.setPower(0.0);
                                 robot.rightDrive.setPower(0.0);
@@ -453,7 +453,7 @@ public class Functions {
                             redU = (double) robot.bottomColorSensor.red() / (double) robot.bottomColorSensor.alpha();
                             greenU = (double) robot.bottomColorSensor.green() / (double) robot.bottomColorSensor.alpha();
                             blueU = (double) robot.bottomColorSensor.blue() / (double) robot.bottomColorSensor.alpha();
-                            if (((greenU + redU) * hueValue) < blueU) {
+                            if (((greenU + redU) * hueValueBlue) < blueU) {
                                 robot.leftDrive.setPower(0.0);
                                 robot.leftBackDrive.setPower(0.0);
                                 robot.rightDrive.setPower(0.0);
@@ -476,7 +476,7 @@ public class Functions {
                             redU = (double) robot.bottomColorSensor.red() / (double) robot.bottomColorSensor.alpha();
                             greenU = (double) robot.bottomColorSensor.green() / (double) robot.bottomColorSensor.alpha();
                             blueU = (double) robot.bottomColorSensor.blue() / (double) robot.bottomColorSensor.alpha();
-                            if (((greenU + blueU) * hueValue) < redU) {
+                            if (2 <= redU) {
                                 robot.leftDrive.setPower(0.0);
                                 robot.leftBackDrive.setPower(0.0);
                                 robot.rightDrive.setPower(0.0);
@@ -484,10 +484,10 @@ public class Functions {
                                 foundRed = true;
                             }
                             else {
-                                robot.leftDrive.setPower(power);
-                                robot.leftBackDrive.setPower(power);
-                                robot.rightDrive.setPower(power);
-                                robot.rightBackDrive.setPower(power);
+                                robot.leftDrive.setPower(-power);
+                                robot.leftBackDrive.setPower(-power);
+                                robot.rightDrive.setPower(-power);
+                                robot.rightBackDrive.setPower(-power);
                             }
                         }
                         break;
@@ -496,7 +496,7 @@ public class Functions {
                             redU = (double) robot.bottomColorSensor.red() / (double) robot.bottomColorSensor.alpha();
                             greenU = (double) robot.bottomColorSensor.green() / (double) robot.bottomColorSensor.alpha();
                             blueU = (double) robot.bottomColorSensor.blue() / (double) robot.bottomColorSensor.alpha();
-                            if (((greenU + redU) * hueValue) < blueU) {
+                            if (((greenU + redU) * hueValueBlue) < blueU) {
                                 robot.leftDrive.setPower(0.0);
                                 robot.leftBackDrive.setPower(0.0);
                                 robot.rightDrive.setPower(0.0);
@@ -504,10 +504,10 @@ public class Functions {
                                 foundBlue = true;
                             }
                             else {
-                                robot.leftDrive.setPower(power);
-                                robot.leftBackDrive.setPower(power);
-                                robot.rightDrive.setPower(power);
-                                robot.rightBackDrive.setPower(power);
+                                robot.leftDrive.setPower(-power);
+                                robot.leftBackDrive.setPower(-power);
+                                robot.rightDrive.setPower(-power);
+                                robot.rightBackDrive.setPower(-power);
                             }
                         }
                 };

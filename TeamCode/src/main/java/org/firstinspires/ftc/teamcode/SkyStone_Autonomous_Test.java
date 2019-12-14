@@ -106,14 +106,8 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
 
-
-//        odom.start();
-            fun.foundationGrabber(Functions.foundationPos.CLOSED);
-            fun.waitMilis(5000);
-            fun.foundationGrabber(Functions.foundationPos.OPEN);
-            telemetry.addData("YEAHHHHHHH", "Zoooom :O");
-            telemetry.update();
-            fun.waitMilis(2000);
+//        odom.star
+            }
 //        fun.resetEncoders();
 //        odom.start();
 //        sleep(20);
@@ -158,7 +152,7 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
 //        functions.gyroDrive(0, 60.0, 0.1, 3000.0);
 
 
-}
+
 
 
 /*

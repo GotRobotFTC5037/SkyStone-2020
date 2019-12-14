@@ -127,6 +127,18 @@ public class TeleOopSKSKS extends LinearOpMode {
             } else {
                 fun.foundationGrabber(Functions.foundationPos.OPEN);
             }
+            if (gamepad1.a) {
+                robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+            else if (gamepad1.b) {
+                robot.leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                robot.rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            }
 
             if (gamepad2.a) {
                 robot.gripperServo.setPosition(closed);

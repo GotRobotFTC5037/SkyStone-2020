@@ -130,11 +130,10 @@ public class Depot_Autonomous_Blue extends LinearOpMode {
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
             fun.stoneDetectionBlue();
-//        fun.gyroStrafe(1.571,0.0, 30, 0.5,5.0);
-//        fun.gyroStrafe(3.1416,-90.0,165,0.6,10.0);
-//        robot.gripperServo.setPosition(0.1);
-//        fun.waitMilis(100);
-//        fun.gyroStrafe(0,-90,60,0.8,5.0);
+//        fun.autonomousParking(Functions.direction.REVERSE, Functions.redOrBlue.RED);
+        fun.gyroStrafe(0,3.1416,30,.3,10);
+        fun.gyroStrafe(1.571, 3.1416, 20, .5, 10);
+        stop();
     }
 
     /*

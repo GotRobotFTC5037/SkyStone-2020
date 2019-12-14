@@ -35,6 +35,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 /**
@@ -64,9 +67,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name = "FoundationAutonomousBlue", group = "OpMode")
+@Autonomous(name = "FoundationAutonomousRed", group = "OpMode")
 //@Disabled
-public class Foundation_Autonomous_Blue extends LinearOpMode {
+public class Foundation_Autonomous_Red extends LinearOpMode {
 
     /* Declare OpMode members. */
     BNO055IMU imu;
@@ -109,19 +112,10 @@ public class Foundation_Autonomous_Blue extends LinearOpMode {
 
         fun.resetEncoders();
 
-        // Send telemetry message to indicate successful Encoder reset
-        telemetry.addData("Path0", "Starting at %7d :%7d",
-                robot.leftDrive.getCurrentPosition(),
-                robot.rightDrive.getCurrentPosition());
-        telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
 
         waitForStart();
-
-        telemetry.addData("ServoPos", robot.armServo.getPosition());
-        telemetry.addData("ServoPosGrip", robot.gripperServo.getPosition());
-        telemetry.update();
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         fun.gyroStrafe(4.71, 1.57, 71, 0.7, 10);
@@ -140,28 +134,13 @@ public class Foundation_Autonomous_Blue extends LinearOpMode {
         fun.waitMilis(500);
         fun.foundationGrabber(Functions.foundationPos.CLOSED);
         fun.waitMilis(500);
-        fun.gyroStrafe(3.1416,1.57,40,0.2,10);
-        fun.gyroStrafe(1.57,3.1416,30,0.6,10);
+        fun.gyroStrafe(0,1.57,40,0.2,10);
+        fun.gyroStrafe(1.57,0,30,0.6,10);
         fun.waitMilis(500);
         fun.foundationGrabber(Functions.foundationPos.OPEN);
         fun.waitMilis(500);
-        fun.gyroStrafe(4.71,3.1416,7,.3,10);
-        fun.gyroStrafe(3.1416,3.1416,72,0.3,10);
-//        fun.autonomousParking(Functions.direction.FORWARD, Functions.redOrBlue.BLUE);
+        fun.gyroStrafe(0,0,72,0.3,10);
+//        fun.autonomousParking(Functions.direction.FORWARD, Functions.redOrBlue.RED);
         fun.waitMilis(1000);
-        //fun.gyroStrafe(3.1416,3.1416,80,0.6,10);
     }
-
-    /*
-     *  Method to perform a relative move, based on encoder counts.
-     *  Encoders are not reset as the move is based on the current position.
-     *  Move will stop if any of three conditions occur:
-     *  1) Move gets to the desired position
-     *  2) Move runs out of time
-     *  3) Driver stops the opmode running.
-     */
-
-
-
-
 }
