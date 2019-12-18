@@ -75,16 +75,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 public class SkyStone_Autonomous_Test extends LinearOpMode {
 
     /* Declare OpMode members. */
-    BNO055IMU imu;
-    HardwareTest robot = new HardwareTest();   // Use a Pushbot's hardware
+    private BNO055IMU imu;
+    private HardwareTest robot = new HardwareTest();   // Use a Pushbot's hardware
     private ElapsedTime runtime = new ElapsedTime();
     Orientation angles;
     Acceleration gravity;
 
 
+
     @Override
     public void runOpMode() {
-        robot.init(hardwareMap);
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -95,19 +95,17 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
         imu.initialize(parameters);
         Odometry odom = new Odometry(robot, imu);
         Functions fun = new Functions(robot, imu);
-        fun.resetEncoders();
         fun.waitMilis(50);
 
-        robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         waitForStart();
         while (opModeIsActive()) {
-
-//        odom.star
-            }
+            telemetry.addData("Red", robot.colorSensorTest.red());
+            telemetry.addData("Green", robot.colorSensorTest.green());
+            telemetry.addData("Blue", robot.colorSensorTest.blue());
+        }
+    }
+}
 //        fun.resetEncoders();
 //        odom.start();
 //        sleep(20);
@@ -143,16 +141,9 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
 //        telemetry.addData("Motor Position", robot.leftBackDrive.getCurrentPosition());
 //        telemetry.update();
 //        fun.waitMilis(5000);
-            stop();
-        }
-    }
-
 
 //        functions.gyroStrafe(0, 0.0,30.0, 0.2, 10.0);
 //        functions.gyroDrive(0, 60.0, 0.1, 3000.0);
-
-
-
 
 
 /*

@@ -28,6 +28,7 @@ public class Functions {
     Acceleration gravity;
     private HardwareTest robot;
 
+
     public enum foundationPos {
         OPEN,
         CLOSED
@@ -67,7 +68,7 @@ public class Functions {
     static final double DIST_PER_REV = (4 * 2.54 * Math.PI) / COUNTS_PER_MOTOR_REV;
 
 
-    public void resetEncoders() { /** DO NOT USE FOR GENERAL PURPOSE **/
+    public void resetEncoders() {/** DO NOT USE FOR GENERAL PURPOSE **/
         robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -333,7 +334,7 @@ public class Functions {
         int run = 0;
         int zero = 0;
         runtime.reset();
-        gyroStrafe(1.571, 1.571, 72, 0.6, 10);
+        gyroStrafe(1.571, 1.571, 69, 0.6, 10);
         gyroStrafe(0, 1.571, 44, 0.6, 10);
         while ((!foundPos) && (timeoutS > runtime.seconds())) {
             redU = (double) robot.colorSensorBlue.red() / (double) robot.colorSensorBlue.alpha();
@@ -370,7 +371,7 @@ public class Functions {
         boolean foundPos = false;
         int run = 0;
         runtime.reset();
-        gyroStrafe(1.571, 1.571, 72, 0.6, 10);
+        gyroStrafe(1.571, 1.571, 69, 0.6, 10);
         gyroStrafe(3.1416, 1.571, 38, 0.6, 10);
         while ((!foundPos) && (timeoutS > runtime.seconds())) {
             redU = (double) robot.colorSensorRed.red() / (double) robot.colorSensorRed.alpha();

@@ -125,6 +125,7 @@ public class Foundation_Autonomous_Blue extends LinearOpMode {
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         fun.gyroStrafe(4.71, 1.57, 71, 0.7, 10);
+        fun.gyroStrafe(0,1.57,15,0.3,10);
 
         //Drive to line up with no encoders
         robot.leftBackDrive.setPower(-0.1);
@@ -150,6 +151,7 @@ public class Foundation_Autonomous_Blue extends LinearOpMode {
 //        fun.autonomousParking(Functions.direction.FORWARD, Functions.redOrBlue.BLUE);
         fun.waitMilis(1000);
         //fun.gyroStrafe(3.1416,3.1416,80,0.6,10);
+        stop();
     }
 
     /*
