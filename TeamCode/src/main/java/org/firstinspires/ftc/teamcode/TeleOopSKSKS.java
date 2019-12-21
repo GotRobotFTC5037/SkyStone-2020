@@ -71,142 +71,51 @@ public class TeleOopSKSKS extends LinearOpMode {
             robot.rightBackDrive.setPower(v4);
             //dpad up/down
 
+        }
+        /**
+         * May need to change these values for both & ask Josh about controls
+         */
+        //buttons a & b
 
-            if (time > oldTime + 0.01) {
-                oldTime = time;
+        double closed = 1.0;
+        double open = 0.5;
+        boolean right_trigger1;
+        boolean left_trigger1;
+        if (gamepad1.right_trigger > 0.5) {
+            right_trigger1 = true;
+        } else {
+            right_trigger1 = false;
+        }
+        if (gamepad1.left_trigger > 0.5) {
+            left_trigger1 = true;
 
-                double currentPos;
-                double resetPos = 0.5;
-                currentPos = robot.armServo.getPosition();
-
-                if (gamepad2.dpad_up) {
-                    //robot.armServo.setPosition(currentPos - 0.005)
-                    currentPos -= 0.005;
-                } else if (gamepad2.dpad_down) {
-                    //robot.armServo.setPosition(currentPos + 0.005);
-                    currentPos += 0.005;
-                } else if (gamepad2.dpad_right) {
-                    //robot.armServo.setPosition(resetPos);
-                    currentPos = resetPos;
-                } else {
-                    //robot.armServo.setPosition(currentPos);
-                    telemetry.update();
-                    telemetry.addData("Time", time);
-                }
-                currentPos = Math.min(currentPos, 1.0);
-                currentPos = Math.max(currentPos, 0.25);
-                robot.armServo.setPosition(currentPos);
-//Josh is cool
-// Raymond is less cool :)
-// still cool tho
-                telemetry.addData("ServoPos", robot.armServo.getPosition());
-                telemetry.addData("ServoPosGrip", robot.gripperServo.getPosition());
-                telemetry.update();
-            }
-            /**
-             * May need to change these values for both & ask Josh about controls
-             */
-            //buttons a & b
-
-            double closed = 1.0;
-            double open = 0.5;
-            boolean right_trigger1;
-            boolean left_trigger1;
-            if (gamepad1.right_trigger > 0.5) {
-                right_trigger1 = true;
-            } else {
-                right_trigger1 = false;
-            }
-            if (gamepad1.left_trigger > 0.5) {
-                left_trigger1 = true;
-
-            }
-
-            if (right_trigger1) {
-                fun.foundationGrabber(Functions.foundationPos.CLOSED);
-            } else {
-                fun.foundationGrabber(Functions.foundationPos.OPEN);
-            }
-            if (gamepad1.a) {
-                robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            }
-            else if (gamepad1.b) {
-                robot.leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                robot.rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            }
-
-            if (gamepad2.a) {
-                robot.gripperServo.setPosition(closed);
-            } else if (gamepad2.b) {
-                robot.gripperServo.setPosition(open);
-            }
-//            if (right_trigger = true) {
-//                robot.rightFoundation.setPosition(closed);
-//                robot.leftFoundation.setPosition(closed);
-//            } else if (left_trigger = true) {
-//                robot.rightFoundation.setPosition(open);
-//                robot.leftFoundation.setPosition(open);
-//            }
         }
 
+        if (right_trigger1) {
+            fun.foundationGrabber(Functions.foundationPos.CLOSED);
+        } else {
+            fun.foundationGrabber(Functions.foundationPos.OPEN);
+        }
+        if (gamepad1.a) {
+            robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        } else if (gamepad1.b) {
+            robot.leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            robot.rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
 
-//            double drive_right = gamepad1.right_stick_y;
-//            double drive_left = gamepad1.left_stick_y;
+        if (gamepad2.a) {
 
-//            bl.setPower(drive_left);
-//            br.setPower(drive_right);
-//            fl.setPower(drive_left);
-//            fr.setPower(drive_right);
+        } else if (gamepad2.b) {
+
+        }
 
     }
-    // run until the end of the match (driver presses STOP)
 
-
-//    public void gripperPos () {
-//        double closed = 0.0;
-//        double open = 0.5;
-//        while (opModeIsActive()) {
-//            if (gamepad2.a) {
-//                robot.armServo.setPosition(open);
-//                return;
-//            }
-//            else if (gamepad2.b) {
-//                robot.armServo.setPosition(closed);
-//                return;
-//            }
-//            else {
-//                robot.armServo.setPosition(closed);
-//                return;
-//            }
-//        }
-//    }
-//    public void armPos () {
-//double currentPos;
-//double resetPos = 1.0;
-//while (opModeIsActive()) {
-//    currentPos = robot.armServo.getPosition();
-//    if (gamepad2.dpad_up) {
-//        robot.armServo.setPosition(currentPos - 0.2);
-//        return;
-//    }
-//    else if (gamepad2.dpad_down) {
-//        robot.armServo.setPosition(currentPos + 0.2);
-//        return;
-//    }
-//    else if (gamepad2.dpad_right) {
-//        robot.armServo.setPosition(resetPos);
-//    }
-//    else {
-//        robot.armServo.setPosition(currentPos);
-//        return;
-//    }
-//        }
-//    }
 
     void composeTelemetry() {
 

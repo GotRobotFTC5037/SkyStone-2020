@@ -30,6 +30,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import android.hardware.Sensor;
+import android.widget.Button;
+import android.widget.Switch;
 
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -75,6 +77,8 @@ public class HardwareTest {
     public ColorSensor colorSensorBlue = null;
     public ColorSensor colorSensorRed = null;
     public ColorSensor bottomColorSensor = null;
+    public Boolean leftMarkerSwitch = null;
+    public Boolean rightMarkerSwitch = null;
 
 
     public static final double MID_SERVO = 0.5;
@@ -151,7 +155,8 @@ public class HardwareTest {
         colorSensorBlue = hwMap.get(ColorSensor.class, "colorSensorRight");
         colorSensorRed = hwMap.get(ColorSensor.class, "colorSensorLeft");
         bottomColorSensor = hwMap.get(ColorSensor.class, "bottomColorSensor");
-
+        leftMarkerSwitch = hwMap.get(Boolean.class, "leftMarkerSwitch");
+        rightMarkerSwitch = hwMap.get(Boolean.class, "rightMarkerSwitch");
 
     }
 

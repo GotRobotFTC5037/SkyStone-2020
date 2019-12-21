@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.drm.DrmStore;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -36,6 +38,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Hardware;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -81,6 +84,30 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
     Orientation angles;
     Acceleration gravity;
 
+    private enum markerIndicator {
+        RED,
+        BLUE,
+        BOTH
+    }
+
+    private markerIndicator marker() {
+        if ((robot.leftMarkerSwitch = true) && (robot.rightMarkerSwitch = true)) {
+            telemetry.addData("Running", "Red");
+            telemetry.update();
+            return markerIndicator.RED;
+        }
+        else if ((robot.leftMarkerSwitch = false) && (robot.rightMarkerSwitch = false)) {
+            telemetry.addData("Running", "Red");
+            telemetry.update();
+            return markerIndicator.BLUE;
+        }
+        else {
+            telemetry.addData("Error", "Check Markers, then re-initialize");
+            telemetry.update();
+            return markerIndicator.BOTH;
+        }
+    }
+
 
 
     @Override
@@ -100,6 +127,15 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
+            switch (marker()) {
+                case BLUE:
+                    //Blue Autonomous
+                case RED:
+                    //Red Autonomous
+                case BOTH:
+                    //Create Backup Program?
+            }
+
 
         }
     }
