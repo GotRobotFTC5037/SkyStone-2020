@@ -100,9 +100,7 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
-            telemetry.addData("Red", robot.colorSensorTest.red());
-            telemetry.addData("Green", robot.colorSensorTest.green());
-            telemetry.addData("Blue", robot.colorSensorTest.blue());
+
         }
     }
 }

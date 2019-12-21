@@ -81,18 +81,6 @@ public class Functions {
     }
 
 
-    // 0.25 MAX & 1.0 MIN
-    public void arm(double armPos,
-                    double gripperPos,
-                    double timeoutS) {
-        runtime.reset();
-        while (runtime.seconds() < timeoutS) {
-
-            robot.gripperServo.setPosition(gripperPos);
-            robot.armServo.setPosition(armPos);
-        }
-    }
-
 
     public void foundationGrabber(foundationPos pose) {
         switch (pose) {
@@ -346,14 +334,14 @@ public class Functions {
                 //stafe to pos?
                 foundPos = true;
                 gyroStrafe(0, 1.571, 5, 0.4, 10);
-                robot.armServo.setPosition(0.9);
+
                 gyroStrafe(1.571, 1.571, 5.657, 0.5, 20.0);
-                robot.gripperServo.setPosition(1.0);
+
                 waitMilis(600);
-                robot.armServo.setPosition(0.5);
+
                 gyroStrafe(4.7126, 1.571, 20, 0.6, 10);
                 gyroStrafe(3.1416, 3.1416, (190 - (run * 8)), 0.6, 10);
-                robot.gripperServo.setPosition(0.5);
+
                 return;
             } else {
                 gyroStrafe(3.1416, 1.571, 7, 0.4, 7.0);
@@ -386,14 +374,14 @@ public class Functions {
                 //stafe to pos?
                 foundPos = true;
                 gyroStrafe(3.1416, 1.571, 5, 0.4, 10);
-                robot.armServo.setPosition(0.9);
+
                 gyroStrafe(1.571, 1.571, 5.657, 0.5, 20.0);
-                robot.gripperServo.setPosition(1.0);
+
                 waitMilis(600);
-                robot.armServo.setPosition(0.5);
+
                 gyroStrafe(4.7126, 1.571, 20, 0.6, 10);
                 gyroStrafe(0.0, 0, (190 - (run * 12)), 0.6, 10);
-                robot.gripperServo.setPosition(0.5);
+                
                 return;
             } else {
                 gyroStrafe(0, 1.571, 10, 0.4, 7.0);

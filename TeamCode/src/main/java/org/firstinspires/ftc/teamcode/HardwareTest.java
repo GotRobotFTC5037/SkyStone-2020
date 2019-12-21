@@ -63,23 +63,18 @@ public class HardwareTest {
     public DcMotor rightDrive = null;
     public DcMotor rightBackDrive = null;
 
-    /** Servos **/
-    public Servo armServo = null;
-    public Servo gripperServo = null;
+    /**
+     * Servos
+     **/
     public Servo leftFoundation = null;
     public Servo rightFoundation = null;
 
-    /** Sensors **/
+    /**
+     * Sensors
+     **/
     public ColorSensor colorSensorBlue = null;
     public ColorSensor colorSensorRed = null;
     public ColorSensor bottomColorSensor = null;
-
-
-    /**Test Sensors**/
-    public ColorSensor colorSensorTest = null;
-
-    /** Light Device **/
-   // public Servo indicatorLight = null;
 
 
     public static final double MID_SERVO = 0.5;
@@ -95,14 +90,15 @@ public class HardwareTest {
     /* Constructor */
     public HardwareTest() {
     }
-        double COUNTS_PER_MOTOR_REV = 537.6;    // eg: TETRIX Motor Encoder
-        double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
-        double WHEEL_DIAMETER_CENTIMETERS = 10.16;     // For figuring circumference
-        double COUNTS_PER_CENTIMETER = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-                (WHEEL_DIAMETER_CENTIMETERS * 3.1415);
-        double DRIVE_SPEED = 1.0;
-        double TURN_SPEED = 0.8;
-        double DIST_PER_REV = (4 * 2.54 * Math.PI) / COUNTS_PER_MOTOR_REV;
+
+    double COUNTS_PER_MOTOR_REV = 537.6;    // eg: TETRIX Motor Encoder
+    double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
+    double WHEEL_DIAMETER_CENTIMETERS = 10.16;     // For figuring circumference
+    double COUNTS_PER_CENTIMETER = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_CENTIMETERS * 3.1415);
+    double DRIVE_SPEED = 1.0;
+    double TURN_SPEED = 0.8;
+    double DIST_PER_REV = (4 * 2.54 * Math.PI) / COUNTS_PER_MOTOR_REV;
 
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap) {
@@ -123,11 +119,10 @@ public class HardwareTest {
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
 
         // Initialize braking function
-            rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
+        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
         // Set all motors to zero power
@@ -146,14 +141,9 @@ public class HardwareTest {
 
 
         // Define and initialize ALL installed servos.
-        armServo = hwMap.get(Servo.class, "armServo");
-        gripperServo = hwMap.get(Servo.class, "gripperServo");
-       // indicatorLight = hwMap.get(Servo.class, "indicatorLight");
         leftFoundation = hwMap.get(Servo.class, "leftFoundation");
         rightFoundation = hwMap.get(Servo.class, "rightFoundation");
 
-        armServo.setPosition(1.0);
-        gripperServo.setPosition(0.0);
         leftFoundation.setPosition(1.0);
         rightFoundation.setPosition(0.0);
 
@@ -161,11 +151,6 @@ public class HardwareTest {
         colorSensorBlue = hwMap.get(ColorSensor.class, "colorSensorRight");
         colorSensorRed = hwMap.get(ColorSensor.class, "colorSensorLeft");
         bottomColorSensor = hwMap.get(ColorSensor.class, "bottomColorSensor");
-
-        colorSensorTest = hwMap.get(ColorSensor.class,"colorSensorTest");
-
-
-
 
 
     }
