@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -16,6 +17,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
@@ -44,19 +46,16 @@ public class Functions {
         BLUE
     }
 
+    public enum automatic {
+        AUTOMATIC,
+        MANUAL
+    }
+
     Functions(HardwareTest robot, BNO055IMU imu) {
         this.robot = robot;
         this.imu = imu;
     }
 
-
-    Functions func = null;
-
-    public Functions() {
-    }
-
-    public void init(Functions func) {
-    }
 
     static final double COUNTS_PER_MOTOR_REV = 537.6;    // eg: TETRIX Motor Encoder
     static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
@@ -79,8 +78,6 @@ public class Functions {
         robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
-
-
 
     public void foundationGrabber(foundationPos pose) {
         switch (pose) {
@@ -391,7 +388,6 @@ public class Functions {
 
     }
 
-
     public void velocityControl(int ticks) {
         while (robot.leftBackDrive.getCurrentPosition() < ticks) {
             robot.leftBackDrive.setPower(0.2);
@@ -499,7 +495,21 @@ public class Functions {
                                 robot.rightBackDrive.setPower(-power);
                             }
                         }
-                };
+                }
         }
+    }
+
+    public void distanceSensorObjectDetection (double initialDistance,
+                                               double detectionDistance,
+                                               DistanceSensor sensor) {
+        boolean detection;
+                while (initialDistance > sensor.getDistance(DistanceUnit.CM)); {
+                    waitMilis(10);
+                }
+                detection = true;
+            return;
+
+
+
     }
 }

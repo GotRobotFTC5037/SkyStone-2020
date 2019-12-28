@@ -37,6 +37,7 @@ import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -79,6 +80,8 @@ public class HardwareTest {
     public ColorSensor bottomColorSensor = null;
     public Boolean leftMarkerSwitch = null;
     public Boolean rightMarkerSwitch = null;
+
+    public DistanceSensor conveyerDistanceSensor = null;
 
 
     public static final double MID_SERVO = 0.5;
@@ -157,6 +160,9 @@ public class HardwareTest {
         bottomColorSensor = hwMap.get(ColorSensor.class, "bottomColorSensor");
         leftMarkerSwitch = hwMap.get(Boolean.class, "leftMarkerSwitch");
         rightMarkerSwitch = hwMap.get(Boolean.class, "rightMarkerSwitch");
+
+        conveyerDistanceSensor = hwMap.get(DistanceSensor.class, "conveyerDistanceSensor");
+
 
     }
 
