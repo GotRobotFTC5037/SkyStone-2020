@@ -118,10 +118,6 @@ public class Foundation_Autonomous_Blue extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
 
         waitForStart();
-
-        telemetry.addData("ServoPos", robot.armServo.getPosition());
-        telemetry.addData("ServoPosGrip", robot.gripperServo.getPosition());
-        telemetry.update();
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         fun.gyroStrafe(4.71, 1.57, 71, 0.7, 10);

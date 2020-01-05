@@ -124,9 +124,7 @@ public class Depot_Autonomous_Blue extends LinearOpMode {
 
         waitForStart();
 
-        telemetry.addData("ServoPos", robot.armServo.getPosition());
-        telemetry.addData("ServoPosGrip", robot.gripperServo.getPosition());
-        telemetry.update();
+
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
             fun.stoneDetectionBlue();

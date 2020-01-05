@@ -29,17 +29,11 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import android.hardware.Sensor;
-import android.widget.Button;
-import android.widget.Switch;
-
-import com.qualcomm.robotcore.hardware.Blinker;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -61,27 +55,46 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 public class HardwareTest {
     /* Public OpMode members. */
+    /**
+     * Left Brain
+     **/
     public DcMotor leftDrive = null;
     public DcMotor leftBackDrive = null;
+    public DcMotor leftIntake = null;
+    public DcMotor silverPlatter = null;
+
+    // Servos
+
+    public Servo leftFoundation = null;
+    public Servo conveyorServo = null;
+
+    // Sensors
+    public ColorSensor leftColorSensor = null;
+    public DistanceSensor leftFoundationSensor = null;
+    public AnalogInput leftMarkerSwitch = null;
+
+
+    /**
+     * Right Brain
+     **/
+
+    // Motors
     public DcMotor rightDrive = null;
     public DcMotor rightBackDrive = null;
-
-    /**
-     * Servos
-     **/
-    public Servo leftFoundation = null;
+    public DcMotor rightIntake = null;
+    public DcMotor lift = null;
+    // Servos
     public Servo rightFoundation = null;
+    public Servo gripServo = null;
 
-    /**
-     * Sensors
-     **/
-    public ColorSensor colorSensorBlue = null;
-    public ColorSensor colorSensorRed = null;
+    // Sensors
     public ColorSensor bottomColorSensor = null;
-    public Boolean leftMarkerSwitch = null;
-    public Boolean rightMarkerSwitch = null;
-
-    public DistanceSensor conveyerDistanceSensor = null;
+    public ColorSensor rightColorSensor = null;
+    public DistanceSensor rightFoundationSensor = null;
+    public DistanceSensor conveyorDistanceSensor = null;
+    public AnalogInput rightMarkerSwitch = null;
+    public AnalogInput retractedSwitch = null;
+    public AnalogInput liftSwitch = null;
 
 
     public static final double MID_SERVO = 0.5;
@@ -155,13 +168,14 @@ public class HardwareTest {
         rightFoundation.setPosition(0.0);
 
         // Define and initialize ALL installed Sensors.
-        colorSensorBlue = hwMap.get(ColorSensor.class, "colorSensorRight");
-        colorSensorRed = hwMap.get(ColorSensor.class, "colorSensorLeft");
+        rightColorSensor = hwMap.get(ColorSensor.class, "colorSensorRight");
+        leftColorSensor = hwMap.get(ColorSensor.class, "colorSensorLeft");
         bottomColorSensor = hwMap.get(ColorSensor.class, "bottomColorSensor");
-        leftMarkerSwitch = hwMap.get(Boolean.class, "leftMarkerSwitch");
-        rightMarkerSwitch = hwMap.get(Boolean.class, "rightMarkerSwitch");
-
-        conveyerDistanceSensor = hwMap.get(DistanceSensor.class, "conveyerDistanceSensor");
+        leftMarkerSwitch = hwMap.get(AnalogInput.class, "leftMarkerSwitch");
+        rightMarkerSwitch = hwMap.get(AnalogInput.class, "rightMarkerSwitch");
+        retractedSwitch = hwMap.get(AnalogInput.class, "retractedSwitch");
+        liftSwitch = hwMap.get(AnalogInput.class, "liftSwitch");
+        conveyorDistanceSensor = hwMap.get(DistanceSensor.class, "conveyorDistanceSensor");
 
 
     }

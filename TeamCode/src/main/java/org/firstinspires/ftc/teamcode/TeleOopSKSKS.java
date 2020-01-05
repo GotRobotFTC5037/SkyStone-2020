@@ -23,7 +23,9 @@ public class TeleOopSKSKS extends LinearOpMode {
     BNO055IMU imu;
     Orientation angles;
     Acceleration gravity;
+    private ElapsedTime runtime = new ElapsedTime();
     double oldTime = 0.0;
+    Functions fun = new Functions(robot, imu);
 
     @Override
     public void runOpMode() {
@@ -36,27 +38,23 @@ public class TeleOopSKSKS extends LinearOpMode {
         parameters.loggingEnabled = true;
         parameters.loggingTag = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        Functions fun = new Functions(robot, imu);
-
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
         // and named "imu".
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
         // Set up our telemetry dashboard
+        Functions fun = new Functions(robot, imu);
+        fun.resetEncoders();
+        fun.waitMilis(50);
         composeTelemetry();
-
-        telemetry.addData("Hydroflask", "Initialized");
+        telemetry.addLine();
+        telemetry.addData("Robot", "Initialized");
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         while (opModeIsActive()) {
-
-//            double blPower;
-//            double brPower;
-//            double flPower;
-//            double frPower;
             double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
             double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
             double rightX = gamepad1.right_stick_x;
@@ -69,8 +67,49 @@ public class TeleOopSKSKS extends LinearOpMode {
             robot.rightDrive.setPower(v2);
             robot.leftBackDrive.setPower(v3);
             robot.rightBackDrive.setPower(v4);
-            //dpad up/down
 
+            if (gamepad1.a) {
+                robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            } else if (gamepad1.b) {
+                robot.leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                robot.rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            }
+            boolean right_trigger1;
+            boolean left_trigger1;
+            if (gamepad1.right_trigger > 0.5) {
+                right_trigger1 = true;
+            } else {
+                right_trigger1 = false;
+            }
+            if (gamepad1.left_trigger > 0.5) {
+                left_trigger1 = true;
+            } else {
+                left_trigger1 = false;
+            }
+
+            if (right_trigger1) {
+                fun.foundationGrabber(Functions.foundationPos.CLOSED);
+            } else {
+                fun.foundationGrabber(Functions.foundationPos.OPEN);
+            }
+            /** Gunner **/
+
+            boolean automated = true;
+           if (gamepad2.a) {
+               automated = false;
+           } else {
+               automated = true;
+           }
+           if (automated)  {
+               gamepad2.
+           }
+            double closed = 1.0;
+            double open = 0.5;
         }
         /**
          * May need to change these values for both & ask Josh about controls
@@ -79,40 +118,40 @@ public class TeleOopSKSKS extends LinearOpMode {
 
         double closed = 1.0;
         double open = 0.5;
-        boolean right_trigger1;
-        boolean left_trigger1;
-        if (gamepad1.right_trigger > 0.5) {
-            right_trigger1 = true;
-        } else {
-            right_trigger1 = false;
-        }
-        if (gamepad1.left_trigger > 0.5) {
-            left_trigger1 = true;
 
+    }
+    private void resetGunnerEncoders() {
+        telemetry.addData("Initialized", "Resetting Encoders");
+        telemetry.update();
+        fun.waitMilis(100);
+        telemetry.addData("Resetting Silver Platter", "Resetting Encoders");
+        telemetry.update();
+        robot.lift.setPower(.2);
+        fun.waitMilis(250);
+        robot.lift.setPower(0);
+        robot.silverPlatter.setPower(.2);
+        fun.waitMilis(250);
+        robot.silverPlatter.setPower(-0.2);
+        fun.waitMilis(100);
+        while (robot.retractedSwitch.getVoltage() < 3.3) {
+            robot.silverPlatter.setPower(-0.1);
         }
-
-        if (right_trigger1) {
-            fun.foundationGrabber(Functions.foundationPos.CLOSED);
-        } else {
-            fun.foundationGrabber(Functions.foundationPos.OPEN);
+        robot.silverPlatter.setPower(0.0);
+        telemetry.addData("Silver Platter Reset", "Resetting Encoders");
+        telemetry.update();
+        robot.silverPlatter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        fun.waitMilis(100);
+        telemetry.addData("Resetting Lift", "Resetting Encoders");
+        while (robot.liftSwitch.getVoltage() < 3.3) {
+            robot.lift.setPower(-0.05);
         }
-        if (gamepad1.a) {
-            robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        } else if (gamepad1.b) {
-            robot.leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            robot.rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        }
-
-        if (gamepad2.a) {
-
-        } else if (gamepad2.b) {
-
-        }
+        robot.lift.setPower(0.0);
+        telemetry.addData("Lift Reset", "Resetting Encoders");
+        telemetry.update();
+        robot.lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        fun.waitMilis(100);
+        telemetry.addData("Resume Playing", "Have a nice day");
+        telemetry.update();
 
     }
 

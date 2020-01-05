@@ -1,17 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import com.qualcomm.robotcore.hardware.Gyroscope;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -19,9 +11,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-
-import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
-import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 public class Functions {
     private ElapsedTime runtime = new ElapsedTime();
@@ -322,9 +311,9 @@ public class Functions {
         gyroStrafe(1.571, 1.571, 69, 0.6, 10);
         gyroStrafe(0, 1.571, 44, 0.6, 10);
         while ((!foundPos) && (timeoutS > runtime.seconds())) {
-            redU = (double) robot.colorSensorBlue.red() / (double) robot.colorSensorBlue.alpha();
-            greenU = (double) robot.colorSensorBlue.green() / (double) robot.colorSensorBlue.alpha();
-            blueU = (double) robot.colorSensorBlue.blue() / (double) robot.colorSensorBlue.alpha();
+            redU = (double) robot.rightColorSensor.red() / (double) robot.rightColorSensor.alpha();
+            greenU = (double) robot.rightColorSensor.green() / (double) robot.rightColorSensor.alpha();
+            blueU = (double) robot.rightColorSensor.blue() / (double) robot.rightColorSensor.alpha();
 
             if (((greenU + redU) * hueValue) < blueU) {
                 //Sees skystone
@@ -359,9 +348,9 @@ public class Functions {
         gyroStrafe(1.571, 1.571, 69, 0.6, 10);
         gyroStrafe(3.1416, 1.571, 38, 0.6, 10);
         while ((!foundPos) && (timeoutS > runtime.seconds())) {
-            redU = (double) robot.colorSensorRed.red() / (double) robot.colorSensorRed.alpha();
-            greenU = (double) robot.colorSensorRed.green() / (double) robot.colorSensorRed.alpha();
-            blueU = (double) robot.colorSensorRed.blue() / (double) robot.colorSensorRed.alpha();
+            redU = (double) robot.leftColorSensor.red() / (double) robot.leftColorSensor.alpha();
+            greenU = (double) robot.leftColorSensor.green() / (double) robot.leftColorSensor.alpha();
+            blueU = (double) robot.leftColorSensor.blue() / (double) robot.leftColorSensor.alpha();
 
             if (((greenU + redU) * hueValue) < blueU) {
                 //Sees skystone
