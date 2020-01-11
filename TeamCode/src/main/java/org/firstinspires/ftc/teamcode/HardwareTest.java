@@ -153,7 +153,7 @@ public class HardwareTest {
         rightFoundation = hwMap.get(Servo.class, "rightFoundation");
 
         armServo.setPosition(1.0);
-        gripperServo.setPosition(0.0);
+        gripperServo.setPosition(1.0);
         leftFoundation.setPosition(1.0);
         rightFoundation.setPosition(0.0);
 
@@ -162,7 +162,7 @@ public class HardwareTest {
         colorSensorRed = hwMap.get(ColorSensor.class, "colorSensorLeft");
         bottomColorSensor = hwMap.get(ColorSensor.class, "bottomColorSensor");
 
-        colorSensorTest = hwMap.get(ColorSensor.class,"colorSensorTest");
+       // colorSensorTest = hwMap.get(ColorSensor.class,"colorSensorTest");
 
 
 

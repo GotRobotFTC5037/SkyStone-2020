@@ -24,6 +24,7 @@ public class TeleOopSKSKS extends LinearOpMode {
     Orientation angles;
     Acceleration gravity;
     double oldTime = 0.0;
+    double num = 0;
 
     @Override
     public void runOpMode() {
@@ -76,25 +77,23 @@ public class TeleOopSKSKS extends LinearOpMode {
                 oldTime = time;
 
                 double currentPos;
-                double resetPos = 0.5;
+                double resetPos = 1.0;
                 currentPos = robot.armServo.getPosition();
 
                 if (gamepad2.dpad_up) {
                     //robot.armServo.setPosition(currentPos - 0.005)
-                    currentPos -= 0.005;
+                    currentPos -= 0.0075;
                 } else if (gamepad2.dpad_down) {
                     //robot.armServo.setPosition(currentPos + 0.005);
-                    currentPos += 0.005;
+                    currentPos += 0.004;
                 } else if (gamepad2.dpad_right) {
                     //robot.armServo.setPosition(resetPos);
                     currentPos = resetPos;
                 } else {
-                    //robot.armServo.setPosition(currentPos);
-                    telemetry.update();
-                    telemetry.addData("Time", time);
+                    robot.armServo.setPosition(currentPos);
                 }
                 currentPos = Math.min(currentPos, 1.0);
-                currentPos = Math.max(currentPos, 0.25);
+                currentPos = Math.max(currentPos, 0.165);
                 robot.armServo.setPosition(currentPos);
 //Josh is cool
 // Raymond is less cool :)
@@ -108,8 +107,8 @@ public class TeleOopSKSKS extends LinearOpMode {
              */
             //buttons a & b
 
-            double closed = 1.0;
-            double open = 0.5;
+            double open = 1.0;
+            double closed = 0.2;
             boolean right_trigger1;
             boolean left_trigger1;
             if (gamepad1.right_trigger > 0.5) {
@@ -123,17 +122,29 @@ public class TeleOopSKSKS extends LinearOpMode {
             }
 
             if (right_trigger1) {
-                fun.foundationGrabber(Functions.foundationPos.CLOSED);
+              //  fun.foundationGrabber(Functions.foundationPos.CLOSED);
             } else {
-                fun.foundationGrabber(Functions.foundationPos.OPEN);
+                //fun.foundationGrabber(Functions.foundationPos.OPEN);
+            }
+
+            if (gamepad2.y) {
+                num++;
+                if (num % 2 == 0) {
+                    telemetry.addLine("Even");
+                    fun.foundationGrabber(Functions.foundationPos.CLOSED);
+                } else if (!(num % 2 == 0)) {
+                    telemetry.addLine("Odd");
+                    fun.foundationGrabber(Functions.foundationPos.OPEN);
+                }
+                telemetry.update();
+                fun.waitMilis(100);
             }
             if (gamepad1.a) {
                 robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            }
-            else if (gamepad1.b) {
+            } else if (gamepad1.b) {
                 robot.leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 robot.rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

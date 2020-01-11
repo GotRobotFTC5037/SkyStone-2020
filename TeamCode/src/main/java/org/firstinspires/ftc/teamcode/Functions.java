@@ -101,8 +101,8 @@ public class Functions {
                 robot.leftFoundation.setPosition(0.9);
                 break;
             case CLOSED:
-                robot.rightFoundation.setPosition(0.925);
-                robot.leftFoundation.setPosition(0.025);
+                robot.rightFoundation.setPosition(0.975);
+                robot.leftFoundation.setPosition(0.0);
         }
 
     }
@@ -348,7 +348,7 @@ public class Functions {
                 gyroStrafe(0, 1.571, 5, 0.4, 10);
                 robot.armServo.setPosition(0.9);
                 gyroStrafe(1.571, 1.571, 5.657, 0.5, 20.0);
-                robot.gripperServo.setPosition(1.0);
+                robot.gripperServo.setPosition(.0);
                 waitMilis(600);
                 robot.armServo.setPosition(0.5);
                 gyroStrafe(4.7126, 1.571, 20, 0.6, 10);
