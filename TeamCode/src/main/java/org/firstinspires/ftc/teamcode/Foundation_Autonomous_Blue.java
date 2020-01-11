@@ -70,7 +70,7 @@ public class Foundation_Autonomous_Blue extends LinearOpMode {
 
     /* Declare OpMode members. */
     BNO055IMU imu;
-    HardwareTest robot = new HardwareTest();   // Use a Pushbot's hardware
+    Hardware robot = new Hardware();   // Use a Pushbot's hardware
     private ElapsedTime runtime = new ElapsedTime();
     Orientation angles;
     Acceleration gravity;

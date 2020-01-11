@@ -5,7 +5,6 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Func;
@@ -20,7 +19,7 @@ import java.util.Locale;
 
 @TeleOp(name = "TeleOopSKSKS", group = "Linear Opmode")
 public class TeleOopSKSKS extends LinearOpMode {
-    HardwareTest robot = new HardwareTest();
+    Hardware robot = new Hardware();
     BNO055IMU imu;
     Orientation angles;
     Acceleration gravity;
@@ -30,6 +29,13 @@ public class TeleOopSKSKS extends LinearOpMode {
     double num;
     double num1;
     boolean automated;
+    private enum state {
+        one,
+        two,
+        three,
+        four,
+        five
+    }
 
     @Override
     public void runOpMode() {
@@ -49,7 +55,7 @@ public class TeleOopSKSKS extends LinearOpMode {
         imu.initialize(parameters);
         // Set up our telemetry dashboard
         Functions fun = new Functions(robot, imu);
-        fun.resetEncoders();
+        fun.resetDriveEncoders();
         fun.waitMilis(50);
         composeTelemetry();
         telemetry.addLine();
@@ -141,8 +147,7 @@ public class TeleOopSKSKS extends LinearOpMode {
                 fun.waitMilis(100);
             }
             if (automated = true) {
-                robot.leftIntake.setPower(.5);
-                robot.rightIntake.setPower(-.5);
+                fun.intake(Functions.intake.IN,0.5);
                 robot.conveyorServo.setPosition(1.0);
                 if (robot.conveyorDistanceSensor.getDistance(DistanceUnit.CM) < 10.0) {
                     fun.waitMilis(250);
@@ -158,16 +163,14 @@ public class TeleOopSKSKS extends LinearOpMode {
                 }
             } else if (automated = false) {
                if (right_trigger2 = true) {
-                   robot.leftIntake.setPower(.5);
-                   robot.rightIntake.setPower(-.5);
+                   fun.intake(Functions.intake.IN,0.5);
                } else if (left_trigger2 = true) {
-                   robot.leftIntake.setPower(-.5);
-                   robot.rightIntake.setPower(.5);
+                  fun.intake(Functions.intake.OUT, 0.5);
                } else {
-                   robot.leftIntake.setPower(.0);
-                   robot.rightIntake.setPower(.0);
+                   fun.intake(Functions.intake.STOP,0.0);
                }
-
+               robot.conveyorServo.setPosition((gamepad2.right_stick_x + 1) / 2);
+               robot.silverPlatter.setTargetPosition(robot.silverPlatter.getCurrentPosition() + (int)(gamepad2.right_stick_y * 10));
             }
         }
         /**

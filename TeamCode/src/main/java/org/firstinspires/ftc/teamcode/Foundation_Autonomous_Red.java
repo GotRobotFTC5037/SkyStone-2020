@@ -35,9 +35,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 /**
@@ -73,7 +70,7 @@ public class Foundation_Autonomous_Red extends LinearOpMode {
 
     /* Declare OpMode members. */
     BNO055IMU imu;
-    HardwareTest robot = new HardwareTest();   // Use a Pushbot's hardware
+    Hardware robot = new Hardware();   // Use a Pushbot's hardware
     private ElapsedTime runtime = new ElapsedTime();
     Orientation angles;
     Acceleration gravity;

@@ -1,23 +1,28 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Func;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
+import java.util.Locale;
 
 public class Functions {
     private ElapsedTime runtime = new ElapsedTime();
     private BNO055IMU imu;
     Orientation angles;
     Acceleration gravity;
-    private HardwareTest robot;
+    private Hardware robot;
+
 
 
     public enum foundationPos {
@@ -40,10 +45,17 @@ public class Functions {
         MANUAL
     }
 
-    Functions(HardwareTest robot, BNO055IMU imu) {
+    public enum intake {
+        IN,
+        OUT,
+        STOP
+    }
+
+    Functions(Hardware robot, BNO055IMU imu) {
         this.robot = robot;
         this.imu = imu;
     }
+
 
 
     static final double COUNTS_PER_MOTOR_REV = 537.6;    // eg: TETRIX Motor Encoder
@@ -56,7 +68,7 @@ public class Functions {
     static final double DIST_PER_REV = (4 * 2.54 * Math.PI) / COUNTS_PER_MOTOR_REV;
 
 
-    public void resetEncoders() {/** DO NOT USE FOR GENERAL PURPOSE **/
+    public void resetDriveEncoders() {/** DO NOT USE FOR GENERAL PURPOSE **/
         robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -79,6 +91,23 @@ public class Functions {
                 robot.leftFoundation.setPosition(0.025);
         }
 
+    }
+
+    public void intake(intake pose,
+                       double power) {
+        switch (pose) {
+            case IN:
+                robot.rightIntake.setPower(-power);
+                robot.leftIntake.setPower(power);
+                break;
+            case OUT:
+                robot.rightIntake.setPower(power);
+                robot.leftIntake.setPower(-power);
+                break;
+            case STOP:
+                robot.rightIntake.setPower(0.0);
+                robot.leftIntake.setPower(0.0);
+        }
     }
 
     public void gyroDrive(double heading,
@@ -483,30 +512,50 @@ public class Functions {
                 }
         }
     }
+    public void resetRobotEncoders(Telemetry telemetry, LinearOpMode linearOpMode) {
+        while (linearOpMode.opModeIsActive())
+        telemetry.addData("Initialized", "Resetting Encoders");
+        telemetry.update();
+        robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-    public void distanceSensorObjectDetection(double initialDistance,
-                                              double detectionDistance,
-                                              automatic automation,
-                                              DistanceSensor sensor) {
-        boolean detection;
-
-        switch (automation) {
-            case AUTOMATIC:
-                double initialAutomaticDistance = sensor.getDistance(DistanceUnit.CM);
-                while (initialAutomaticDistance > sensor.getDistance(DistanceUnit.CM) && sensor.getDistance(DistanceUnit.CM) < detectionDistance);
-            {
-                waitMilis(10);
-            }
-            detection = true;
-            break;
-            case MANUAL:
-                while (initialDistance > sensor.getDistance(DistanceUnit.CM));
-            {
-                waitMilis(10);
-            }
-            detection = true;
-            break;
+        robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        waitMilis(50);
+        telemetry.addData("Resetting Silver Platter", "Resetting Encoders");
+        telemetry.update();
+        robot.lift.setPower(.2);
+        waitMilis(250);
+        robot.lift.setPower(0);
+        robot.silverPlatter.setPower(.2);
+        waitMilis(250);
+        robot.silverPlatter.setPower(-0.2);
+        waitMilis(100);
+        while (robot.retractedSwitch.getVoltage() < 3.3) {
+            robot.silverPlatter.setPower(-0.1);
         }
-    }
+        robot.silverPlatter.setPower(0.0);
+        telemetry.addData("Silver Platter Reset", "Resetting Encoders");
+        telemetry.update();
+        robot.silverPlatter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.silverPlatter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        waitMilis(100);
+        telemetry.addData("Resetting Lift", "Resetting Encoders");
+        while (robot.liftSwitch.getVoltage() < 3.3) {
+            robot.lift.setPower(-0.05);
+        }
+        robot.lift.setPower(0.0);
+        telemetry.addData("Lift Reset", "Resetting Encoders");
+        telemetry.update();
+        robot.lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        waitMilis(100);
+        telemetry.addData("Resume Playing", "Have a nice day");
+        telemetry.update();
 
+    }
 }

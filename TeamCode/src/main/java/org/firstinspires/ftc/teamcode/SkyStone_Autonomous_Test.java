@@ -29,22 +29,13 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import android.drm.DrmStore;
-
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Hardware;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 /**
  * This file illustrates the concept of driving a path based on encoder counts.
@@ -79,7 +70,7 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
 
     /* Declare OpMode members. */
     private BNO055IMU imu;
-    private HardwareTest robot = new HardwareTest();   // Use a Pushbot's hardware
+    private Hardware robot = new Hardware();   // Use a Pushbot's hardware
     private ElapsedTime runtime = new ElapsedTime();
     Orientation angles;
     Acceleration gravity;
