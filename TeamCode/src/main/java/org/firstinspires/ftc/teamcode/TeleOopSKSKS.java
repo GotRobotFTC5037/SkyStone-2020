@@ -25,6 +25,7 @@ public class TeleOopSKSKS extends LinearOpMode {
     Acceleration gravity;
     double oldTime = 0.0;
     double num = 0;
+    double num1 = 0;
 
     @Override
     public void runOpMode() {
@@ -132,13 +133,16 @@ public class TeleOopSKSKS extends LinearOpMode {
                 if (num % 2 == 0) {
                     telemetry.addLine("Even");
                     fun.foundationGrabber(Functions.foundationPos.CLOSED);
+                    fun.waitMilis(500);
                 } else if (!(num % 2 == 0)) {
                     telemetry.addLine("Odd");
                     fun.foundationGrabber(Functions.foundationPos.OPEN);
+                    fun.waitMilis(500);
                 }
                 telemetry.update();
                 fun.waitMilis(100);
             }
+
             if (gamepad1.a) {
                 robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
