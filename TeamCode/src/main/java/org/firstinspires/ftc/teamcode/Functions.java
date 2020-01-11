@@ -367,7 +367,7 @@ public class Functions {
 
                 gyroStrafe(4.7126, 1.571, 20, 0.6, 10);
                 gyroStrafe(0.0, 0, (190 - (run * 12)), 0.6, 10);
-                
+
                 return;
             } else {
                 gyroStrafe(0, 1.571, 10, 0.4, 7.0);
@@ -386,7 +386,7 @@ public class Functions {
 
 
     public void autonomousParking(direction heading,
-                                 redOrBlue color) {
+                                  redOrBlue color) {
         double timeoutS = 7.0;
         double hueValueBlue = 0.5;
         double hueValueRed = 0.6;
@@ -413,8 +413,7 @@ public class Functions {
                                 robot.rightDrive.setPower(0.0);
                                 robot.rightBackDrive.setPower(0.0);
                                 foundRed = true;
-                            }
-                            else {
+                            } else {
                                 robot.leftDrive.setPower(power);
                                 robot.leftBackDrive.setPower(power);
                                 robot.rightDrive.setPower(power);
@@ -433,8 +432,7 @@ public class Functions {
                                 robot.rightDrive.setPower(0.0);
                                 robot.rightBackDrive.setPower(0.0);
                                 foundBlue = true;
-                            }
-                            else {
+                            } else {
                                 robot.leftDrive.setPower(power);
                                 robot.leftBackDrive.setPower(power);
                                 robot.rightDrive.setPower(power);
@@ -456,8 +454,7 @@ public class Functions {
                                 robot.rightDrive.setPower(0.0);
                                 robot.rightBackDrive.setPower(0.0);
                                 foundRed = true;
-                            }
-                            else {
+                            } else {
                                 robot.leftDrive.setPower(-power);
                                 robot.leftBackDrive.setPower(-power);
                                 robot.rightDrive.setPower(-power);
@@ -476,8 +473,7 @@ public class Functions {
                                 robot.rightDrive.setPower(0.0);
                                 robot.rightBackDrive.setPower(0.0);
                                 foundBlue = true;
-                            }
-                            else {
+                            } else {
                                 robot.leftDrive.setPower(-power);
                                 robot.leftBackDrive.setPower(-power);
                                 robot.rightDrive.setPower(-power);
@@ -488,17 +484,29 @@ public class Functions {
         }
     }
 
-    public void distanceSensorObjectDetection (double initialDistance,
-                                               double detectionDistance,
-                                               DistanceSensor sensor) {
+    public void distanceSensorObjectDetection(double initialDistance,
+                                              double detectionDistance,
+                                              automatic automation,
+                                              DistanceSensor sensor) {
         boolean detection;
-                while (initialDistance > sensor.getDistance(DistanceUnit.CM)); {
-                    waitMilis(10);
-                }
-                detection = true;
-            return;
 
-
-
+        switch (automation) {
+            case AUTOMATIC:
+                double initialAutomaticDistance = sensor.getDistance(DistanceUnit.CM);
+                while (initialAutomaticDistance > sensor.getDistance(DistanceUnit.CM) && sensor.getDistance(DistanceUnit.CM) < detectionDistance);
+            {
+                waitMilis(10);
+            }
+            detection = true;
+            break;
+            case MANUAL:
+                while (initialDistance > sensor.getDistance(DistanceUnit.CM));
+            {
+                waitMilis(10);
+            }
+            detection = true;
+            break;
+        }
     }
+
 }

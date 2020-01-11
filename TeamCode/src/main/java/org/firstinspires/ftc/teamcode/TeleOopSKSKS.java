@@ -13,6 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import java.util.Locale;
@@ -26,6 +27,9 @@ public class TeleOopSKSKS extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     double oldTime = 0.0;
     Functions fun = new Functions(robot, imu);
+    double num;
+    double num1;
+    boolean automated;
 
     @Override
     public void runOpMode() {
@@ -55,6 +59,8 @@ public class TeleOopSKSKS extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         while (opModeIsActive()) {
+            double closed = 1.0;
+            double open = 0.5;
             double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
             double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
             double rightX = gamepad1.right_stick_x;
@@ -81,15 +87,27 @@ public class TeleOopSKSKS extends LinearOpMode {
             }
             boolean right_trigger1;
             boolean left_trigger1;
-            if (gamepad1.right_trigger > 0.5) {
+            boolean right_trigger2;
+            boolean left_trigger2;
+            if (gamepad2.right_trigger > 0.5) {
                 right_trigger1 = true;
             } else {
                 right_trigger1 = false;
             }
-            if (gamepad1.left_trigger > 0.5) {
+            if (gamepad2.left_trigger > 0.5) {
                 left_trigger1 = true;
             } else {
                 left_trigger1 = false;
+            }
+            if (gamepad2.right_trigger > 0.5) {
+                right_trigger2 = true;
+            } else {
+                right_trigger2 = false;
+            }
+            if (gamepad2.left_trigger > 0.5) {
+                left_trigger2 = true;
+            } else {
+                left_trigger2 = false;
             }
 
             if (right_trigger1) {
@@ -98,28 +116,67 @@ public class TeleOopSKSKS extends LinearOpMode {
                 fun.foundationGrabber(Functions.foundationPos.OPEN);
             }
             /** Gunner **/
+            robot.lift.setPower(gamepad2.left_stick_y);
+            if (gamepad2.a) {
+                num1++;
+                if (num % 2 == 0) {
+                    robot.gripServo.setPosition(closed);
+                } else if (!(num % 2 == 0)) {
+                   robot.gripServo.setPosition(open);
+                }
+                telemetry.update();
+                fun.waitMilis(100);
+            }
 
-            boolean automated = true;
-           if (gamepad2.a) {
-               automated = false;
-           } else {
-               automated = true;
-           }
-           if (automated)  {
-               gamepad2.
-           }
-            double closed = 1.0;
-            double open = 0.5;
+            if (gamepad2.y) {
+                num++;
+                if (num % 2 == 0) {
+                    telemetry.addData("Even", "Automation");
+                    automated = true;
+                } else if (!(num % 2 == 0)) {
+                    telemetry.addData("False", "Automation");
+                    automated = false;
+                }
+                telemetry.update();
+                fun.waitMilis(100);
+            }
+            if (automated = true) {
+                robot.leftIntake.setPower(.5);
+                robot.rightIntake.setPower(-.5);
+                robot.conveyorServo.setPosition(1.0);
+                if (robot.conveyorDistanceSensor.getDistance(DistanceUnit.CM) < 10.0) {
+                    fun.waitMilis(250);
+                    robot.gripServo.setPosition(open);
+                    robot.silverPlatter.setPower(.2);
+                    fun.waitMilis(100);
+                    robot.silverPlatter.setPower(.0);
+                    robot.gripServo.setPosition(closed);
+                    robot.lift.setPower(.25);
+                    robot.silverPlatter.setPower(-.2);
+                    fun.waitMilis(100);
+                    robot.silverPlatter.setPower(0.0);
+                }
+            } else if (automated = false) {
+               if (right_trigger2 = true) {
+                   robot.leftIntake.setPower(.5);
+                   robot.rightIntake.setPower(-.5);
+               } else if (left_trigger2 = true) {
+                   robot.leftIntake.setPower(-.5);
+                   robot.rightIntake.setPower(.5);
+               } else {
+                   robot.leftIntake.setPower(.0);
+                   robot.rightIntake.setPower(.0);
+               }
+
+            }
         }
         /**
          * May need to change these values for both & ask Josh about controls
          */
         //buttons a & b
 
-        double closed = 1.0;
-        double open = 0.5;
-
     }
+
     private void resetGunnerEncoders() {
         telemetry.addData("Initialized", "Resetting Encoders");
         telemetry.update();
@@ -154,8 +211,6 @@ public class TeleOopSKSKS extends LinearOpMode {
         telemetry.update();
 
     }
-
-
 
     void composeTelemetry() {
 
