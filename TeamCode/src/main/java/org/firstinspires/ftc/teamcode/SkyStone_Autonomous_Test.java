@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Hardware;
@@ -100,9 +101,7 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
-            telemetry.addData("Red", robot.colorSensorTest.red());
-            telemetry.addData("Green", robot.colorSensorTest.green());
-            telemetry.addData("Blue", robot.colorSensorTest.blue());
+          fun.gyroStrafe(0.0,0.0,40,.2,20,);
         }
     }
 }
