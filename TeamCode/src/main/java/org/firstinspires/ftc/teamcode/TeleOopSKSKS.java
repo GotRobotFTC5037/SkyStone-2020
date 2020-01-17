@@ -40,6 +40,7 @@ public class TeleOopSKSKS extends LinearOpMode {
     @Override
     public void runOpMode() {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
+
         robot.init(hardwareMap);
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -123,6 +124,7 @@ public class TeleOopSKSKS extends LinearOpMode {
             }
             /** Gunner **/
             robot.lift.setPower(gamepad2.left_stick_y);
+
             if (gamepad2.a) {
                 num1++;
                 if (num % 2 == 0) {
@@ -135,31 +137,31 @@ public class TeleOopSKSKS extends LinearOpMode {
             }
 
             if (gamepad2.y) {
-                num++;
-                if (num % 2 == 0) {
-                    telemetry.addData("Even", "Automation");
-                    automated = true;
-                } else if (!(num % 2 == 0)) {
-                    telemetry.addData("False", "Automation");
-                    automated = false;
+                automated = true;
                 }
+            if (gamepad2.x) {
+                automated = false;
+            }
                 telemetry.update();
                 fun.waitMilis(100);
-            }
+
             if (automated = true) {
-                fun.intake(Functions.intake.IN,0.5);
+                fun.intake(Functions.intake.IN,0.75);
                 robot.conveyorServo.setPosition(1.0);
                 if (robot.conveyorDistanceSensor.getDistance(DistanceUnit.CM) < 10.0) {
                     fun.waitMilis(250);
-                    robot.gripServo.setPosition(open);
+                    robot.gripServo.setPosition(1.0);
                     robot.silverPlatter.setPower(.2);
                     fun.waitMilis(100);
                     robot.silverPlatter.setPower(.0);
-                    robot.gripServo.setPosition(closed);
+                    robot.gripServo.setPosition(0.5);
                     robot.lift.setPower(.25);
                     robot.silverPlatter.setPower(-.2);
                     fun.waitMilis(100);
                     robot.silverPlatter.setPower(0.0);
+                } else {
+                    fun.intake(Functions.intake.IN,0.75);
+                    robot.conveyorServo.setPosition(1.0);
                 }
             } else if (automated = false) {
                if (right_trigger2 = true) {
@@ -170,8 +172,15 @@ public class TeleOopSKSKS extends LinearOpMode {
                    fun.intake(Functions.intake.STOP,0.0);
                }
                robot.conveyorServo.setPosition((gamepad2.right_stick_x + 1) / 2);
-               robot.silverPlatter.setTargetPosition(robot.silverPlatter.getCurrentPosition() + (int)(gamepad2.right_stick_y * 10));
+             //  robot.silverPlatter.setTargetPosition(robot.silverPlatter.getCurrentPosition() + (int)(gamepad2.right_stick_y * 10));
+               robot.silverPlatter.setPower(gamepad2.right_stick_y);
             }
+           // if (robot.retractedSwitch.getVoltage() > robot.openSwitch) {
+             //   robot.silverPlatter.setPower(0.0);
+           // }
+           // if (robot.liftSwitch.getVoltage() > robot.closedSwitch) {
+            //    robot.lift.setPower(0.0);
+            //}
         }
         /**
          * May need to change these values for both & ask Josh about controls
@@ -193,7 +202,7 @@ public class TeleOopSKSKS extends LinearOpMode {
         fun.waitMilis(250);
         robot.silverPlatter.setPower(-0.2);
         fun.waitMilis(100);
-        while (robot.retractedSwitch.getVoltage() < 3.3) {
+        while (robot.retractedSwitch.getVoltage() < robot.closedSwitch) {
             robot.silverPlatter.setPower(-0.1);
         }
         robot.silverPlatter.setPower(0.0);
@@ -202,7 +211,7 @@ public class TeleOopSKSKS extends LinearOpMode {
         robot.silverPlatter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         fun.waitMilis(100);
         telemetry.addData("Resetting Lift", "Resetting Encoders");
-        while (robot.liftSwitch.getVoltage() < 3.3) {
+        while (robot.liftSwitch.getVoltage() < robot.closedSwitch) {
             robot.lift.setPower(-0.05);
         }
         robot.lift.setPower(0.0);

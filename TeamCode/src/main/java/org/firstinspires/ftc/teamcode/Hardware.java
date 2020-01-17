@@ -53,6 +53,7 @@ public class Hardware {
     public Servo conveyorServo = null;
 
     // Sensors
+    public ColorSensor bottomColorSensor = null;
     public ColorSensor leftColorSensor = null;
     public DistanceSensor leftFoundationSensor = null;
     public AnalogInput leftMarkerSwitch = null;
@@ -72,12 +73,12 @@ public class Hardware {
     public Servo gripServo = null;
 
     // Sensors
-    public ColorSensor bottomColorSensor = null;
     public ColorSensor rightColorSensor = null;
     public DistanceSensor rightFoundationSensor = null;
     public DistanceSensor conveyorDistanceSensor = null;
     public AnalogInput rightMarkerSwitch = null;
     public AnalogInput retractedSwitch = null;
+    public AnalogInput extendedSwitch = null;
     public AnalogInput liftSwitch = null;
 
 
@@ -103,6 +104,8 @@ public class Hardware {
     double DRIVE_SPEED = 1.0;
     double TURN_SPEED = 0.8;
     double DIST_PER_REV = (4 * 2.54 * Math.PI) / COUNTS_PER_MOTOR_REV;
+    double openSwitch = 0.0;
+    double closedSwitch = 3.25;
 
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap) {
@@ -114,6 +117,10 @@ public class Hardware {
         leftBackDrive = hwMap.get(DcMotor.class, "bl");
         rightDrive = hwMap.get(DcMotor.class, "fr");
         rightBackDrive = hwMap.get(DcMotor.class, "br");
+        leftIntake = hwMap.get(DcMotor.class,"leftIntake");
+        rightIntake = hwMap.get(DcMotor.class,"rightIntake");
+        silverPlatter = hwMap.get(DcMotor.class,"silverPlatter");
+        lift = hwMap.get(DcMotor.class,"liftMotor");
 
 
         // Set Drive Motor Direction
@@ -147,17 +154,20 @@ public class Hardware {
         // Define and initialize ALL installed servos.
         leftFoundation = hwMap.get(Servo.class, "leftFoundation");
         rightFoundation = hwMap.get(Servo.class, "rightFoundation");
+        conveyorServo = hwMap.get(Servo.class, "conveyor");
+        gripServo = hwMap.get(Servo.class, "gripperServo");
 
         leftFoundation.setPosition(1.0);
         rightFoundation.setPosition(0.0);
 
         // Define and initialize ALL installed Sensors.
-        rightColorSensor = hwMap.get(ColorSensor.class, "colorSensorRight");
-        leftColorSensor = hwMap.get(ColorSensor.class, "colorSensorLeft");
+       // rightColorSensor = hwMap.get(ColorSensor.class, "rightColorSensor");
+        //leftColorSensor = hwMap.get(ColorSensor.class, "leftColorSensor");
         bottomColorSensor = hwMap.get(ColorSensor.class, "bottomColorSensor");
-        leftMarkerSwitch = hwMap.get(AnalogInput.class, "leftMarkerSwitch");
-        rightMarkerSwitch = hwMap.get(AnalogInput.class, "rightMarkerSwitch");
-        retractedSwitch = hwMap.get(AnalogInput.class, "retractedSwitch");
+        leftMarkerSwitch = hwMap.get(AnalogInput.class, "leftMarker");
+        rightMarkerSwitch = hwMap.get(AnalogInput.class, "rightMarker");
+        retractedSwitch = hwMap.get(AnalogInput.class, "retractSwitch");
+        extendedSwitch = hwMap.get(AnalogInput.class, "extendSwitch");
         liftSwitch = hwMap.get(AnalogInput.class, "liftSwitch");
         conveyorDistanceSensor = hwMap.get(DistanceSensor.class, "conveyorDistanceSensor");
 

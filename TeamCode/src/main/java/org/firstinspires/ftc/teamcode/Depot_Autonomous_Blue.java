@@ -101,13 +101,13 @@ public class Depot_Autonomous_Blue extends LinearOpMode {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
         Functions fun = new Functions(robot, imu);
-        fun.resetEncoders();
+
         fun.waitMilis(50);
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Resetting Encoders");    //
         telemetry.update();
 
-        fun.resetEncoders();
+        fun.resetRobotEncoders(telemetry);
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Path0", "Starting at %7d :%7d",

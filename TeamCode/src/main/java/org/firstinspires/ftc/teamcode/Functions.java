@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -22,6 +23,7 @@ public class Functions {
     Orientation angles;
     Acceleration gravity;
     private Hardware robot;
+    SoundPlayer.PlaySoundParams params = new SoundPlayer.PlaySoundParams();
 
 
 
@@ -98,11 +100,11 @@ public class Functions {
         switch (pose) {
             case IN:
                 robot.rightIntake.setPower(-power);
-                robot.leftIntake.setPower(power);
+                robot.leftIntake.setPower(-power);
                 break;
             case OUT:
                 robot.rightIntake.setPower(power);
-                robot.leftIntake.setPower(-power);
+                robot.leftIntake.setPower(power);
                 break;
             case STOP:
                 robot.rightIntake.setPower(0.0);
@@ -512,8 +514,7 @@ public class Functions {
                 }
         }
     }
-    public void resetRobotEncoders(Telemetry telemetry, LinearOpMode linearOpMode) {
-        while (linearOpMode.opModeIsActive())
+    public void resetRobotEncoders(Telemetry telemetry) {
         telemetry.addData("Initialized", "Resetting Encoders");
         telemetry.update();
         robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

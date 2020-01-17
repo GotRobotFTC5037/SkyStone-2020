@@ -64,7 +64,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name = "FoundationAutonomousBlue", group = "OpMode")
+@Autonomous(name = "FoundationAutonomous", group = "OpMode")
 //@Disabled
 public class Foundation_Autonomous_Blue extends LinearOpMode {
 
@@ -84,6 +84,10 @@ public class Foundation_Autonomous_Blue extends LinearOpMode {
     static final double DRIVE_SPEED = 1.0;
     static final double TURN_SPEED = 0.8;
     static final double DIST_PER_REV = (4 * 2.54 * Math.PI) / 1120;
+    private enum redOrBlue {
+        RED,
+        BLUE
+    }
 
     @Override
     public void runOpMode() {
@@ -101,13 +105,12 @@ public class Foundation_Autonomous_Blue extends LinearOpMode {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
         Functions fun = new Functions(robot, imu);
-        fun.resetEncoders();
         fun.waitMilis(50);
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Resetting Encoders");    //
         telemetry.update();
 
-        fun.resetEncoders();
+        fun.resetRobotEncoders(telemetry);
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Path0", "Starting at %7d :%7d",
@@ -116,8 +119,14 @@ public class Foundation_Autonomous_Blue extends LinearOpMode {
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
-
         waitForStart();
+       // if ((robot.rightMarkerSwitch.getVoltage() >= robot.closedSwitch) && (robot.leftMarkerSwitch.getVoltage() >= robot.closedSwitch)) {
+            //Blue
+       // } else if (( robot.rightMarkerSwitch.getVoltage() < 3.2) && (robot.leftMarkerSwitch.getVoltage() < 3.2)) {
+            //Red
+        //} else {
+            //Backup
+        //}
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         fun.gyroStrafe(4.71, 1.57, 71, 0.7, 10);
