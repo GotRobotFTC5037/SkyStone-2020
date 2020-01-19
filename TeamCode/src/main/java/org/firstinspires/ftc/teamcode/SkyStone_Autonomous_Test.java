@@ -101,7 +101,7 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
-          fun.gyroStrafe(0.0,0.0,40,.2,20,);
+//          fun.gyroStrafe(0.0,0.0,40,.2,20,);
         }
     }
 }

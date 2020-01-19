@@ -60,7 +60,8 @@ public class TeleOopSKSKS extends LinearOpMode {
 //            double flPower;
 //            double frPower;
             double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
-            double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
+            double robotAngle = Math.atan2(-gamepad1.left_stick_y, -
+                    gamepad1.left_stick_x) - (3 * (Math.PI)) / 4;
             double rightX = gamepad1.right_stick_x;
             final double v1 = r * Math.cos(robotAngle) + rightX;
             final double v2 = r * Math.sin(robotAngle) - rightX;
@@ -103,9 +104,7 @@ public class TeleOopSKSKS extends LinearOpMode {
                 telemetry.addData("ServoPosGrip", robot.gripperServo.getPosition());
                 telemetry.update();
             }
-            /**
-             * May need to change these values for both & ask Josh about controls
-             */
+
             //buttons a & b
 
             double open = 1.0;

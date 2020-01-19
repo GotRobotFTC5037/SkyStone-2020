@@ -105,7 +105,7 @@ public class Depot_Autonomus_Red extends LinearOpMode {
         telemetry.update();
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        fun.stoneDetectionRed();
+//        fun.stoneDetectionRed();
 //        fun.autonomousParking(Functions.direction.REVERSE, Functions.redOrBlue.RED);
         fun.gyroStrafe(3.1416,0,30,.3,10);
         fun.gyroStrafe(1.571, 0, 20, .5, 10);

@@ -69,14 +69,14 @@ public class HardwareTest {
     public Servo leftFoundation = null;
     public Servo rightFoundation = null;
 
-    /** Sensors **/
-    public ColorSensor colorSensorBlue = null;
-    public ColorSensor colorSensorRed = null;
-    public ColorSensor bottomColorSensor = null;
+//    /** Sensors **/
+//    public ColorSensor colorSensorBlue = null;
+//    public ColorSensor colorSensorRed = null;
+//    public ColorSensor bottomColorSensor = null;
 
 
     /**Test Sensors**/
-    public ColorSensor colorSensorTest = null;
+//    public ColorSensor colorSensorTest = null;
 
     /** Light Device **/
    // public Servo indicatorLight = null;
@@ -157,10 +157,10 @@ public class HardwareTest {
         leftFoundation.setPosition(1.0);
         rightFoundation.setPosition(0.0);
 
-        // Define and initialize ALL installed Sensors.
-        colorSensorBlue = hwMap.get(ColorSensor.class, "colorSensorRight");
-        colorSensorRed = hwMap.get(ColorSensor.class, "colorSensorLeft");
-        bottomColorSensor = hwMap.get(ColorSensor.class, "bottomColorSensor");
+//        // Define and initialize ALL installed Sensors.
+//        colorSensorBlue = hwMap.get(ColorSensor.class, "colorSensorRight");
+//        colorSensorRed = hwMap.get(ColorSensor.class, "colorSensorLeft");
+//        bottomColorSensor = hwMap.get(ColorSensor.class, "bottomColorSensor");
 
        // colorSensorTest = hwMap.get(ColorSensor.class,"colorSensorTest");
 
