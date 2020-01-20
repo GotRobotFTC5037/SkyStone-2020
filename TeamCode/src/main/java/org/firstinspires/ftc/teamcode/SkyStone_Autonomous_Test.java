@@ -1,48 +1,13 @@
-/* Copyright (c) 2017 FIRST. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted (subject to the limitations in the disclaimer below) provided that
- * the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice, this list
- * of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice, this
- * list of conditions and the following disclaimer in the documentation and/or
- * other materials provided with the distribution.
- *
- * Neither the name of FIRST nor the names of its contributors may be used to endorse or
- * promote products derived from this software without specific prior written permission.
- *
- * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
- * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Hardware;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 /**
  * This file illustrates the concept of driving a path based on encoder counts.
@@ -71,21 +36,33 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name = "SkyStoneAutonomousTest", group = "OpMode")
+@Autonomous(name = "AutonomousTest", group = "OpMode")
 //@Disabled
 public class SkyStone_Autonomous_Test extends LinearOpMode {
 
     /* Declare OpMode members. */
-    private BNO055IMU imu;
-    private HardwareTest robot = new HardwareTest();   // Use a Pushbot's hardware
+    BNO055IMU imu;
+    HardwareTest robot = new HardwareTest();   // Use a Pushbot's hardware
     private ElapsedTime runtime = new ElapsedTime();
     Orientation angles;
     Acceleration gravity;
 
 
-
+    static final double COUNTS_PER_MOTOR_REV = 1120;    // eg: TETRIX Motor Encoder
+    static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
+    static final double WHEEL_DIAMETER_CENTIMETERS = 10.16;     // For figuring circumference
+    static final double COUNTS_PER_CENTIMETER = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_CENTIMETERS * 3.1415);
+    static final double DRIVE_SPEED = 1.0;
+    static final double TURN_SPEED = 0.8;
+    static final double DIST_PER_REV = (4 * 2.54 * Math.PI) / 1120;
     @Override
     public void runOpMode() {
+        /*
+         * Initialize the drive system variables.
+         * The init() method of the hardware class does all the work here
+         */
+        robot.init(hardwareMap);
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -94,69 +71,56 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
         parameters.loggingTag = "IMU";
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
-        Odometry odom = new Odometry(robot, imu);
         Functions fun = new Functions(robot, imu);
         fun.waitMilis(50);
+        // Send telemetry message to signify robot waiting;
+        telemetry.addData("Status", "Resetting Encoders");    //
+        telemetry.update();
 
 
+
+        // Send telemetry message to indicate successful Encoder reset
+        telemetry.addData("Path0", "Starting at %7d :%7d",
+                robot.leftDrive.getCurrentPosition(),
+                robot.rightDrive.getCurrentPosition());
+        telemetry.update();
+
+        // Wait for the game to start (driver presses PLAY)
         waitForStart();
         while (opModeIsActive()) {
-            robot.rightBackDrive.setPower(.1);
-            robot.leftBackDrive.setPower(.1);
-            robot.rightDrive.setPower(.1);
-            robot.leftDrive.setPower(.1);
-            telemetry.addData("Fl", robot.leftDrive.getCurrentPosition());
-            telemetry.addData("Fr", robot.rightDrive.getCurrentPosition());
-            telemetry.addData("Bl", robot.leftBackDrive.getCurrentPosition());
-            telemetry.addData("Br", robot.rightBackDrive.getCurrentPosition());
+            if (gamepad2.a) {
+                robot.leftDrive.setPower(0.5);
+            } else {
+                robot.leftDrive.setPower(0.0);
+            }
+            if (gamepad2.y) {
+                robot.leftBackDrive.setPower(0.5);
+            } else {
+                robot.leftBackDrive.setPower(0.0);
+            }
+            if (gamepad2.b) {
+                robot.rightDrive.setPower(0.5);
+            } else {
+                robot.rightDrive.setPower(0.0);
+            }
+            if (gamepad2.x) {
+                robot.rightBackDrive.setPower(0.5);
+            } else {
+                robot.rightBackDrive.setPower(0.0);
+            }
         }
     }
+
+    /*
+     *  Method to perform a relative move, based on encoder counts.
+     *  Encoders are not reset as the move is based on the current position.
+     *  Move will stop if any of three conditions occur:
+     *  1) Move gets to the desired position
+     *  2) Move runs out of time
+     *  3) Driver stops the opmode running.
+     */
+
+
+
+
 }
-//        fun.resetEncoders();
-//        odom.start();
-//        sleep(20);
-//        while (odom.currentDistance < 60) {
-//            robot.rightDrive.setPower(0.3);
-//            robot.rightBackDrive.setPower(0.3);
-//            robot.leftBackDrive.setPower(0.3);
-//            robot.leftDrive.setPower(0.3);
-//            telemetry.addLine();
-//            telemetry.addData("Current Velocity", odom.currentVelocity);
-//            telemetry.addData("Odom Time", odom.currentTime);
-//            telemetry.addData("Main Time", runtime.seconds());
-//            telemetry.update();
-//            sleep(0);
-//        }
-//        robot.rightDrive.setPower(0);
-//        robot.rightBackDrive.setPower(0);
-//        robot.leftBackDrive.setPower(0);
-//        robot.leftDrive.setPower(0);
-//        fun.waitMilis(500);
-//        odom.interrupt();
-
-
-//        while (robot.leftBackDrive.getCurrentPosition() < 538) {
-//            telemetry.addLine();
-//            telemetry.addData("Motor Position", robot.leftBackDrive.getCurrentPosition());
-//            telemetry.update();
-//            robot.leftBackDrive.setPower(0.2);
-//        }
-//        robot.leftBackDrive.setPower(0.0);
-//        fun.waitMilis(2000);
-//        telemetry.addLine();
-//        telemetry.addData("Motor Position", robot.leftBackDrive.getCurrentPosition());
-//        telemetry.update();
-//        fun.waitMilis(5000);
-
-//        functions.gyroStrafe(0, 0.0,30.0, 0.2, 10.0);
-//        functions.gyroDrive(0, 60.0, 0.1, 3000.0);
-
-
-/*
- *  Method to perform a relative move, based on encoder counts.
- *  Encoders are not reset as the move is based on the current position.
- *  Move will stop if any of three conditions occur:
- *  1) Move gets to the desired position
- *  2) Move runs out of time
- *  3) Driver stops the opmode running.
- */
