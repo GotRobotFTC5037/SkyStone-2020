@@ -30,8 +30,10 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -50,7 +52,7 @@ public class Hardware {
     // Servos
 
     public Servo leftFoundation = null;
-    public Servo conveyorServo = null;
+    public CRServo conveyorServo = null;
 
     // Sensors
     public ColorSensor bottomColorSensor = null;
@@ -124,8 +126,8 @@ public class Hardware {
 
 
         // Set Drive Motor Direction
-        leftDrive.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
-        leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
+        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
 
@@ -154,7 +156,7 @@ public class Hardware {
         // Define and initialize ALL installed servos.
         leftFoundation = hwMap.get(Servo.class, "leftFoundation");
         rightFoundation = hwMap.get(Servo.class, "rightFoundation");
-        conveyorServo = hwMap.get(Servo.class, "conveyor");
+        conveyorServo = hwMap.get(CRServo.class, "conveyor");
         gripServo = hwMap.get(Servo.class, "gripperServo");
 
         leftFoundation.setPosition(1.0);

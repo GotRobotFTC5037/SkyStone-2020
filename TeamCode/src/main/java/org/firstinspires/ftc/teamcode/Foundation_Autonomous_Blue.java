@@ -66,7 +66,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 @Autonomous(name = "FoundationAutonomous", group = "OpMode")
 //@Disabled
-public class Foundation_Autonomous_Blue extends LinearOpMode {
+ public class Foundation_Autonomous_Blue extends LinearOpMode {
 
     /* Declare OpMode members. */
     BNO055IMU imu;

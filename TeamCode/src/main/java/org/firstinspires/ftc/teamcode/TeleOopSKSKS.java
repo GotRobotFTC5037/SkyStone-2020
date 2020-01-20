@@ -28,19 +28,14 @@ public class TeleOopSKSKS extends LinearOpMode {
     Functions fun = new Functions(robot, imu);
     double num;
     double num1;
-    boolean automated;
-    private enum state {
-        one,
-        two,
-        three,
-        four,
-        five
-    }
+    private boolean automated = true;
+    private boolean reversed = false;
+    int state;
+    int autoState = 0;
 
     @Override
     public void runOpMode() {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
-
         robot.init(hardwareMap);
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -57,6 +52,10 @@ public class TeleOopSKSKS extends LinearOpMode {
         // Set up our telemetry dashboard
         Functions fun = new Functions(robot, imu);
         fun.resetDriveEncoders();
+        robot.leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         fun.waitMilis(50);
         composeTelemetry();
         telemetry.addLine();
@@ -66,20 +65,94 @@ public class TeleOopSKSKS extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         while (opModeIsActive()) {
+            telemetry.addData("Automated", autoState);
+            telemetry.update();
+            fun.waitMilis(0);
+            switch (autoState) {
+                case 0: //Do not run
+                    break;
+                case 1: // Check for block + Button
+                    if (robot.conveyorDistanceSensor.getDistance(DistanceUnit.CM) < 10.0 && gamepad2.y) {
+                        autoState++;
+                    }
+                    break;
+                case 2: // Open Gripper
+                    robot.gripServo.setPosition(1.0);
+                    autoState++;
+                    break;
+                case 3: // Mover Silver Platter out until limit switch
+                    robot.silverPlatter.setPower(.75);
+                    if (robot.extendedSwitch.getVoltage() > 3.2) {
+                        robot.silverPlatter.setPower(.0);
+                        autoState++;
+                    }
+                    break;
+                case 4: // Close Gripper
+                    robot.gripServo.setPosition(0.4);
+                    oldTime = runtime.milliseconds();
+                    autoState++;
+                    break;
+                case 5:
+                    if (runtime.milliseconds() > oldTime + 250) {
+                        autoState++;
+                    }
+                    break;
+                case 6: // Lift to position
+                    robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    robot.lift.setTargetPosition(-1000);
+                    robot.lift.setPower(-0.9);
+                    autoState++;
+                    break;
+                case 7: // Wait For Lift
+                    if (robot.lift.getCurrentPosition() < -300) {
+                        autoState++;
+                    } else {
+                        robot.lift.setPower(-0.9);
+                    }
+                    break;
+                case 8: // Retract Platter until retract switch
+                    robot.silverPlatter.setPower(-.75);
+                    if (robot.retractedSwitch.getVoltage() > 3.2) {
+                        robot.silverPlatter.setPower(0.0);
+                        autoState++;
+                    }
+                    break;
+                default:
+                    autoState = 0;
+                    break;
+            }
+
+            if (gamepad1.start) {
+                reversed = false;
+            }
+            if (gamepad1.back) {
+                reversed = true;
+            }
             double closed = 1.0;
             double open = 0.5;
             double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
             double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
             double rightX = gamepad1.right_stick_x;
-            final double v1 = r * Math.cos(robotAngle) + rightX;
-            final double v2 = r * Math.sin(robotAngle) - rightX;
-            final double v3 = r * Math.sin(robotAngle) + rightX;
-            final double v4 = r * Math.cos(robotAngle) - rightX;
 
-            robot.leftDrive.setPower(v1);
-            robot.rightDrive.setPower(v2);
-            robot.leftBackDrive.setPower(v3);
-            robot.rightBackDrive.setPower(v4);
+            if (reversed) {
+                final double v1 = r * Math.cos(robotAngle) - rightX;
+                final double v2 = r * Math.sin(robotAngle) + rightX;
+                final double v3 = r * Math.sin(robotAngle) - rightX;
+                final double v4 = r * Math.cos(robotAngle) + rightX;
+                robot.leftDrive.setPower(-v1);
+                robot.rightDrive.setPower(-v2);
+                robot.leftBackDrive.setPower(-v3);
+                robot.rightBackDrive.setPower(-v4);
+            } else {
+                final double v1 = r * Math.cos(robotAngle) + rightX;
+                final double v2 = r * Math.sin(robotAngle) - rightX;
+                final double v3 = r * Math.sin(robotAngle) + rightX;
+                final double v4 = r * Math.cos(robotAngle) - rightX;
+                robot.leftDrive.setPower(v1);
+                robot.rightDrive.setPower(v2);
+                robot.leftBackDrive.setPower(v3);
+                robot.rightBackDrive.setPower(v4);
+            }
 
             if (gamepad1.a) {
                 robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -92,16 +165,17 @@ public class TeleOopSKSKS extends LinearOpMode {
                 robot.rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             }
+
             boolean right_trigger1;
             boolean left_trigger1;
             boolean right_trigger2;
             boolean left_trigger2;
-            if (gamepad2.right_trigger > 0.5) {
+            if (gamepad1.right_trigger > 0.5) {
                 right_trigger1 = true;
             } else {
                 right_trigger1 = false;
             }
-            if (gamepad2.left_trigger > 0.5) {
+            if (gamepad1.left_trigger > 0.5) {
                 left_trigger1 = true;
             } else {
                 left_trigger1 = false;
@@ -118,77 +192,78 @@ public class TeleOopSKSKS extends LinearOpMode {
             }
 
             if (right_trigger1) {
-                fun.foundationGrabber(Functions.foundationPos.CLOSED);
+                robot.leftFoundation.setPosition(0.9);
+                robot.rightFoundation.setPosition(0.2);
             } else {
-                fun.foundationGrabber(Functions.foundationPos.OPEN);
+                robot.leftFoundation.setPosition(0.0);
+                robot.rightFoundation.setPosition(0.9);
             }
+
+
             /** Gunner **/
-            robot.lift.setPower(gamepad2.left_stick_y);
+//            robot.lift.setPower(gamepad2.left_stick_y);
+//
+//            if (gamepad2.a) {
+//                num1++;
+//                if (num % 2 == 0) {
+//                    robot.gripServo.setPosition(closed);
+//                } else if (!(num % 2 == 0)) {
+//                   robot.gripServo.setPosition(open);
+//                }
+//                telemetry.update();
+//                fun.waitMilis(100);
+//            }
+            if (gamepad2.dpad_left) {
+                autoState = 1;
+
+            } else if (gamepad2.dpad_right) {
+                autoState = 0;
+            }
 
             if (gamepad2.a) {
-                num1++;
-                if (num % 2 == 0) {
-                    robot.gripServo.setPosition(closed);
-                } else if (!(num % 2 == 0)) {
-                   robot.gripServo.setPosition(open);
-                }
-                telemetry.update();
-                fun.waitMilis(100);
+                robot.gripServo.setPosition(0.5);
+            } else if (gamepad2.b) {
+                robot.gripServo.setPosition(1.0);
             }
-
-            if (gamepad2.y) {
-                automated = true;
-                }
+            if (gamepad2.dpad_up) {
+                robot.conveyorServo.setPower(-1.0);
+            } else if (gamepad2.dpad_down) {
+                robot.conveyorServo.setPower(1.0);
+            }
+            robot.silverPlatter.setPower(-gamepad2.left_stick_y);
             if (gamepad2.x) {
-                automated = false;
+                robot.lift.setPower(0.0);
             }
-                telemetry.update();
-                fun.waitMilis(100);
 
-            if (automated = true) {
-                fun.intake(Functions.intake.IN,0.75);
-                robot.conveyorServo.setPosition(1.0);
-                if (robot.conveyorDistanceSensor.getDistance(DistanceUnit.CM) < 10.0) {
-                    fun.waitMilis(250);
-                    robot.gripServo.setPosition(1.0);
-                    robot.silverPlatter.setPower(.2);
-                    fun.waitMilis(100);
-                    robot.silverPlatter.setPower(.0);
-                    robot.gripServo.setPosition(0.5);
-                    robot.lift.setPower(.25);
-                    robot.silverPlatter.setPower(-.2);
-                    fun.waitMilis(100);
-                    robot.silverPlatter.setPower(0.0);
+            if (autoState == 0) {
+                if (right_trigger2) {
+                    fun.intake(Functions.intake.IN, .5);
                 } else {
-                    fun.intake(Functions.intake.IN,0.75);
-                    robot.conveyorServo.setPosition(1.0);
+                    robot.leftIntake.setPower(.0);
+                    robot.rightIntake.setPower(.0);
+                    if (left_trigger2) {
+                        fun.intake(Functions.intake.OUT, .5);
+                    } else {
+                        robot.leftIntake.setPower(.0);
+                        robot.rightIntake.setPower(.0);
+                    }
                 }
-            } else if (automated = false) {
-               if (right_trigger2 = true) {
-                   fun.intake(Functions.intake.IN,0.5);
-               } else if (left_trigger2 = true) {
-                  fun.intake(Functions.intake.OUT, 0.5);
-               } else {
-                   fun.intake(Functions.intake.STOP,0.0);
-               }
-               robot.conveyorServo.setPosition((gamepad2.right_stick_x + 1) / 2);
-             //  robot.silverPlatter.setTargetPosition(robot.silverPlatter.getCurrentPosition() + (int)(gamepad2.right_stick_y * 10));
-               robot.silverPlatter.setPower(gamepad2.right_stick_y);
+                robot.lift.setTargetPosition((robot.lift.getTargetPosition()) + ((int) gamepad2.right_stick_y * 100));
+                robot.lift.setPower(1.0);
+                robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            } else {
+                fun.intake(Functions.intake.IN, .75);
+                robot.conveyorServo.setPower(-1.0);
+
             }
-           // if (robot.retractedSwitch.getVoltage() > robot.openSwitch) {
-             //   robot.silverPlatter.setPower(0.0);
-           // }
-           // if (robot.liftSwitch.getVoltage() > robot.closedSwitch) {
-            //    robot.lift.setPower(0.0);
-            //}
         }
-        /**
-         * May need to change these values for both & ask Josh about controls
-         */
-        //buttons a & b
 
     }
 
+    /**
+     * May need to change these values for both & ask Josh about controls
+     */
+    //buttons a & b
     private void resetGunnerEncoders() {
         telemetry.addData("Initialized", "Resetting Encoders");
         telemetry.update();
