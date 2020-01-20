@@ -101,7 +101,14 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
-//          fun.gyroStrafe(0.0,0.0,40,.2,20,);
+            robot.rightBackDrive.setPower(.1);
+            robot.leftBackDrive.setPower(.1);
+            robot.rightDrive.setPower(.1);
+            robot.leftDrive.setPower(.1);
+            telemetry.addData("Fl", robot.leftDrive.getCurrentPosition());
+            telemetry.addData("Fr", robot.rightDrive.getCurrentPosition());
+            telemetry.addData("Bl", robot.leftBackDrive.getCurrentPosition());
+            telemetry.addData("Br", robot.rightBackDrive.getCurrentPosition());
         }
     }
 }
