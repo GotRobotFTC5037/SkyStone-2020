@@ -69,10 +69,10 @@ public class HardwareTest {
     public Servo leftFoundation = null;
     public Servo rightFoundation = null;
 
-//    /** Sensors **/
-//    public ColorSensor colorSensorBlue = null;
-//    public ColorSensor colorSensorRed = null;
-//    public ColorSensor bottomColorSensor = null;
+    /** Sensors **/
+    public ColorSensor colorSensorBlue = null;
+    public ColorSensor colorSensorRed = null;
+    public ColorSensor bottomColorSensor = null;
 
 
     /**Test Sensors**/
@@ -119,8 +119,8 @@ public class HardwareTest {
         // Set Drive Motor Direction
         leftDrive.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightDrive.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
-        rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightDrive.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
+        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
         // Initialize braking function
             rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -158,9 +158,9 @@ public class HardwareTest {
         rightFoundation.setPosition(0.0);
 
 //        // Define and initialize ALL installed Sensors.
-//        colorSensorBlue = hwMap.get(ColorSensor.class, "colorSensorRight");
-//        colorSensorRed = hwMap.get(ColorSensor.class, "colorSensorLeft");
-//        bottomColorSensor = hwMap.get(ColorSensor.class, "bottomColorSensor");
+        colorSensorBlue = hwMap.get(ColorSensor.class, "colorSensorRight");
+        colorSensorRed = hwMap.get(ColorSensor.class, "colorSensorLeft");
+        bottomColorSensor = hwMap.get(ColorSensor.class, "bottomColorSensor");
 
        // colorSensorTest = hwMap.get(ColorSensor.class,"colorSensorTest");
 

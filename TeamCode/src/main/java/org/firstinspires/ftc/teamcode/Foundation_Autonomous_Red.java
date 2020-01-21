@@ -109,12 +109,10 @@ public class Foundation_Autonomous_Red extends LinearOpMode {
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Resetting Encoders");    //
         telemetry.update();
-
         fun.resetEncoders();
-
-
         // Wait for the game to start (driver presses PLAY)
-
+        telemetry.addData("Status", "Waiting For Start");    //
+        telemetry.update();
         waitForStart();
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)

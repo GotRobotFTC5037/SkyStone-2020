@@ -88,26 +88,17 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         while (opModeIsActive()) {
-            if (gamepad2.a) {
-                robot.leftDrive.setPower(0.5);
-            } else {
-                robot.leftDrive.setPower(0.0);
-            }
-            if (gamepad2.y) {
-                robot.leftBackDrive.setPower(0.5);
-            } else {
-                robot.leftBackDrive.setPower(0.0);
-            }
-            if (gamepad2.b) {
-                robot.rightDrive.setPower(0.5);
-            } else {
-                robot.rightDrive.setPower(0.0);
-            }
-            if (gamepad2.x) {
-                robot.rightBackDrive.setPower(0.5);
-            } else {
-                robot.rightBackDrive.setPower(0.0);
-            }
+            fun.gyroStrafe(1.57,1.57,500,0.5,25);
+//            robot.leftDrive.setPower(0.1);
+//            robot.rightDrive.setPower(0.1);
+//            robot.leftBackDrive.setPower(0.1);
+//            robot.rightBackDrive.setPower(0.1);
+//            telemetry.addData("Fl", robot.leftDrive.getCurrentPosition());
+//            telemetry.addData("Fr", robot.rightDrive.getCurrentPosition());
+//            telemetry.addData("Bl", robot.leftBackDrive.getCurrentPosition());
+//            telemetry.addData("Br", robot.rightBackDrive.getCurrentPosition());
+//            telemetry.update();
+//            fun.waitMilis(5000);
         }
     }
 
