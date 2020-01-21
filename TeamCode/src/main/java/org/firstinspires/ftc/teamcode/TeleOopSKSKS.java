@@ -60,7 +60,7 @@ public class TeleOopSKSKS extends LinearOpMode {
 //            double flPower;
 //            double frPower;
             double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
-            double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - (Math.PI) / 4;
+            double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
             double rightX = gamepad1.right_stick_x;
             final double v1 = r * Math.cos(robotAngle) + rightX;
             final double v2 = r * Math.sin(robotAngle) - rightX;
@@ -71,6 +71,7 @@ public class TeleOopSKSKS extends LinearOpMode {
             robot.rightDrive.setPower(v2);
             robot.leftBackDrive.setPower(v3);
             robot.rightBackDrive.setPower(v4);
+
             //dpad up/down
 
 
@@ -121,9 +122,9 @@ public class TeleOopSKSKS extends LinearOpMode {
             }
 
             if (right_trigger1) {
-              //  fun.foundationGrabber(Functions.foundationPos.CLOSED);
+                fun.foundationGrabber(Functions.foundationPos.CLOSED);
             } else {
-                //fun.foundationGrabber(Functions.foundationPos.OPEN);
+                fun.foundationGrabber(Functions.foundationPos.OPEN);
             }
 
             if (gamepad2.y) {
