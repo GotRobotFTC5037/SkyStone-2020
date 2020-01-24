@@ -101,18 +101,20 @@ public class Foundation_Autonomous_Red extends LinearOpMode {
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
         parameters.loggingEnabled = true;
         parameters.loggingTag = "IMU";
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
         Functions fun = new Functions(robot, imu);
-        fun.resetEncoders();
         fun.waitMilis(50);
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Resetting Encoders");    //
         telemetry.update();
-        fun.resetEncoders();
-        // Wait for the game to start (driver presses PLAY)
-        telemetry.addData("Status", "Waiting For Start");    //
+
+
+        // Send telemetry message to indicate successful Encoder reset
+        telemetry.addData("Path0", "Starting at %7d :%7d",
+                robot.leftDrive.getCurrentPosition(),
+                robot.rightDrive.getCurrentPosition());
         telemetry.update();
+        robot.imu.calibrate();
+
         waitForStart();
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
@@ -133,12 +135,13 @@ public class Foundation_Autonomous_Red extends LinearOpMode {
         fun.waitMilis(500);
         fun.foundationGrabber(Functions.foundationPos.CLOSED);
         fun.waitMilis(500);
-        fun.gyroStrafe(0,1.57,40,0.2,10);
-        fun.gyroStrafe(1.57,0,30,0.6,10);
+        fun.gyroStrafe(0,1.57,40,0.7,10);
+        fun.gyroStrafe(1.57,0,40,0.7,10);
         fun.waitMilis(500);
         fun.foundationGrabber(Functions.foundationPos.OPEN);
         fun.waitMilis(500);
         fun.gyroStrafe(0,0,72,0.3,10);
+        fun.gyroStrafe(1.57,0,20,0.35,10);
 //        fun.autonomousParking(Functions.direction.FORWARD, Functions.redOrBlue.RED);
         fun.waitMilis(1000);
         stop();

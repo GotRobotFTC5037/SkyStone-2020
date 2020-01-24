@@ -31,10 +31,13 @@ package org.firstinspires.ftc.teamcode;
 
 import android.hardware.Sensor;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -57,6 +60,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Servo channel:  Servo to open right claw: "right_hand"
  */
 public class HardwareTest {
+    public ModernRoboticsI2cGyro imu = null;
     /* Public OpMode members. */
     public DcMotor leftDrive = null;
     public DcMotor leftBackDrive = null;
@@ -104,6 +108,7 @@ public class HardwareTest {
         double TURN_SPEED = 0.8;
         double DIST_PER_REV = (4 * 2.54 * Math.PI) / COUNTS_PER_MOTOR_REV;
 
+
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
@@ -119,8 +124,8 @@ public class HardwareTest {
         // Set Drive Motor Direction
         leftDrive.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightDrive.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
-        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightDrive.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
+        rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
 
         // Initialize braking function
             rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -161,6 +166,8 @@ public class HardwareTest {
         colorSensorBlue = hwMap.get(ColorSensor.class, "colorSensorRight");
         colorSensorRed = hwMap.get(ColorSensor.class, "colorSensorLeft");
         bottomColorSensor = hwMap.get(ColorSensor.class, "bottomColorSensor");
+        imu = hwMap.get(ModernRoboticsI2cGyro.class, "imu");
+
 
        // colorSensorTest = hwMap.get(ColorSensor.class,"colorSensorTest");
 

@@ -49,12 +49,6 @@ public class Functions {
         this.imu = imu;
     }
 
-
-    Functions func = null;
-
-    public Functions() {
-    }
-
     public void init(Functions func) {
     }
 
@@ -210,7 +204,7 @@ public class Functions {
         double newBackRight = 0;
         runtime.reset();
         while ((runtime.seconds() < timeoutS)) {
-            currentHeading = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+            currentHeading = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
             headingRadians = ((-currentHeading / 180) * 3.1416) + (1 / 2 * 3.1416);
             poseDegrees = ((pose - 3.1416 / 2) % (2 * 3.1416)) * (360 / (2 * 3.1416));
             if (poseDegrees > 180) {
@@ -333,8 +327,8 @@ public class Functions {
         int run = 0;
         int zero = 0;
         runtime.reset();
-       // gyroStrafe(1.571, 1.571, 69, 0.6, 10);
-        //gyroStrafe(0, 1.571, 44, 0.6, 10);
+        gyroStrafe(1.571, 1.571, 59, 0.6, 10);
+        gyroStrafe(0, 1.571, 44, 0.6, 10);
         while ((!foundPos) && (timeoutS > runtime.seconds())) {
             redU = (double) robot.colorSensorBlue.red() / (double) robot.colorSensorBlue.alpha();
             greenU = (double) robot.colorSensorBlue.green() / (double) robot.colorSensorBlue.alpha();
@@ -344,18 +338,18 @@ public class Functions {
                 //Sees skystone
                 //stafe to pos?
                 foundPos = true;
-               // gyroStrafe(0, 1.571, 5, 0.4, 10);
+                gyroStrafe(0, 1.571, 5, 0.4, 10);
                 robot.armServo.setPosition(0.9);
-              //  gyroStrafe(1.571, 1.571, 5.657, 0.5, 20.0);
+                gyroStrafe(1.571, 1.571, 5.657, 0.5, 20.0);
                 robot.gripperServo.setPosition(.0);
                 waitMilis(600);
                 robot.armServo.setPosition(0.5);
-              //  gyroStrafe(4.7126, 1.571, 20, 0.6, 10);
-               // gyroStrafe(3.1416, 3.1416, (190 - (run * 8)), 0.6, 10);
+                gyroStrafe(4.7126, 1.571, 25, 0.6, 10);
+                gyroStrafe(3.1416, 3.1416, (190 - (run * 8)), 0.6, 10);
                 robot.gripperServo.setPosition(0.5);
                 return;
             } else {
-               // gyroStrafe(3.1416, 1.571, 7, 0.4, 7.0);
+                gyroStrafe(3.1416, 1.571, 7, 0.4, 7.0);
                 run++;
             }
         }
@@ -370,8 +364,8 @@ public class Functions {
         boolean foundPos = false;
         int run = 0;
         runtime.reset();
-     //   gyroStrafe(1.571, 1.571, 69, 0.6, 10);
-       // gyroStrafe(3.1416, 1.571, 38, 0.6, 10);
+        gyroStrafe(1.571, 1.571, 69, 0.6, 10);
+        gyroStrafe(3.1416, 1.571, 38, 0.6, 10);
         while ((!foundPos) && (timeoutS > runtime.seconds())) {
             redU = (double) robot.colorSensorRed.red() / (double) robot.colorSensorRed.alpha();
             greenU = (double) robot.colorSensorRed.green() / (double) robot.colorSensorRed.alpha();
@@ -379,23 +373,55 @@ public class Functions {
 
             if (((greenU + redU) * hueValue) < blueU) {
                 //Sees skystone
-                foundPos = true;
 
                 //Sees skystone
                 //stafe to pos?
-                foundPos = true;
-              //  gyroStrafe(3.1416, 1.571, 5, 0.4, 10);
+                gyroStrafe(3.1416, 1.571, 10, 0.4, 10);
                 robot.armServo.setPosition(0.9);
-                //gyroStrafe(1.571, 1.571, 5.657, 0.5, 20.0);
-                robot.gripperServo.setPosition(1.0);
+                gyroStrafe(1.571, 1.571, 2, 0.5, 20.0);
+                robot.gripperServo.setPosition(.0);
                 waitMilis(600);
                 robot.armServo.setPosition(0.5);
-               // gyroStrafe(4.7126, 1.571, 20, 0.6, 10);
-               // gyroStrafe(0.0, 0, (190 - (run * 12)), 0.6, 10);
+                gyroStrafe(4.7126, 1.571, 20, 0.6, 10);
+                gyroStrafe(0.0, 0, (190 - (run * 12)), 0.6, 10);
                 robot.gripperServo.setPosition(0.5);
+                robot.armServo.setPosition(0.9);
+                gyroStrafe(3.14, 1.57, (120 - (run * 12)), 0.6, 10);
+                gyroStrafe(1.57, 1.57, 40, 0.5, 10);
+//                if (((greenU + redU) * hueValue) < blueU) {
+//                    //Sees skystone
+//
+//                    //Sees skystone
+//                    //stafe to pos?
+//                    foundPos = true;
+//                    gyroStrafe(3.1416, 1.571, 5, 0.4, 10);
+//                    robot.armServo.setPosition(0.9);
+//                    gyroStrafe(1.571, 1.571, 5.657 , 0.5, 20.0);
+//                    robot.gripperServo.setPosition(.0);
+//                    waitMilis(600);
+//                    robot.armServo.setPosition(0.5);
+//                    gyroStrafe(4.7126, 1.571, 20, 0.6, 10);
+//                    gyroStrafe(0.0, 0, (60 - (run * 12)), 0.6, 10);
+//                    robot.gripperServo.setPosition(0.5);
+//                    robot.armServo.setPosition(0.9);
+//                    return;
+//                } else {
+//                    gyroStrafe(0, 1.571, 10, 0.4, 7.0);
+//                }
+                robot.gripperServo.setPosition(.5);
+                gyroStrafe(1.57,1.57,3,0.6,10);
+                robot.armServo.setPosition(0.9);
+                robot.gripperServo.setPosition(0);
+                waitMilis(500);
+                robot.armServo.setPosition(.75);
+                gyroStrafe(4.71,1.57,40,0.6,10);
+                gyroStrafe(0,0,(125 - (run * 12)),0.6,10);
+                waitMilis(100);
+                robot.gripperServo.setPosition(0.5);
+                gyroStrafe(3.1416,0,25,0.6,10);
                 return;
             } else {
-               // gyroStrafe(0, 1.571, 10, 0.4, 7.0);
+                gyroStrafe(0, 1.571, 10, 0.4, 7.0);
                 run++;
             }
         }
@@ -411,13 +437,12 @@ public class Functions {
     }
 
 
-
     public void autonomousParking(direction heading,
-                                 redOrBlue color) {
+                                  redOrBlue color) {
         double timeoutS = 7.0;
         double hueValueBlue = 0.5;
         double hueValueRed = 0.6;
-        double power = 0.35;
+        double power = 0.3;
         double distance = 2;
         double motorTimeOutS = 2;
         double redU = 0.0;

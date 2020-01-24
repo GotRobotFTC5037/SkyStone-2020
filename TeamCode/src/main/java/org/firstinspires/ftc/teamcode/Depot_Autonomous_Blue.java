@@ -103,22 +103,20 @@ public class Depot_Autonomous_Blue extends LinearOpMode {
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
         parameters.loggingEnabled = true;
         parameters.loggingTag = "IMU";
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
         Functions fun = new Functions(robot, imu);
-        fun.resetEncoders();
         fun.waitMilis(50);
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Resetting Encoders");    //
         telemetry.update();
 
-        fun.resetEncoders();
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Path0", "Starting at %7d :%7d",
                 robot.leftDrive.getCurrentPosition(),
                 robot.rightDrive.getCurrentPosition());
         telemetry.update();
+        robot.imu.calibrate();
+
 
         // Wait for the game to start (driver presses PLAY)
 
@@ -129,11 +127,10 @@ public class Depot_Autonomous_Blue extends LinearOpMode {
         telemetry.update();
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
-//            fun.stoneDetectionBlue();
-//        fun.autonomousParking(Functions.direction.REVERSE, Functions.redOrBlue.RED);
-        fun.gyroStrafe(0,3.1416,30,.3,10);
+        fun.stoneDetectionBlue();
+        fun.autonomousParking(Functions.direction.REVERSE, Functions.redOrBlue.BLUE);
+        fun.gyroStrafe(0, 3.1416, 15, .3, 10);
         fun.gyroStrafe(1.571, 3.1416, 20, .5, 10);
-        stop();
     }
 
     /*
@@ -144,8 +141,6 @@ public class Depot_Autonomous_Blue extends LinearOpMode {
      *  2) Move runs out of time
      *  3) Driver stops the opmode running.
      */
-
-
 
 
 }
