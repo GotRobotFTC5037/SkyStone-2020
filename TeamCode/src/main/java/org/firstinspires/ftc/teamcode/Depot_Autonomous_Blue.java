@@ -32,9 +32,11 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 /**
@@ -84,6 +86,7 @@ public class Depot_Autonomous_Blue extends LinearOpMode {
     static final double DRIVE_SPEED = 1.0;
     static final double TURN_SPEED = 0.8;
     static final double DIST_PER_REV = (4 * 2.54 * Math.PI) / 1120;
+    private Error markerError;
 
     @Override
     public void runOpMode() {
@@ -107,27 +110,77 @@ public class Depot_Autonomous_Blue extends LinearOpMode {
         telemetry.addData("Status", "Resetting Encoders");    //
         telemetry.update();
 
-        fun.resetRobotEncoders(telemetry);
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Path0", "Starting at %7d :%7d",
                 robot.leftDrive.getCurrentPosition(),
                 robot.rightDrive.getCurrentPosition());
         telemetry.update();
-
         // Wait for the game to start (driver presses PLAY)
-
-        waitForStart();
-
-
-        // Step through each leg of the path,
-        // Note: Reverse movement is obtained by setting a negative distance (not speed)
+        if (robot.leftMarkerSwitch.getVoltage() > 3.0 || robot.rightMarkerSwitch.getVoltage() > 3.0) {
+            telemetry.addData("Running Blue", "Waiting For Start");
+            telemetry.update();
+            waitForStart();
+            fun.gyroStrafe(1.57, 1.57, 10, 0.5, 5);
+            fun.resetRobotEncoders(telemetry);
             fun.stoneDetectionBlue();
+            fun.gyroStrafe(3.14, 0.0, 75, 0.6, 10);
+            fun.autonomousParking(Functions.direction.REVERSE, Functions.redOrBlue.BLUE);
+            fun.gyroStrafe(3.14, 0.0, 100, 0.6, 10);
+            fun.waitMilis(100);
+            robot.gripServo.setPosition(1.0);
+            while (robot.extendedSwitch.getVoltage() < 3.2) {
+                robot.silverPlatter.setPower(0.7);
+            }
+            robot.silverPlatter.setPower(0.0);
+            robot.gripServo.setPosition(0.4);
+            robot.conveyorServo.setPower(0.0);
+            fun.waitMilis(300);
+            robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.lift.setTargetPosition(-350);
+            robot.lift.setPower(0.9);
+            fun.waitMilis(200);
+            while (robot.retractedSwitch.getVoltage() < 3.2) {
+                robot.silverPlatter.setPower(-0.7);
+            }
+            fun.waitMilis(100);
+            robot.silverPlatter.setPower(0.0);
+            robot.leftFoundation.setPosition(0.0);
+            robot.rightFoundation.setPosition(1.0);
+            fun.gyroStrafe(1.57,4.71,20,0.4,10);
+            robot.leftFoundation.setPosition(0.9);
+            robot.rightFoundation.setPosition(0.2);
+            fun.waitMilis(2000);
+
+
 //        fun.autonomousParking(Functions.direction.REVERSE, Functions.redOrBlue.RED);
-        fun.gyroStrafe(0,3.1416,30,.3,10);
-        fun.gyroStrafe(1.571, 3.1416, 20, .5, 10);
-        stop();
+//            fun.gyroStrafe(0, 3.1416, 30, .3, 10)
+//            fun.gyroStrafe(1.571, 3.1416, 20, .5, 10);
+
+        } else if (robot.leftMarkerSwitch.getVoltage() < 3.0 || robot.rightMarkerSwitch.getVoltage() < 3.0) {
+            telemetry.addData("Running Red", "Waiting For Start");
+            telemetry.update();
+            waitForStart();
+            fun.gyroStrafe(1.57, 1.57, 10, 0.5, 5);
+            fun.resetRobotEncoders(telemetry);
+            fun.stoneDetectionRed();
+//        fun.autonomousParking(Functions.direction.REVERSE, Functions.redOrBlue.RED);
+//            fun.gyroStrafe(3.1416,0,30,.3,10);
+//            fun.gyroStrafe(1.571, 0, 20, .5, 10);
+        } else {
+            telemetry.addData("Left", robot.leftMarkerSwitch.getVoltage());
+            telemetry.addData("Right", robot.rightMarkerSwitch.getVoltage());
+            telemetry.update();
+            fun.waitMilis(10000);
+            throw new RuntimeException("Check Markers");
+        }
+
     }
+
+
+    // Step through each leg of the path,
+    // Note: Reverse movement is obtained by setting a negative distance (not speed)
+
 
     /*
      *  Method to perform a relative move, based on encoder counts.
@@ -137,8 +190,6 @@ public class Depot_Autonomous_Blue extends LinearOpMode {
      *  2) Move runs out of time
      *  3) Driver stops the opmode running.
      */
-
-
 
 
 }

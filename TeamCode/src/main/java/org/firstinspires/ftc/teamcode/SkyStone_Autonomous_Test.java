@@ -7,6 +7,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 /**
@@ -74,41 +77,61 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
         Functions fun = new Functions(robot, imu);
         fun.waitMilis(50);
         // Send telemetry message to signify robot waiting;
-        telemetry.addData("Status", "Resetting Encoders");    //
-        telemetry.update();
-
-
-
+        fun.resetDriveEncoders();
         // Send telemetry message to indicate successful Encoder reset
-        telemetry.addData("Path0", "Starting at %7d :%7d",
-                robot.leftDrive.getCurrentPosition(),
-                robot.rightDrive.getCurrentPosition());
-        telemetry.update();
+//        telemetry.addData("Path0", "Starting at %7d :%7d",
+//                robot.leftDrive.getCurrentPosition(),
+//                robot.rightDrive.getCurrentPosition());
+//        telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+        robot.leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        fun.waitMilis(100);
         while (opModeIsActive()) {
-            if (gamepad2.a) {
-                robot.leftDrive.setPower(0.5);
-            } else {
-                robot.leftDrive.setPower(0.0);
-            }
-            if (gamepad2.y) {
-                robot.leftBackDrive.setPower(0.5);
-            } else {
-                robot.leftBackDrive.setPower(0.0);
-            }
-            if (gamepad2.b) {
-                robot.rightDrive.setPower(0.5);
-            } else {
-                robot.rightDrive.setPower(0.0);
-            }
-            if (gamepad2.x) {
-                robot.rightBackDrive.setPower(0.5);
-            } else {
-                robot.rightBackDrive.setPower(0.0);
-            }
+            robot.leftDrive.setPower(.2);
+            robot.rightDrive.setPower(.2);
+            robot.leftBackDrive.setPower(.2);
+            robot.rightBackDrive.setPower(.2);
+            telemetry.addData("fl", robot.leftDrive.getCurrentPosition());
+            telemetry.addData("fr", robot.rightDrive.getCurrentPosition());
+            telemetry.addData("bl", robot.leftBackDrive.getCurrentPosition());
+            telemetry.addData("br", robot.rightBackDrive.getCurrentPosition());
+            telemetry.update();
+            fun.waitMilis(50);
         }
+
+       // fun.resetRobotEncoders(telemetry);
+
+
+
+      //  fun.gyroStrafe(0.0,1.57,20,0.4,4);
+
+//        while (opModeIsActive()) {
+//            if (gamepad2.a) {
+//                robot.leftDrive.setPower(0.5);
+//            } else {
+//                robot.leftDrive.setPower(0.0);
+//            }
+//            if (gamepad2.y) {
+//                robot.leftBackDrive.setPower(0.5);
+//            } else {
+//                robot.leftBackDrive.setPower(0.0);
+//            }
+//            if (gamepad2.b) {
+//                robot.rightDrive.setPower(0.5);
+//            } else {
+//                robot.rightDrive.setPower(0.0);
+//            }
+//            if (gamepad2.x) {
+//                robot.rightBackDrive.setPower(0.5);
+//            } else {
+//                robot.rightBackDrive.setPower(0.0);
+//            }
+//        }
     }
 
     /*

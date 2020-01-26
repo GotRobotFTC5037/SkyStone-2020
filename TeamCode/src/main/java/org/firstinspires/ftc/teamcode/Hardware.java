@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -55,8 +56,8 @@ public class Hardware {
     public CRServo conveyorServo = null;
 
     // Sensors
-    public ColorSensor bottomColorSensor = null;
-    public ColorSensor leftColorSensor = null;
+    public RevColorSensorV3 bottomColorSensor = null;
+    public RevColorSensorV3 leftColorSensor = null;
     public DistanceSensor leftFoundationSensor = null;
     public AnalogInput leftMarkerSwitch = null;
 
@@ -75,7 +76,7 @@ public class Hardware {
     public Servo gripServo = null;
 
     // Sensors
-    public ColorSensor rightColorSensor = null;
+    public RevColorSensorV3 rightColorSensor = null;
     public DistanceSensor rightFoundationSensor = null;
     public DistanceSensor conveyorDistanceSensor = null;
     public AnalogInput rightMarkerSwitch = null;
@@ -159,13 +160,13 @@ public class Hardware {
         conveyorServo = hwMap.get(CRServo.class, "conveyor");
         gripServo = hwMap.get(Servo.class, "gripperServo");
 
-        leftFoundation.setPosition(1.0);
+        leftFoundation.setPosition(0.95);
         rightFoundation.setPosition(0.0);
 
         // Define and initialize ALL installed Sensors.
-       // rightColorSensor = hwMap.get(ColorSensor.class, "rightColorSensor");
-        //leftColorSensor = hwMap.get(ColorSensor.class, "leftColorSensor");
-        bottomColorSensor = hwMap.get(ColorSensor.class, "bottomColorSensor");
+        rightColorSensor = hwMap.get(RevColorSensorV3.class, "rightColorSensor");
+        leftColorSensor = hwMap.get(RevColorSensorV3.class, "leftColorSensor");
+        bottomColorSensor = hwMap.get(RevColorSensorV3.class, "bottomColorSensor");
         leftMarkerSwitch = hwMap.get(AnalogInput.class, "leftMarker");
         rightMarkerSwitch = hwMap.get(AnalogInput.class, "rightMarker");
         retractedSwitch = hwMap.get(AnalogInput.class, "retractSwitch");

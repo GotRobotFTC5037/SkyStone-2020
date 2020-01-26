@@ -269,6 +269,84 @@ public class Functions {
             robot.rightBackDrive.setPower(v4);
         }
     }
+    public void continuousGyroStrafe(double heading,
+                           double pose,
+                           boolean ender,
+                           double power,
+                           double timeoutS) {
+
+        double currentHeading;
+        double drvPower = power;
+        double adjPower;
+        double currentDistance;
+        double driveAngle;
+        double headingRadians;
+        double poseDegrees;
+        double distX = 0;
+        double distY = 0;
+        double dY;
+        double dX;
+        double oldLeft = robot.leftDrive.getCurrentPosition();
+        double oldRight = robot.rightDrive.getCurrentPosition();
+        double oldBackLeft = robot.leftBackDrive.getCurrentPosition();
+        double oldBackRight = robot.rightBackDrive.getCurrentPosition();
+        double newLeft = 0;
+        double newRight = 0;
+        double newBackLeft = 0;
+        double newBackRight = 0;
+        runtime.reset();
+        while ((runtime.seconds() < timeoutS) && ender) {
+            currentHeading = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+            headingRadians = ((-currentHeading / 180) * 3.1416) + (1 / 2 * 3.1416);
+            poseDegrees = ((pose - 3.1416 / 2) % (2 * 3.1416)) * (360 / (2 * 3.1416));
+            if (poseDegrees > 180) {
+                poseDegrees -= 360;
+            }
+            if (poseDegrees < -180) {
+                poseDegrees += 360;
+            }
+            driveAngle = subtractAngle(poseDegrees, currentHeading);
+            adjPower = subtractAngle(poseDegrees, currentHeading) / 120;
+            newLeft = robot.leftDrive.getCurrentPosition();
+            newRight = robot.rightDrive.getCurrentPosition();
+            newBackRight = robot.rightBackDrive.getCurrentPosition();
+            newBackLeft = robot.leftBackDrive.getCurrentPosition();
+
+            dX = ((((newLeft - oldLeft) - (newBackLeft - oldBackLeft)
+                    - (newRight - oldRight) + (newBackRight - oldBackRight)) * Math.sin(Math.PI / 4)) / 4.0) * DIST_PER_REV;
+            dY = (((newLeft - oldLeft) + (newBackLeft - oldBackLeft)
+                    + (newRight - oldRight) + (newBackRight - oldBackRight)) / 4.0) * DIST_PER_REV;
+            distX += (Math.sin(headingRadians) * dX + Math.cos(headingRadians) * dY);
+            distY += (Math.sin(headingRadians) * dY + Math.cos(headingRadians) * dX);
+            oldLeft = newLeft;
+            oldRight = newRight;
+            oldBackLeft = newBackLeft;
+            oldBackRight = newBackRight;
+
+            currentDistance = Math.sqrt(distX * distX + distY * distY);
+
+            driveAngle = ((-currentHeading / 180) * 3.1416) + (1 / 2 * 3.1416) + heading;
+//            driveAngle = 0.5*Math.PI;
+//            adjPower = 0;
+
+            double robotAngle = driveAngle - Math.PI / 4;
+            final double v1 = power * Math.cos(robotAngle) - adjPower;
+            final double v2 = power * Math.sin(robotAngle) + adjPower;
+            final double v3 = power * Math.sin(robotAngle) - adjPower;
+            final double v4 = power * Math.cos(robotAngle) + adjPower;
+
+
+            robot.leftDrive.setPower(v1);
+            robot.rightDrive.setPower(v2);
+            robot.leftBackDrive.setPower(v3);
+            robot.rightBackDrive.setPower(v4);
+            return;
+        }
+        robot.leftDrive.setPower(0);
+        robot.leftBackDrive.setPower(0);
+        robot.rightDrive.setPower(0);
+        robot.rightBackDrive.setPower(0);
+    }
 
     public void encoderDrive(double speed,
                              double leftCentimeters, double rightCentimeters,
@@ -331,7 +409,7 @@ public class Functions {
 
     public void stoneDetectionBlue() {
         double timeoutS = 7.0;
-        double hueValue = 0.4;
+        double hueValue = 0.2;
         double redU = 0.0;
         double greenU = 0.0;
         double blueU = 0.0;
@@ -339,31 +417,41 @@ public class Functions {
         int run = 0;
         int zero = 0;
         runtime.reset();
-        gyroStrafe(1.571, 1.571, 69, 0.6, 10);
-        gyroStrafe(0, 1.571, 44, 0.6, 10);
-        while ((!foundPos) && (timeoutS > runtime.seconds())) {
-            redU = (double) robot.rightColorSensor.red() / (double) robot.rightColorSensor.alpha();
-            greenU = (double) robot.rightColorSensor.green() / (double) robot.rightColorSensor.alpha();
-            blueU = (double) robot.rightColorSensor.blue() / (double) robot.rightColorSensor.alpha();
-
-            if (((greenU + redU) * hueValue) < blueU) {
+        gyroStrafe(1.571, 1.571, 40, 0.6, 10);
+        gyroStrafe(0, 1.571, 35, 0.6, 10);
+        while (timeoutS > runtime.seconds() && !foundPos) {
+                redU = (double) robot.rightColorSensor.red() / (double) robot.rightColorSensor.alpha();
+                greenU = (double) robot.rightColorSensor.green() / (double) robot.rightColorSensor.alpha();
+                blueU = (double) robot.rightColorSensor.blue() / (double) robot.rightColorSensor.alpha();
                 //Sees skystone
                 //stafe to pos?
-                foundPos = true;
-                gyroStrafe(0, 1.571, 5, 0.4, 10);
+                if (((greenU + redU) * hueValue) < blueU) {
+                    //Sees skystone
 
-                gyroStrafe(1.571, 1.571, 5.657, 0.5, 20.0);
+                    //Sees skystone
+                    //stafe to pos?
+                    foundPos = true;
+                    gyroStrafe(0.0,1.57,5,0.4,5);
+                    intake(intake.IN,0.8);
+                    gyroStrafe(1.57,1.57,20,0.25,8);
+                    waitMilis(250);
+                    robot.conveyorServo.setPower(-1.0);
+                    gyroStrafe(4.71,1.57,25,0.3,8);
+                    intake(intake.IN,0.0);
 
-                waitMilis(600);
 
-                gyroStrafe(4.7126, 1.571, 20, 0.6, 10);
-                gyroStrafe(3.1416, 3.1416, (190 - (run * 8)), 0.6, 10);
+//                gyroStrafe(1.571, 1.571, 5.657, 0.5, 20.0);
+//
+//                waitMilis(600);
+//
+//                gyroStrafe(4.7126, 1.571, 20, 0.6, 10);
+//                gyroStrafe(0.0, 0, (190 - (run * 12)), 0.6, 10);
 
-                return;
-            } else {
-                gyroStrafe(3.1416, 1.571, 7, 0.4, 7.0);
-                run++;
-            }
+                    return;
+                } else {
+                    gyroStrafe(3.14, 1.571, 7, 0.4, 7.0);
+                    run++;
+                }
         }
     }
 
@@ -390,14 +478,14 @@ public class Functions {
                 //Sees skystone
                 //stafe to pos?
                 foundPos = true;
-                gyroStrafe(3.1416, 1.571, 5, 0.4, 10);
-
-                gyroStrafe(1.571, 1.571, 5.657, 0.5, 20.0);
-
-                waitMilis(600);
-
-                gyroStrafe(4.7126, 1.571, 20, 0.6, 10);
-                gyroStrafe(0.0, 0, (190 - (run * 12)), 0.6, 10);
+//                gyroStrafe(3.1416, 1.571, 5, 0.4, 10);
+//
+//                gyroStrafe(1.571, 1.571, 5.657, 0.5, 20.0);
+//
+//                waitMilis(600);
+//
+//                gyroStrafe(4.7126, 1.571, 20, 0.6, 10);
+//                gyroStrafe(0.0, 0, (190 - (run * 12)), 0.6, 10);
 
                 return;
             } else {
@@ -526,19 +614,22 @@ public class Functions {
         robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        waitMilis(50);
+        waitMilis(150);
         telemetry.addData("Resetting Silver Platter", "Resetting Encoders");
         telemetry.update();
-        robot.lift.setPower(.2);
+        robot.lift.setPower(-.95);
+        waitMilis(200);
+        robot.lift.setTargetPosition(robot.lift.getCurrentPosition());
+        robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.lift.setPower(.85);
+        robot.silverPlatter.setPower(.6);
+        waitMilis(500);
+        robot.silverPlatter.setPower(-0.6);
         waitMilis(250);
-        robot.lift.setPower(0);
-        robot.silverPlatter.setPower(.2);
-        waitMilis(250);
-        robot.silverPlatter.setPower(-0.2);
-        waitMilis(100);
         while (robot.retractedSwitch.getVoltage() < 3.3) {
-            robot.silverPlatter.setPower(-0.1);
+            robot.silverPlatter.setPower(-0.35);
         }
+        waitMilis(100);
         robot.silverPlatter.setPower(0.0);
         telemetry.addData("Silver Platter Reset", "Resetting Encoders");
         telemetry.update();
@@ -546,10 +637,12 @@ public class Functions {
         robot.silverPlatter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         waitMilis(100);
         telemetry.addData("Resetting Lift", "Resetting Encoders");
+        robot.lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         while (robot.liftSwitch.getVoltage() < 3.3) {
-            robot.lift.setPower(-0.05);
+            robot.lift.setPower(0.05);
         }
         robot.lift.setPower(0.0);
+        waitMilis(100);
         telemetry.addData("Lift Reset", "Resetting Encoders");
         telemetry.update();
         robot.lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
