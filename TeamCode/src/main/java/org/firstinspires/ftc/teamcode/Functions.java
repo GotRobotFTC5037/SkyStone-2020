@@ -622,12 +622,12 @@ public class Functions {
         robot.lift.setTargetPosition(robot.lift.getCurrentPosition());
         robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.lift.setPower(.85);
-        robot.silverPlatter.setPower(.6);
+        robot.silverPlatter.setPower(.3);
         waitMilis(500);
-        robot.silverPlatter.setPower(-0.6);
+        robot.silverPlatter.setPower(-0.3);
         waitMilis(250);
         while (robot.retractedSwitch.getVoltage() < 3.3) {
-            robot.silverPlatter.setPower(-0.35);
+            robot.silverPlatter.setPower(-0.15);
         }
         waitMilis(100);
         robot.silverPlatter.setPower(0.0);

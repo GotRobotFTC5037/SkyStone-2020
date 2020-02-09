@@ -32,6 +32,10 @@ public class TeleOopSKSKS extends LinearOpMode {
     private boolean reversed = false;
     int state;
     int autoState = 0;
+    double driveSpeed = 1;
+    int driveState = 0;
+    int liftState = 0;
+    double lastStateTime;
 
     @Override
     public void runOpMode() {
@@ -61,6 +65,7 @@ public class TeleOopSKSKS extends LinearOpMode {
         telemetry.addLine();
         telemetry.addData("Robot", "Initialized");
         telemetry.update();
+        fun.resetRobotEncoders(telemetry);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -69,6 +74,10 @@ public class TeleOopSKSKS extends LinearOpMode {
             telemetry.addData("Reversed", reversed);
             telemetry.update();
             fun.waitMilis(0);
+            telemetry.addData("Speed", driveSpeed);
+            telemetry.addData("LiftState", liftState);
+            telemetry.addData("SilverPlatter", robot.silverPlatter.getCurrentPosition());
+            telemetry.update();
             switch (autoState) {
                 case 0: //Do not run
                     break;
@@ -79,7 +88,7 @@ public class TeleOopSKSKS extends LinearOpMode {
                     }
                     break;
                 case 2:
-                    if (runtime.milliseconds() > oldTime + 500){
+                    if (runtime.milliseconds() > oldTime + 500) {
                         autoState++;
                     }
                     break;
@@ -89,13 +98,17 @@ public class TeleOopSKSKS extends LinearOpMode {
                     }
                     break;
                 case 4: // Open Gripper
-                    robot.gripServo.setPosition(1.0);
+                    robot.gripServo.setPosition(0.7);
+                    // lastStateTime = getRuntime();
                     autoState++;
                     break;
                 case 5: // Mover Silver Platter out until limit switch
-                    robot.silverPlatter.setPower(1.0);
+
+                    robot.silverPlatter.setPower(.65);
+                    // robot.silverPlatter.setPower(.65 * Math.pow(.4,getRuntime() - lastStateTime));
                     if (robot.extendedSwitch.getVoltage() > 3.2) {
                         robot.silverPlatter.setPower(.0);
+                        fun.waitMilis(25);
 //                        fun.waitMilis(25);
 //                        int trayPos = robot.silverPlatter.getCurrentPosition();
 //                        robot.silverPlatter.setPower(0.0);
@@ -111,27 +124,27 @@ public class TeleOopSKSKS extends LinearOpMode {
                     autoState++;
                     break;
                 case 7:
-                    if (runtime.milliseconds() > oldTime + 400) {
+                    if (runtime.milliseconds() > oldTime + 300) {
                         autoState++;
                     }
                     break;
                 case 8: // Lift to position
                     robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    robot.lift.setTargetPosition(-200);
+                    robot.lift.setTargetPosition(-175);
                     //robot.lift.setTargetPosition(-1000);
-                    robot.lift.setPower(-0.9);
+                    robot.lift.setPower(-0.95);
                     autoState++;
                     break;
                 case 9: // Wait For Lift
-                    if (robot.lift.getCurrentPosition() < -150) {
+                    if (robot.lift.getCurrentPosition() < -100) {
                         autoState++;
                     } else {
-                        robot.lift.setPower(-0.9);
+                        robot.lift.setPower(-0.95);
                     }
                     break;
                 case 10: // Retract Platter until retract switch
-                    robot.silverPlatter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    robot.silverPlatter.setPower(-.75);
+                    // robot.silverPlatter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    robot.silverPlatter.setPower(-.7);
                     if (robot.retractedSwitch.getVoltage() > 3.2) {
                         robot.silverPlatter.setPower(-0.05);
                         autoState++;
@@ -153,25 +166,50 @@ public class TeleOopSKSKS extends LinearOpMode {
             double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
             double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
             double rightX = gamepad1.right_stick_x;
+            if (gamepad1.dpad_up) {
+                driveState--;
+                fun.waitMilis(75);
+            } else if (gamepad1.dpad_down) {
+                driveState++;
+                fun.waitMilis(75);
+            } else if (gamepad1.dpad_right) {
+                driveState = 0;
+            } else if (gamepad1.dpad_left) {
+                driveState = 5;
+            }
+
+            if (driveState == 0) {
+                driveSpeed = 1;
+            } else if (driveState == 1) {
+                driveSpeed = .9;
+            } else if (driveState == 2) {
+                driveSpeed = .8;
+            } else if (driveState == 3) {
+                driveSpeed = .7;
+            } else if (driveState == 4) {
+                driveSpeed = .6;
+            } else if (driveState == 5) {
+                driveSpeed = .5;
+            }
 
             if (reversed) {
                 final double v1 = r * Math.cos(robotAngle) - rightX;
                 final double v2 = r * Math.sin(robotAngle) + rightX;
                 final double v3 = r * Math.sin(robotAngle) - rightX;
                 final double v4 = r * Math.cos(robotAngle) + rightX;
-                robot.leftDrive.setPower(-v1);
-                robot.rightDrive.setPower(-v2);
-                robot.leftBackDrive.setPower(-v3);
-                robot.rightBackDrive.setPower(-v4);
+                robot.leftDrive.setPower(-v1 * driveSpeed);
+                robot.rightDrive.setPower(-v2 * driveSpeed);
+                robot.leftBackDrive.setPower(-v3 * driveSpeed);
+                robot.rightBackDrive.setPower(-v4 * driveSpeed);
             } else {
                 final double v1 = r * Math.cos(robotAngle) + rightX;
                 final double v2 = r * Math.sin(robotAngle) - rightX;
                 final double v3 = r * Math.sin(robotAngle) + rightX;
                 final double v4 = r * Math.cos(robotAngle) - rightX;
-                robot.leftDrive.setPower(v1);
-                robot.rightDrive.setPower(v2);
-                robot.leftBackDrive.setPower(v3);
-                robot.rightBackDrive.setPower(v4);
+                robot.leftDrive.setPower(v1 * driveSpeed);
+                robot.rightDrive.setPower(v2 * driveSpeed);
+                robot.leftBackDrive.setPower(v3 * driveSpeed);
+                robot.rightBackDrive.setPower(v4 * driveSpeed);
             }
 
             if (gamepad1.a) {
@@ -185,6 +223,7 @@ public class TeleOopSKSKS extends LinearOpMode {
                 robot.rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             }
+
 
             boolean right_trigger1;
             boolean left_trigger1;
@@ -233,6 +272,35 @@ public class TeleOopSKSKS extends LinearOpMode {
 //                telemetry.update();
 //                fun.waitMilis(100);
 //            }
+            if (gamepad2.dpad_up) {
+                liftState++;
+                fun.waitMilis(75);
+            } else if (gamepad2.dpad_down) {
+                liftState--;
+                fun.waitMilis(75);
+            } //125 Ticks per inch for lift
+            if (liftState == 0) {
+                robot.lift.setTargetPosition(0);
+                robot.lift.setPower(.9);
+            } else if (liftState == 1) {
+                robot.lift.setTargetPosition(-450 * (liftState) - 125);
+                robot.lift.setPower(.9);
+            } else if (liftState == 2) {
+                robot.lift.setTargetPosition(-450 * (liftState) - 125);
+                robot.lift.setPower(.9);
+            } else if (liftState == 3) {
+                robot.lift.setTargetPosition(-450 * (liftState) - 125);
+                robot.lift.setPower(.9);
+            } else if (liftState == 4) {
+                robot.lift.setTargetPosition(-450 * (liftState) - 125);
+                robot.lift.setPower(.9);
+            } else if (liftState == 5) {
+                robot.lift.setTargetPosition(-450 * (liftState) - 125);
+                robot.lift.setPower(.9);
+            } else if (liftState == 6) {
+                robot.lift.setTargetPosition(-450 * (liftState) - 125);
+                robot.lift.setPower(.9);
+            }
             if (gamepad2.dpad_left) {
                 autoState = 1;
 
@@ -245,29 +313,15 @@ public class TeleOopSKSKS extends LinearOpMode {
             } else if (gamepad2.b) {
                 robot.gripServo.setPosition(1.0);
             }
-            if (gamepad2.dpad_up) {
-                //robot.lift.setTargetPosition(-650 /** Move the lift up to put a block up **/);
-                if (robot.lift.getCurrentPosition() >= 0.0) {
-                    robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    robot.lift.setTargetPosition(-650);
-                    robot.lift.setPower(1.0);
-                } else if (robot.lift.getCurrentPosition() >= -650) {
-                    robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    robot.lift.setTargetPosition(-1200);
-                    robot.lift.setPower(1.0);
-                } else if (robot.lift.getCurrentPosition() >= -1200) {
-                    robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    robot.lift.setTargetPosition(-2000);
-                    robot.lift.setPower(1.0);
-                } else {
-                    robot.lift.setTargetPosition(robot.lift.getTargetPosition());
-                }
-
-            } else if (gamepad2.dpad_down) {
-             //   robot.conveyorServo.setPower(1.0);
-            }
+//            if (gamepad2.dpad_up) {
+//                //robot.lift.setTargetPosition(-650 /** Move the lift up to put a block up **/);
+//              robot.conveyorServo.setPower(1.0);
+//
+//            } else if (gamepad2.dpad_down) {
+//                robot.conveyorServo.setPower(-1.0);
+//            }
             if (gamepad2.x) {
-                robot.lift.setTargetPosition(0);
+                liftState = 0;
             }
             if (autoState == 0) {
                 if (right_trigger2) {
@@ -283,20 +337,20 @@ public class TeleOopSKSKS extends LinearOpMode {
                     }
                 }
 
-                robot.lift.setTargetPosition((robot.lift.getTargetPosition()) + ((int) gamepad2.right_stick_y * 10));
-                robot.lift.setPower(1.0);
+                robot.lift.setTargetPosition((robot.lift.getTargetPosition()) + ((int) gamepad2.right_stick_y * 20));
+                robot.lift.setPower(0.95);
                 robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.silverPlatter.setPower(-gamepad2.left_stick_y);
+                robot.silverPlatter.setPower(-gamepad2.left_stick_y * .5);
             } else if (autoState == 10) {
-                robot.lift.setTargetPosition((robot.lift.getTargetPosition()) + ((int) gamepad2.right_stick_y * 10));
-                robot.lift.setPower(1.0);
+                robot.lift.setTargetPosition((robot.lift.getTargetPosition()) + ((int) gamepad2.right_stick_y * 20));
+                robot.lift.setPower(0.95);
                 robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             } else if (autoState == 1 || autoState == 2) {
-                robot.silverPlatter.setPower(-gamepad2.left_stick_y);
+                robot.silverPlatter.setPower(-gamepad2.left_stick_y * .5);
                 fun.intake(Functions.intake.IN, .75);
-                robot.conveyorServo.setPower(-1.0);
-            } else if (autoState == 4 || autoState == 5){
-                robot.conveyorServo.setPower(-0.25);
+                robot.conveyorServo.setPower(1.0);
+            } else if (autoState == 4 || autoState == 5) {
+                robot.conveyorServo.setPower(0.2);
                 fun.intake(Functions.intake.IN, .0);
             } else {
                 robot.conveyorServo.setPower(0.0);

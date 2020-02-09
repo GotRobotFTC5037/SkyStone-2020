@@ -117,7 +117,7 @@ public class Depot_Autonomous_Blue extends LinearOpMode {
                 robot.rightDrive.getCurrentPosition());
         telemetry.update();
         // Wait for the game to start (driver presses PLAY)
-        if (robot.leftMarkerSwitch.getVoltage() > 3.0 || robot.rightMarkerSwitch.getVoltage() > 3.0) {
+        if (robot.leftMarkerSwitch.getVoltage() > 3.0 && robot.rightMarkerSwitch.getVoltage() > 3.0) {
             telemetry.addData("Running Blue", "Waiting For Start");
             telemetry.update();
             waitForStart();
@@ -157,13 +157,13 @@ public class Depot_Autonomous_Blue extends LinearOpMode {
 //            fun.gyroStrafe(0, 3.1416, 30, .3, 10)
 //            fun.gyroStrafe(1.571, 3.1416, 20, .5, 10);
 
-        } else if (robot.leftMarkerSwitch.getVoltage() < 3.0 || robot.rightMarkerSwitch.getVoltage() < 3.0) {
+        } else if (robot.leftMarkerSwitch.getVoltage() < 3.0 && robot.rightMarkerSwitch.getVoltage() < 3.0) {
             telemetry.addData("Running Red", "Waiting For Start");
             telemetry.update();
             waitForStart();
-            fun.gyroStrafe(1.57, 1.57, 10, 0.5, 5);
-            fun.resetRobotEncoders(telemetry);
-            fun.stoneDetectionRed();
+//            fun.gyroStrafe(1.57, 1.57, 10, 0.5, 5);
+//            fun.resetRobotEncoders(telemetry);
+//            fun.stoneDetectionRed();
 //        fun.autonomousParking(Functions.direction.REVERSE, Functions.redOrBlue.RED);
 //            fun.gyroStrafe(3.1416,0,30,.3,10);
 //            fun.gyroStrafe(1.571, 0, 20, .5, 10);
