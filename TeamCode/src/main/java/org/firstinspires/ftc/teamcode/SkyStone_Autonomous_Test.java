@@ -77,7 +77,7 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
         Functions fun = new Functions(robot, imu);
         fun.waitMilis(50);
         // Send telemetry message to signify robot waiting;
-        fun.resetDriveEncoders();
+        fun.resetRobotEncoders(telemetry);
         // Send telemetry message to indicate successful Encoder reset
 //        telemetry.addData("Path0", "Starting at %7d :%7d",
 //                robot.leftDrive.getCurrentPosition(),
@@ -86,22 +86,26 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        robot.leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        fun.waitMilis(100);
+//        robot.leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        robot.rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        fun.waitMilis(100);
+//        while (opModeIsActive()) {
+//            robot.leftDrive.setPower(.2);
+//            robot.rightDrive.setPower(.2);
+//            robot.leftBackDrive.setPower(.2);
+//            robot.rightBackDrive.setPower(.2);
+//            telemetry.addData("fl", robot.leftDrive.getCurrentPosition());
+//            telemetry.addData("fr", robot.rightDrive.getCurrentPosition());
+//            telemetry.addData("bl", robot.leftBackDrive.getCurrentPosition());
+//            telemetry.addData("br", robot.rightBackDrive.getCurrentPosition());
+//            telemetry.update();
+//            fun.waitMilis(50);
+//        }
         while (opModeIsActive()) {
-            robot.leftDrive.setPower(.2);
-            robot.rightDrive.setPower(.2);
-            robot.leftBackDrive.setPower(.2);
-            robot.rightBackDrive.setPower(.2);
-            telemetry.addData("fl", robot.leftDrive.getCurrentPosition());
-            telemetry.addData("fr", robot.rightDrive.getCurrentPosition());
-            telemetry.addData("bl", robot.leftBackDrive.getCurrentPosition());
-            telemetry.addData("br", robot.rightBackDrive.getCurrentPosition());
+            telemetry.addData("Lift Pos", robot.lift.getCurrentPosition());
             telemetry.update();
-            fun.waitMilis(50);
         }
 
        // fun.resetRobotEncoders(telemetry);

@@ -618,10 +618,8 @@ public class Functions {
         telemetry.addData("Resetting Silver Platter", "Resetting Encoders");
         telemetry.update();
         robot.lift.setPower(-.95);
-        waitMilis(200);
-        robot.lift.setTargetPosition(robot.lift.getCurrentPosition());
-        robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.lift.setPower(.85);
+        waitMilis(150);
+        robot.lift.setPower(-.2);
         robot.silverPlatter.setPower(.3);
         waitMilis(500);
         robot.silverPlatter.setPower(-0.3);
@@ -639,14 +637,14 @@ public class Functions {
         telemetry.addData("Resetting Lift", "Resetting Encoders");
         robot.lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         while (robot.liftSwitch.getVoltage() < 3.3) {
-            robot.lift.setPower(0.05);
+            robot.lift.setPower(0.0);
         }
+        waitMilis(0);
         robot.lift.setPower(0.0);
-        waitMilis(100);
-        telemetry.addData("Lift Reset", "Resetting Encoders");
-        telemetry.update();
         robot.lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        telemetry.addData("Lift Reset", "Resetting Encoders");
+        telemetry.update();
         waitMilis(100);
         telemetry.addData("Resume Playing", "Have a nice day");
         telemetry.update();
