@@ -63,7 +63,7 @@ public class TeleOopSKSKS extends LinearOpMode {
         robot.rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         fun.waitMilis(50);
-        composeTelemetry();
+       // composeTelemetry();
         telemetry.addLine();
         telemetry.addData("Robot", "Initialized");
         telemetry.update();
@@ -77,16 +77,23 @@ public class TeleOopSKSKS extends LinearOpMode {
             }
             telemetry.addData("Automated", autoState);
             telemetry.addData("Reversed", reversed);
-            telemetry.update();
             fun.waitMilis(0);
             telemetry.addData("Speed", driveSpeed);
             telemetry.addData("LiftState", liftState);
+            telemetry.addData("start", gamepad1.back);
+            telemetry.addData("back", gamepad1.start);
             telemetry.update();
             if (gamepad2.a) {
                 robot.gripServo.setPosition(0.5);
             } else if (gamepad2.b) {
                 robot.gripServo.setPosition(1.0);
             }
+//            if (gamepad1.x) {
+//                reversed = false;
+//            }
+//            if (gamepad1.b) {
+//                reversed = true;
+//            }
             switch (autoState) {
                 case 0: //Do not run
                     break;
@@ -122,12 +129,12 @@ public class TeleOopSKSKS extends LinearOpMode {
                     }
                     break;
                 case 6: // Close Gripper
-                    robot.gripServo.setPosition(0.4);
+                    robot.gripServo.setPosition(0.5);
                     oldTime = runtime.milliseconds();
                     autoState++;
                     break;
                 case 7:
-                    if (runtime.milliseconds() > oldTime + 300) {
+                    if (runtime.milliseconds() > oldTime + 200) {
                         autoState++;
                     }
                     break;
@@ -142,6 +149,7 @@ public class TeleOopSKSKS extends LinearOpMode {
                     if (robot.lift.getCurrentPosition() < -100) {
                         autoState++;
                     } else {
+                        robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         robot.lift.setPower(-0.95);
                     }
                     break;
@@ -158,12 +166,7 @@ public class TeleOopSKSKS extends LinearOpMode {
                     break;
             }
 
-            if (gamepad1.start) {
-                reversed = false;
-            }
-            if (gamepad1.back) {
-                reversed = true;
-            }
+
             double closed = 1.0;
             double open = 0.5;
             double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
@@ -195,16 +198,16 @@ public class TeleOopSKSKS extends LinearOpMode {
                 driveSpeed = .5;
             }
 
-            if (reversed = true) {
-                final double v1 = r * Math.cos(robotAngle) - rightX;
-                final double v2 = r * Math.sin(robotAngle) + rightX;
-                final double v3 = r * Math.sin(robotAngle) - rightX;
-                final double v4 = r * Math.cos(robotAngle) + rightX;
-                robot.leftDrive.setPower(-v1 * driveSpeed);
-                robot.rightDrive.setPower(-v2 * driveSpeed);
-                robot.leftBackDrive.setPower(-v3 * driveSpeed);
-                robot.rightBackDrive.setPower(-v4 * driveSpeed);
-            } else {
+//            if (reversed = true) {
+//                final double v1 = r * Math.cos(robotAngle) - rightX;
+//                final double v2 = r * Math.sin(robotAngle) + rightX;
+//                final double v3 = r * Math.sin(robotAngle) - rightX;
+//                final double v4 = r * Math.cos(robotAngle) + rightX;
+//                robot.leftDrive.setPower(-v1 * driveSpeed);
+//                robot.rightDrive.setPower(-v2 * driveSpeed);
+//                robot.leftBackDrive.setPower(-v3 * driveSpeed);
+//                robot.rightBackDrive.setPower(-v4 * driveSpeed);
+//            } else if (reversed = false) {
                 final double v1 = r * Math.cos(robotAngle) + rightX;
                 final double v2 = r * Math.sin(robotAngle) - rightX;
                 final double v3 = r * Math.sin(robotAngle) + rightX;
@@ -213,7 +216,7 @@ public class TeleOopSKSKS extends LinearOpMode {
                 robot.rightDrive.setPower(v2 * driveSpeed);
                 robot.leftBackDrive.setPower(v3 * driveSpeed);
                 robot.rightBackDrive.setPower(v4 * driveSpeed);
-            }
+//            }
 
             if (gamepad1.b) {
                 robot.leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -338,7 +341,7 @@ public class TeleOopSKSKS extends LinearOpMode {
                         robot.lift.setPower(.9);
                         robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     } else if (liftState == 3) {
-                        robot.lift.setTargetPosition(liftValue * (1100) + liftOffset);
+                        robot.lift.setTargetPosition(liftValue * (liftState) + liftOffset);
                         robot.lift.setPower(.9);
                         robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     } else if (liftState == 4) {
