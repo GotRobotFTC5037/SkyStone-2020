@@ -622,10 +622,10 @@ public class Functions {
         robot.lift.setPower(-.2);
         robot.silverPlatter.setPower(.3);
         waitMilis(500);
-        robot.silverPlatter.setPower(-0.3);
+        robot.silverPlatter.setPower(-0.4);
         waitMilis(250);
         while (robot.retractedSwitch.getVoltage() < 3.3) {
-            robot.silverPlatter.setPower(-0.15);
+            robot.silverPlatter.setPower(-0.3);
         }
         waitMilis(100);
         robot.silverPlatter.setPower(0.0);

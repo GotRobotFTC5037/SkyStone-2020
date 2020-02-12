@@ -118,12 +118,6 @@ public class TeleOopSKSKS extends LinearOpMode {
                     if (robot.extendedSwitch.getVoltage() > 3.2) {
                         robot.silverPlatter.setPower(.0);
                         fun.waitMilis(25);
-//                        fun.waitMilis(25);
-//                        int trayPos = robot.silverPlatter.getCurrentPosition();
-//                        robot.silverPlatter.setPower(0.0);
-//                        robot.silverPlatter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//                        robot.silverPlatter.setTargetPosition(trayPos);
-//                        robot.silverPlatter.setPower(.1);
                         autoState++;
                     }
                     break;
@@ -138,10 +132,10 @@ public class TeleOopSKSKS extends LinearOpMode {
                     }
                     break;
                 case 8: // Lift to position
-                    robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     robot.lift.setTargetPosition(-175);
                     //robot.lift.setTargetPosition(-1000);
                     robot.lift.setPower(-0.95);
+                    robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     autoState++;
                     break;
                 case 9: // Wait For Lift
@@ -201,7 +195,7 @@ public class TeleOopSKSKS extends LinearOpMode {
                 driveSpeed = .5;
             }
 
-            if (reversed) {
+            if (reversed = true) {
                 final double v1 = r * Math.cos(robotAngle) - rightX;
                 final double v2 = r * Math.sin(robotAngle) + rightX;
                 final double v3 = r * Math.sin(robotAngle) - rightX;
@@ -330,7 +324,7 @@ public class TeleOopSKSKS extends LinearOpMode {
                 }
                 int liftValue = -433;
                 int liftOffset = -190;
-                if (liftMode) {
+                if (liftMode = true) {
                     if (liftState == 0) {
                         robot.lift.setTargetPosition(0);
                         robot.lift.setPower(.9);
@@ -344,7 +338,7 @@ public class TeleOopSKSKS extends LinearOpMode {
                         robot.lift.setPower(.9);
                         robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     } else if (liftState == 3) {
-                        robot.lift.setTargetPosition(liftValue * (liftState) + liftOffset);
+                        robot.lift.setTargetPosition(liftValue * (1100) + liftOffset);
                         robot.lift.setPower(.9);
                         robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     } else if (liftState == 4) {
