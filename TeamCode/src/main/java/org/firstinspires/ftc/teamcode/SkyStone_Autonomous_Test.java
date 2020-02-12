@@ -104,6 +104,9 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
 //            fun.waitMilis(50);
 //        }
         while (opModeIsActive()) {
+            if (robot.liftSwitch.getVoltage() > 3.0) {
+                robot.lift.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            }
             telemetry.addData("Lift Pos", robot.lift.getCurrentPosition());
             telemetry.update();
         }

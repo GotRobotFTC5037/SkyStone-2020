@@ -25,6 +25,7 @@ public class TeleOopSKSKS extends LinearOpMode {
     Acceleration gravity;
     private ElapsedTime runtime = new ElapsedTime();
     double oldTime = 0.0;
+    double gunnerTime = 0.0;
     Functions fun = new Functions(robot, imu);
     double num;
     double num1;
@@ -35,6 +36,7 @@ public class TeleOopSKSKS extends LinearOpMode {
     double driveSpeed = 1;
     int driveState = 0;
     int liftState = 0;
+    int gunnerState;
     double lastStateTime;
 
     @Override
@@ -70,6 +72,9 @@ public class TeleOopSKSKS extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         while (opModeIsActive()) {
+            if (robot.liftSwitch.getVoltage() > 3.0) {
+                robot.lift.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            }
             telemetry.addData("Automated", autoState);
             telemetry.addData("Reversed", reversed);
             telemetry.update();
@@ -267,26 +272,27 @@ public class TeleOopSKSKS extends LinearOpMode {
 
 
             /** Gunner **/
-//            robot.lift.setPower(gamepad2.left_stick_y);
-//
-//            if (gamepad2.a) {
-//                num1++;
-//                if (num % 2 == 0) {
-//                    robot.gripServo.setPosition(closed);
-//                } else if (!(num % 2 == 0)) {
-//                   robot.gripServo.setPosition(open);
-//                }
-//                telemetry.update();
-//                fun.waitMilis(100);
-//            }
-
-            if (gamepad2.dpad_up) {
-                liftState++;
-                fun.waitMilis(75);
-            } else if (gamepad2.dpad_down) {
-                liftState--;
-                fun.waitMilis(75);
-            } //125 Ticks per inch for lift
+            switch (gunnerState) {
+                case 0 :
+                if (gamepad2.dpad_up) {
+                    liftState++;
+                    gunnerTime = runtime.milliseconds();
+                    gunnerState++;
+                } else if (gamepad2.dpad_down) {
+                    liftState--;
+                    gunnerTime = runtime.milliseconds();
+                    gunnerState++;
+                } //125 Ticks per inch for lift
+                    break;
+                case 1:
+                    if (runtime.milliseconds() > gunnerTime + 200) {
+                        gunnerState++;
+                    }
+                    break;
+                default:
+                    gunnerState = 0;
+                    break;
+            }
             if (gamepad2.dpad_left) {
                 autoState = 1;
 
