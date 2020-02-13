@@ -27,10 +27,12 @@ public class TeleOopSKSKS extends LinearOpMode {
     double oldTime = 0.0;
     double gunnerTime = 0.0;
     Functions fun = new Functions(robot, imu);
-    double num;
+    double num = 0;
     double num1;
     private boolean automated = true;
-    private boolean reversed = false;
+    private boolean reversed = true;
+    int reversedState = 0;
+    double reversedTime;
     int state;
     int autoState = 0;
     double driveSpeed = 1;
@@ -88,12 +90,8 @@ public class TeleOopSKSKS extends LinearOpMode {
             } else if (gamepad2.b) {
                 robot.gripServo.setPosition(1.0);
             }
-//            if (gamepad1.x) {
-//                reversed = false;
-//            }
-//            if (gamepad1.b) {
-//                reversed = true;
-//            }
+
+
             switch (autoState) {
                 case 0: //Do not run
                     break;
@@ -198,6 +196,31 @@ public class TeleOopSKSKS extends LinearOpMode {
                 driveSpeed = .5;
             }
 
+//            switch (reversedState) {
+//                case 0:
+//                    if (gamepad1.start) {
+//                        num++;
+//                        if (num % 2 == 0) {
+//                            reversed = true;
+//                            reversedTime = runtime.milliseconds();
+//                            reversedState++;
+//                        } else if (!(num % 2 == 0)) {
+//                            reversed = false;
+//                            reversedTime = runtime.milliseconds();
+//                            reversedState++;
+//                        }
+//                    }
+//                    break;
+//                case 1:
+//                    if (runtime.milliseconds() > reversedTime + 400) {
+//                        reversedState++;
+//                    }
+//                    break;
+//                default:
+//                    gunnerState = 0;
+//                    break;
+//            }
+
 //            if (reversed = true) {
 //                final double v1 = r * Math.cos(robotAngle) - rightX;
 //                final double v2 = r * Math.sin(robotAngle) + rightX;
@@ -266,11 +289,6 @@ public class TeleOopSKSKS extends LinearOpMode {
 
 
             /** Gunner **/
-            if (gamepad2.start) {
-                liftMode = true;
-            } else if (gamepad2.back) {
-                liftMode = false;
-            }
             switch (gunnerState) {
                 case 0:
                     if (gamepad2.dpad_up) {
@@ -312,21 +330,17 @@ public class TeleOopSKSKS extends LinearOpMode {
                 if (right_trigger2) {
                     fun.intake(Functions.intake.IN, .5);
                     robot.conveyorServo.setPower(1.0);
+                } else if (left_trigger2) {
+                    fun.intake(Functions.intake.OUT, .5);
+                    robot.conveyorServo.setPower(-0.9);
                 } else {
                     robot.leftIntake.setPower(.0);
                     robot.rightIntake.setPower(.0);
                     robot.conveyorServo.setPower(.0);
-                    if (left_trigger2) {
-                        fun.intake(Functions.intake.OUT, .5);
-                        robot.conveyorServo.setPower(-1.0);
-                    } else {
-                        robot.leftIntake.setPower(.0);
-                        robot.rightIntake.setPower(.0);
-                        robot.conveyorServo.setPower(.0);
-                    }
                 }
+
                 int liftValue = -433;
-                int liftOffset = -190;
+                int liftOffset = -200;
                 if (liftMode = true) {
                     if (liftState == 0) {
                         robot.lift.setTargetPosition(0);
