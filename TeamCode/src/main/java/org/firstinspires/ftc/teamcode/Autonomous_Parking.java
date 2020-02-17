@@ -1,32 +1,3 @@
-/* Copyright (c) 2017 FIRST. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted (subject to the limitations in the disclaimer below) provided that
- * the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice, this list
- * of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice, this
- * list of conditions and the following disclaimer in the documentation and/or
- * other materials provided with the distribution.
- *
- * Neither the name of FIRST nor the names of its contributors may be used to endorse or
- * promote products derived from this software without specific prior written permission.
- *
- * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
- * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -66,9 +37,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name = "DepotAutonomousBlue", group = "OpMode")
+@Autonomous(name = "AutonomousFoundationParking", group = "OpMode")
 //@Disabled
-public class Depot_Autonomous_Blue extends LinearOpMode {
+public class Autonomous_Parking extends LinearOpMode {
 
     /* Declare OpMode members. */
     BNO055IMU imu;
@@ -86,10 +57,10 @@ public class Depot_Autonomous_Blue extends LinearOpMode {
     static final double DRIVE_SPEED = 1.0;
     static final double TURN_SPEED = 0.8;
     static final double DIST_PER_REV = (4 * 2.54 * Math.PI) / 1120;
-    private Error markerError;
 
     @Override
     public void runOpMode() {
+
         /*
          * Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
@@ -121,65 +92,34 @@ public class Depot_Autonomous_Blue extends LinearOpMode {
             telemetry.addData("Running Blue", "Waiting For Start");
             telemetry.update();
             waitForStart();
-            fun.gyroStrafe(1.57, 1.57, 10, 0.5, 5);
+            fun.gyroStrafe(1.57, 1.57, 5, 1, 4);
             fun.resetRobotEncoders(telemetry);
-            fun.stoneDetectionBlue();
-            fun.gyroStrafe(3.14, 0.0, 75, 0.6, 10);
-            fun.autonomousParking(Functions.direction.REVERSE, Functions.redOrBlue.BLUE);
-            fun.gyroStrafe(3.14, 0.0, 100, 0.6, 10);
-            fun.waitMilis(100);
-            robot.gripServo.setPosition(1.0);
-            while (robot.extendedSwitch.getVoltage() < 3.2) {
-                robot.silverPlatter.setPower(0.7);
-            }
-            robot.silverPlatter.setPower(0.0);
-            robot.gripServo.setPosition(0.4);
-            robot.conveyorServo.setPower(0.0);
-            fun.waitMilis(300);
-            robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.lift.setTargetPosition(-350);
-            robot.lift.setPower(0.9);
-            fun.waitMilis(200);
-            while (robot.retractedSwitch.getVoltage() < 3.2) {
-                robot.silverPlatter.setPower(-0.7);
-            }
-            fun.waitMilis(100);
-            robot.silverPlatter.setPower(0.0);
-            robot.leftFoundation.setPosition(0.0);
-            robot.rightFoundation.setPosition(1.0);
-            fun.gyroStrafe(1.57,4.71,20,0.4,10);
-            robot.leftFoundation.setPosition(0.9);
-            robot.rightFoundation.setPosition(0.2);
-            fun.waitMilis(2000);
-
-
-//        fun.autonomousParking(Functions.direction.REVERSE, Functions.redOrBlue.RED);
-//            fun.gyroStrafe(0, 3.1416, 30, .3, 10)
-//            fun.gyroStrafe(1.571, 3.1416, 20, .5, 10);
+            fun.autonomousParking(Functions.redOrBlue.BLUE, 1.57, 1.57);
+            fun.gyroStrafe(0,1.57,50,.5,10);
 
         } else if (robot.leftMarkerSwitch.getVoltage() < 3.0 && robot.rightMarkerSwitch.getVoltage() < 3.0) {
             telemetry.addData("Running Red", "Waiting For Start");
             telemetry.update();
             waitForStart();
-//            fun.gyroStrafe(1.57, 1.57, 10, 0.5, 5);
-//            fun.resetRobotEncoders(telemetry);
-//            fun.stoneDetectionRed();
-//        fun.autonomousParking(Functions.direction.REVERSE, Functions.redOrBlue.RED);
-//            fun.gyroStrafe(3.1416,0,30,.3,10);
-//            fun.gyroStrafe(1.571, 0, 20, .5, 10);
+            fun.gyroStrafe(1.57, 1.57, 5, 1, 4);
+            fun.resetRobotEncoders(telemetry);
+            fun.gyroStrafe(3.14, 3.14, 30, .7, 10);
+            while (robot.leftRangeSensor.getDistance(DistanceUnit.CM) > 5) {
+                fun.continuousGyroStrafe(4.71, 3.14, .7);
+            }
+            fun.autonomousParking(Functions.redOrBlue.BLUE, 3.14, 3.14);
         } else {
             telemetry.addData("Left", robot.leftMarkerSwitch.getVoltage());
             telemetry.addData("Right", robot.rightMarkerSwitch.getVoltage());
             telemetry.update();
-            fun.waitMilis(10000);
+            fun.waitMilis(2000);
             throw new RuntimeException("Check Markers");
         }
 
+        // Step through each leg of the path,
+        // Note: Reverse movement is obtained by setting a negative distance (not speed)
+
     }
-
-
-    // Step through each leg of the path,
-    // Note: Reverse movement is obtained by setting a negative distance (not speed)
 
 
     /*
@@ -190,6 +130,5 @@ public class Depot_Autonomous_Blue extends LinearOpMode {
      *  2) Move runs out of time
      *  3) Driver stops the opmode running.
      */
-
 
 }

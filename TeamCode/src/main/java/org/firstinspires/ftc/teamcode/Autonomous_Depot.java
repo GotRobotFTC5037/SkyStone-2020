@@ -31,11 +31,12 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 /**
@@ -64,10 +65,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Disabled
-@Autonomous(name = "FoundationAutonomousRed", group = "OpMode")
+
+@Autonomous(name = "Autonomous", group = "OpMode")
 //@Disabled
-public class Foundation_Autonomous_Red extends LinearOpMode {
+public class Autonomous_Depot extends LinearOpMode {
 
     /* Declare OpMode members. */
     BNO055IMU imu;
@@ -85,6 +86,7 @@ public class Foundation_Autonomous_Red extends LinearOpMode {
     static final double DRIVE_SPEED = 1.0;
     static final double TURN_SPEED = 0.8;
     static final double DIST_PER_REV = (4 * 2.54 * Math.PI) / 1120;
+    private Error markerError;
 
     @Override
     public void runOpMode() {
@@ -102,44 +104,123 @@ public class Foundation_Autonomous_Red extends LinearOpMode {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
         Functions fun = new Functions(robot, imu);
+
         fun.waitMilis(50);
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Resetting Encoders");    //
         telemetry.update();
 
-        fun.resetRobotEncoders(telemetry);
 
-
+        // Send telemetry message to indicate successful Encoder reset
+        telemetry.addData("Path0", "Starting at %7d :%7d",
+                robot.leftDrive.getCurrentPosition(),
+                robot.rightDrive.getCurrentPosition());
+        telemetry.update();
         // Wait for the game to start (driver presses PLAY)
+        if (robot.leftMarkerSwitch.getVoltage() > 3.0 && robot.rightMarkerSwitch.getVoltage() > 3.0) {
+            telemetry.addData("Running Blue", "Waiting For Start");
+            telemetry.update();
+            waitForStart();
+            fun.gyroStrafe(1.57, 1.57, 5, 1, 5);
+            fun.resetRobotEncoders(telemetry);
+//      stone detection
+            fun.stoneDetectionBlue();
+            double wallDis = robot.rightRangeSensor.getDistance(DistanceUnit.CM);
+            fun.gyroStrafe(3.14, 0, 145 - wallDis, .85, 10);
+//            while (robot.rightRangeSensor.getDistance(DistanceUnit.CM) < 65) {
+//                fun.continuousGyroStrafe(1.57,0.0,.75);
+//            }
+            fun.autonomousParking(Functions.redOrBlue.BLUE, 3.14, 0.0);
+            fun.gyroStrafe(3.14, 0.0, 100, .9, 10);
+            robot.gripServo.setPosition(.7);
+            robot.silverPlatter.setPower(.65);
+            while (robot.extendedSwitch.getVoltage() < 3.2) {
+                fun.waitMilis(5);
+            }
+            if (robot.extendedSwitch.getVoltage() > 3.0) {
+                robot.silverPlatter.setPower(.0);
+                fun.waitMilis(25);
+            }
+            robot.gripServo.setPosition(.5);
+            fun.waitMilis(400);
+            robot.lift.setTargetPosition(-200);
+            robot.lift.setPower(-0.95);
+            robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            fun.waitMilis(350);
+            robot.silverPlatter.setPower(-.7);
+            while (robot.retractedSwitch.getVoltage() < 3.2) {
+                fun.waitMilis(5);
+            }
+            if (robot.retractedSwitch.getVoltage() > 3.0) {
+                robot.silverPlatter.setPower(-0.05);
+            }
+            fun.gyroStrafe(4.71, 4.71, 5, 1, 5);
+            fun.gyroStrafe(1.57, 4.71, 9, .7, 10);
+//    foundation line up
+            fun.foundationLinerUpper(.1);
+            robot.gripServo.setPosition(1.0);
+            robot.lift.setTargetPosition(0);
+            robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.lift.setPower(.7);
+            robot.rightFoundation.setPosition(.2);
+            robot.leftFoundation.setPosition(.9);
+            fun.waitMilis(1000);
+            fun.gyroStrafe(4.71, 6.28, 35, .75, 10);
+//            while (robot.rightRangeSensor.getDistance(DistanceUnit.CM) > 40) {
+//                fun.continuousGyroStrafe(4.71,0,.8);
+//            }
+            fun.waitMilis(500);
+            robot.leftFoundation.setPosition(0);
+            robot.rightFoundation.setPosition(1.0);
+            robot.lift.setTargetPosition(-350);
+            robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.lift.setPower(1);
+            fun.waitMilis(500);
+            fun.gyroStrafe(0.0, 0.0, 20, 1, 5);
+            while (robot.rightRangeSensor.getDistance(DistanceUnit.CM) < 50) {
+                fun.continuousGyroStrafe(1.57, 0, 0.85);
+            }
+            robot.lift.setTargetPosition(0);
+            robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.lift.setPower(.7);
+            fun.autonomousParking(Functions.redOrBlue.BLUE,0,0);
+            fun.gyroStrafe(0,0,40,1,10);
+            fun.gyroStrafe(.785,.785,40,1,10);
 
-        waitForStart();
-        // Step through each leg of the path,
-        // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        fun.gyroStrafe(4.71, 1.57, 71, 0.7, 10);
-        fun.gyroStrafe(3.1416,1.57,15,0.3,10);
+//    red side autonomous
+        } else if (robot.leftMarkerSwitch.getVoltage() < 3.0 && robot.rightMarkerSwitch.getVoltage() < 3.0) {
+            telemetry.addData("Running Red", "Waiting For Start");
+            telemetry.update();
+            waitForStart();
+//            fun.gyroStrafe(1.57, 1.57, 10, 0.5, 5);
+//            fun.resetRobotEncoders(telemetry);
+//            fun.stoneDetectionRed();
+//        fun.autonomousParking(Functions.direction.REVERSE, Functions.redOrBlue.RED);
+//            fun.gyroStrafe(3.1416,0,30,.3,10);
+//            fun.gyroStrafe(1.571, 0, 20, .5, 10);
+        } else {
+            telemetry.addData("Left", robot.leftMarkerSwitch.getVoltage());
+            telemetry.addData("Right", robot.rightMarkerSwitch.getVoltage());
+            telemetry.update();
+            fun.waitMilis(2000);
+            throw new RuntimeException("Check Markers");
+        }
 
-        //Drive to line up with no encoders
-        robot.leftBackDrive.setPower(-0.1);
-        robot.leftDrive.setPower(-0.1);
-        robot.rightDrive.setPower(-0.1);
-        robot.rightBackDrive.setPower(-0.1);
-        fun.waitMilis(1000);
-        robot.leftBackDrive.setPower(0);
-        robot.leftDrive.setPower(0);
-        robot.rightDrive.setPower(0);
-        robot.rightBackDrive.setPower(0);
-
-        fun.waitMilis(500);
-        fun.foundationGrabber(Functions.foundationPos.CLOSED);
-        fun.waitMilis(500);
-        fun.gyroStrafe(0,1.57,40,0.2,10);
-        fun.gyroStrafe(1.57,0,30,0.6,10);
-        fun.waitMilis(500);
-        fun.foundationGrabber(Functions.foundationPos.OPEN);
-        fun.waitMilis(500);
-        fun.gyroStrafe(0,0,72,0.3,10);
-//        fun.autonomousParking(Functions.direction.FORWARD, Functions.redOrBlue.RED);
-        fun.waitMilis(1000);
-        stop();
     }
+
+
+    // Step through each leg of the path,
+    // Note: Reverse movement is obtained by setting a negative distance (not speed)
+
+
+    /*
+     *  Method to perform a relative move, based on encoder counts.
+     *  Encoders are not reset as the move is based on the current position.
+     *  Move will stop if any of three conditions occur:
+     *  1) Move gets to the desired position
+     *  2) Move runs out of time
+     *  3) Driver stops the opmode running.
+     */
+
+
 }

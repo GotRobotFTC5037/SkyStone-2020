@@ -30,7 +30,8 @@ public class TeleOopSKSKS extends LinearOpMode {
     double num = 0;
     double num1;
     private boolean automated = true;
-    private boolean reversed = true;
+
+    boolean reversed2 = false;
     int reversedState = 0;
     double reversedTime;
     int state;
@@ -40,6 +41,8 @@ public class TeleOopSKSKS extends LinearOpMode {
     int liftState = 0;
     int gunnerState;
     boolean liftMode = true;
+    double r;
+    double robotAngle;
 
     @Override
     public void runOpMode() {
@@ -69,7 +72,6 @@ public class TeleOopSKSKS extends LinearOpMode {
         telemetry.addLine();
         telemetry.addData("Robot", "Initialized");
         telemetry.update();
-        fun.resetRobotEncoders(telemetry);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -78,7 +80,7 @@ public class TeleOopSKSKS extends LinearOpMode {
                 robot.lift.setMode(DcMotor.RunMode.RESET_ENCODERS);
             }
             telemetry.addData("Automated", autoState);
-            telemetry.addData("Reversed", reversed);
+            telemetry.addData("Reversed", reversed2);
             fun.waitMilis(0);
             telemetry.addData("Speed", driveSpeed);
             telemetry.addData("LiftState", liftState);
@@ -90,6 +92,13 @@ public class TeleOopSKSKS extends LinearOpMode {
             } else if (gamepad2.b) {
                 robot.gripServo.setPosition(1.0);
             }
+//            if (gamepad1.x) {
+//                reversed2 = false;
+//            }
+//            if (gamepad1.y) {
+//                reversed2 = true;
+//            }
+
 
 
             switch (autoState) {
@@ -167,8 +176,13 @@ public class TeleOopSKSKS extends LinearOpMode {
 
             double closed = 1.0;
             double open = 0.5;
-            double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
-            double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
+            //if (reversed2 = true) {
+              //  r = Math.hypot(-gamepad1.left_stick_x, -gamepad1.left_stick_y);
+                // robotAngle = Math.atan2(gamepad1.left_stick_y, -gamepad1.left_stick_x) - Math.PI / 4;
+            //} else if (reversed2 = false) {
+                 r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
+                 robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
+            //}
             double rightX = gamepad1.right_stick_x;
             if (gamepad1.dpad_up) {
                 driveState--;
@@ -196,41 +210,6 @@ public class TeleOopSKSKS extends LinearOpMode {
                 driveSpeed = .5;
             }
 
-//            switch (reversedState) {
-//                case 0:
-//                    if (gamepad1.start) {
-//                        num++;
-//                        if (num % 2 == 0) {
-//                            reversed = true;
-//                            reversedTime = runtime.milliseconds();
-//                            reversedState++;
-//                        } else if (!(num % 2 == 0)) {
-//                            reversed = false;
-//                            reversedTime = runtime.milliseconds();
-//                            reversedState++;
-//                        }
-//                    }
-//                    break;
-//                case 1:
-//                    if (runtime.milliseconds() > reversedTime + 400) {
-//                        reversedState++;
-//                    }
-//                    break;
-//                default:
-//                    gunnerState = 0;
-//                    break;
-//            }
-
-//            if (reversed = true) {
-//                final double v1 = r * Math.cos(robotAngle) - rightX;
-//                final double v2 = r * Math.sin(robotAngle) + rightX;
-//                final double v3 = r * Math.sin(robotAngle) - rightX;
-//                final double v4 = r * Math.cos(robotAngle) + rightX;
-//                robot.leftDrive.setPower(-v1 * driveSpeed);
-//                robot.rightDrive.setPower(-v2 * driveSpeed);
-//                robot.leftBackDrive.setPower(-v3 * driveSpeed);
-//                robot.rightBackDrive.setPower(-v4 * driveSpeed);
-//            } else if (reversed = false) {
                 final double v1 = r * Math.cos(robotAngle) + rightX;
                 final double v2 = r * Math.sin(robotAngle) - rightX;
                 final double v3 = r * Math.sin(robotAngle) + rightX;

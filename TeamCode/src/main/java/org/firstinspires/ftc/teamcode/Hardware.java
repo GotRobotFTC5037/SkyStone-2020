@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -58,8 +59,11 @@ public class Hardware {
     // Sensors
     public RevColorSensorV3 bottomColorSensor = null;
     public RevColorSensorV3 leftColorSensor = null;
+    public Rev2mDistanceSensor leftRangeSensor = null;
     public DistanceSensor leftFoundationSensor = null;
     public AnalogInput leftMarkerSwitch = null;
+    public AnalogInput leftFoundationSwitch = null;
+    public AnalogInput rightFoundationSwitch = null;
 
 
     /**
@@ -78,11 +82,13 @@ public class Hardware {
     // Sensors
     public RevColorSensorV3 rightColorSensor = null;
     public DistanceSensor rightFoundationSensor = null;
-    public DistanceSensor conveyorDistanceSensor = null;
+    public Rev2mDistanceSensor conveyorDistanceSensor = null;
+    public Rev2mDistanceSensor rightRangeSensor = null;
     public AnalogInput rightMarkerSwitch = null;
     public AnalogInput retractedSwitch = null;
     public AnalogInput extendedSwitch = null;
     public AnalogInput liftSwitch = null;
+
 
 
     public static final double MID_SERVO = 0.5;
@@ -173,9 +179,11 @@ public class Hardware {
         retractedSwitch = hwMap.get(AnalogInput.class, "retractSwitch");
         extendedSwitch = hwMap.get(AnalogInput.class, "extendSwitch");
         liftSwitch = hwMap.get(AnalogInput.class, "liftSwitch");
-        conveyorDistanceSensor = hwMap.get(DistanceSensor.class, "conveyorDistanceSensor");
-
-
+        conveyorDistanceSensor = hwMap.get(Rev2mDistanceSensor.class, "conveyorDistanceSensor");
+        leftRangeSensor = hwMap.get(Rev2mDistanceSensor.class, "leftDistanceSensor");
+        rightRangeSensor = hwMap.get(Rev2mDistanceSensor.class, "rightDistanceSensor");
+        rightFoundationSwitch = hwMap.get(AnalogInput.class, "rightFoundationSwitch");
+        leftFoundationSwitch = hwMap.get(AnalogInput.class, "leftFoundationSwitch");
     }
 
 }

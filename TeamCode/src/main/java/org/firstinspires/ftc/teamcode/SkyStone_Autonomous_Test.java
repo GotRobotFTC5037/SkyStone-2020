@@ -6,10 +6,12 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 /**
@@ -59,6 +61,7 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
     static final double DRIVE_SPEED = 1.0;
     static final double TURN_SPEED = 0.8;
     static final double DIST_PER_REV = (4 * 2.54 * Math.PI) / 1120;
+
     @Override
     public void runOpMode() {
         /*
@@ -77,7 +80,7 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
         Functions fun = new Functions(robot, imu);
         fun.waitMilis(50);
         // Send telemetry message to signify robot waiting;
-        fun.resetRobotEncoders(telemetry);
+
         // Send telemetry message to indicate successful Encoder reset
 //        telemetry.addData("Path0", "Starting at %7d :%7d",
 //                robot.leftDrive.getCurrentPosition(),
@@ -86,6 +89,7 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+        runtime.reset();
 //        robot.leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //        robot.rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //        robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -103,19 +107,36 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
 //            telemetry.update();
 //            fun.waitMilis(50);
 //        }
-        while (opModeIsActive()) {
-            if (robot.liftSwitch.getVoltage() > 3.0) {
-                robot.lift.setMode(DcMotor.RunMode.RESET_ENCODERS);
-            }
-            telemetry.addData("Lift Pos", robot.lift.getCurrentPosition());
-            telemetry.update();
-        }
+        // fun.autonomousParking(Functions.direction.FORWARD, Functions.redOrBlue.BLUE);
+       // fun.foundationLinerUpper(.5);
+/** Foundation line up test **/
+     /*   robot.lift.setTargetPosition(-350);
+        robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.lift.setPower(.8);
+        robot.leftFoundation.setPosition(0.0);
+        robot.rightFoundation.setPosition(1.0);
+        fun.waitMilis(100);
+        fun.foundationLinerUpper(.2);
+*/
+while(opModeIsActive()) {
+   // telemetry.addData("left see?", robot.leftRangeSensor.getDistance(DistanceUnit.CM));
+    telemetry.addData("right see?", robot.rightRangeSensor.getDistance(DistanceUnit.CM));
 
-       // fun.resetRobotEncoders(telemetry);
+//   double redU = (double) robot.leftColorSensor.red() / (double) robot.leftColorSensor.alpha();
+//   double greenU = (double) robot.leftColorSensor.green() / (double) robot.leftColorSensor.alpha();
+//   double blueU = (double) robot.leftColorSensor.blue() / (double) robot.leftColorSensor.alpha();
+//    telemetry.addData("left color distance",robot.leftColorSensor.getDistance(DistanceUnit.CM));
+//    telemetry.addData("left color less",((greenU + redU) * .35));
+//    telemetry.addData("left color more",(blueU));
+   telemetry.update();
+//}
 
 
 
-      //  fun.gyroStrafe(0.0,1.57,20,0.4,4);
+        // fun.resetRobotEncoders(telemetry);
+
+
+        //  fun.gyroStrafe(0.0,1.57,20,0.4,4);
 
 //        while (opModeIsActive()) {
 //            if (gamepad2.a) {
@@ -151,6 +172,5 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
      */
 
 
-
-
+}
 }
