@@ -117,6 +117,7 @@ public class Autonomous_Depot extends LinearOpMode {
                 robot.rightDrive.getCurrentPosition());
         telemetry.update();
         // Wait for the game to start (driver presses PLAY)
+//  RUNNING BLUE AUTONOMOUS
         if (robot.leftMarkerSwitch.getVoltage() > 3.0 && robot.rightMarkerSwitch.getVoltage() > 3.0) {
             telemetry.addData("Running Blue", "Waiting For Start");
             telemetry.update();
@@ -126,11 +127,16 @@ public class Autonomous_Depot extends LinearOpMode {
 //      stone detection
             fun.stoneDetectionBlue();
             double wallDis = robot.rightRangeSensor.getDistance(DistanceUnit.CM);
-            fun.gyroStrafe(3.14, 0, 145 - wallDis, .85, 10);
+            fun.gyroStrafe(3.5, 0, 140 - wallDis, .85, 10);
+
+
+
 //            while (robot.rightRangeSensor.getDistance(DistanceUnit.CM) < 65) {
 //                fun.continuousGyroStrafe(1.57,0.0,.75);
 //            }
-            fun.autonomousParking(Functions.redOrBlue.BLUE, 3.14, 0.0);
+            fun.autonomousParking(Functions.redOrBlue.BLUE, 3.14, 0.0, 3);
+            fun.intake(Functions.intake.IN,0);
+            robot.conveyorServo.setPower(0);
             fun.gyroStrafe(3.14, 0.0, 100, .9, 10);
             robot.gripServo.setPosition(.7);
             robot.silverPlatter.setPower(.65);
@@ -158,69 +164,142 @@ public class Autonomous_Depot extends LinearOpMode {
             fun.gyroStrafe(1.57, 4.71, 9, .7, 10);
 //    foundation line up
             fun.foundationLinerUpper(.1);
+            robot.lift.setTargetPosition(0);
+            robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.lift.setPower(1);
+            robot.rightFoundation.setPosition(.2);
+            robot.leftFoundation.setPosition(.9);
+            fun.waitMilis(900);
+            while (robot.rightRangeSensor.getDistance(DistanceUnit.CM) > 40) {
+                fun.continuousGyroStrafe(4.71,6.28,.8);
+            }
+//            fun.gyroStrafe(4.71, 6.28, 35, .75, 10);
+            fun.waitMilis(500);
+            robot.leftFoundation.setPosition(0);
+            robot.rightFoundation.setPosition(1.0);
+            robot.gripServo.setPosition(1.0);
+            robot.lift.setTargetPosition(-350);
+            robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.lift.setPower(1);
+            fun.intake(Functions.intake.IN,.8);
+            robot.conveyorServo.setPower(-1);
+            fun.waitMilis(500);
+            while (robot.rightRangeSensor.getDistance(DistanceUnit.CM) < 50) {
+                fun.continuousGyroStrafe(1.1, 0, .8);
+            }
+            fun.gyroStrafe(0.0, 0.0, 10, .8, 3);
+            robot.lift.setTargetPosition(0);
+            robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.lift.setPower(.7);
+            fun.waitMilis(700);
+            while (robot.rightRangeSensor.getDistance(DistanceUnit.CM) < 50){
+                fun.continuousGyroStrafe(1.57,0.0,1);
+            }
+            fun.autonomousParking(Functions.redOrBlue.BLUE, 0, 0, 5);
+            fun.gyroStrafe(0, 0, 20, 1, 10);
+            fun.gyroStrafe(0,0,wallDis/20.32,1,10);
+            double blockPos = wallDis / 20.32;
+            fun.gyroStrafe(.8, .8, 50, 1, 10);
+            fun.gyroStrafe(3.94, 3.14, 20, 1, 10);
+            while(robot.leftRangeSensor.getDistance(DistanceUnit.CM) < 50) {
+                fun.continuousGyroStrafe(1.57,3.14,1);
+            }
+            fun.autonomousParking(Functions.redOrBlue.BLUE,3.14,3.14,3);
+            fun.gyroStrafe(3.14,3.14,10,1,5);
+            fun.intake(Functions.intake.OUT,1);
+            fun.gyroStrafe(0,3.14,10,1,5);
+
+
+
+/** red side autonomous **/
+        } else if (robot.leftMarkerSwitch.getVoltage() < 3.0 && robot.rightMarkerSwitch.getVoltage() < 3.0) {
+            telemetry.addData("Running Red", "Waiting For Start");
+            telemetry.update();
+            waitForStart();
+            fun.gyroStrafe(1.57, 1.57, 5, 1, 5);
+            fun.resetRobotEncoders(telemetry);
+//      stone detection
+            fun.stoneDetectionRed();
+            double wallDis = robot.leftRangeSensor.getDistance(DistanceUnit.CM);
+/** fix this heading after blue is done **/
+            fun.gyroStrafe(3.0, 3.14, 140 - wallDis, .85, 10);
+            fun.autonomousParking(Functions.redOrBlue.BLUE, 3.14, 0.0, 3);
+            fun.intake(Functions.intake.IN,0);
+            robot.conveyorServo.setPower(0);
+            fun.gyroStrafe(0, 3.14, 100, .9, 10);
+            robot.gripServo.setPosition(.7);
+            robot.silverPlatter.setPower(.65);
+            while (robot.extendedSwitch.getVoltage() < 3.2) {
+                fun.waitMilis(5);
+            }
+            if (robot.extendedSwitch.getVoltage() > 3.0) {
+                robot.silverPlatter.setPower(.0);
+                fun.waitMilis(25);
+            }
+            robot.gripServo.setPosition(.5);
+            fun.waitMilis(400);
+            robot.lift.setTargetPosition(-200);
+            robot.lift.setPower(-0.95);
+            robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            fun.waitMilis(350);
+            robot.silverPlatter.setPower(-.7);
+            while (robot.retractedSwitch.getVoltage() < 3.2) {
+                fun.waitMilis(5);
+            }
+            if (robot.retractedSwitch.getVoltage() > 3.0) {
+                robot.silverPlatter.setPower(-0.05);
+            }
+            fun.gyroStrafe(4.71, 4.71, 5, 1, 5);
+            fun.gyroStrafe(1.57, 4.71, 9, .7, 10);
+//  foundation line up
+            fun.foundationLinerUpper(.1);
             robot.gripServo.setPosition(1.0);
             robot.lift.setTargetPosition(0);
             robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.lift.setPower(.7);
             robot.rightFoundation.setPosition(.2);
             robot.leftFoundation.setPosition(.9);
-            fun.waitMilis(1000);
-            fun.gyroStrafe(4.71, 6.28, 35, .75, 10);
-//            while (robot.rightRangeSensor.getDistance(DistanceUnit.CM) > 40) {
-//                fun.continuousGyroStrafe(4.71,0,.8);
-//            }
+            fun.waitMilis(900);
+            fun.gyroStrafe(4.71, 3.14, 35, .75, 10);
             fun.waitMilis(500);
             robot.leftFoundation.setPosition(0);
             robot.rightFoundation.setPosition(1.0);
             robot.lift.setTargetPosition(-350);
             robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.lift.setPower(1);
+            fun.intake(Functions.intake.IN,.8);
             fun.waitMilis(500);
-            fun.gyroStrafe(0.0, 0.0, 20, 1, 5);
-            while (robot.rightRangeSensor.getDistance(DistanceUnit.CM) < 50) {
-                fun.continuousGyroStrafe(1.57, 0, 0.85);
+//  FIX THIS AFTER BLUE IS DONE TOO
+            while (robot.leftRangeSensor.getDistance(DistanceUnit.CM) < 60) {
+                fun.continuousGyroStrafe(1, 3.14, .8);
             }
+            fun.gyroStrafe(3.14, 3.14, 10, .8, 3);
             robot.lift.setTargetPosition(0);
             robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.lift.setPower(.7);
-            fun.autonomousParking(Functions.redOrBlue.BLUE,0,0);
-            fun.gyroStrafe(0,0,40,1,10);
-            fun.gyroStrafe(.785,.785,40,1,10);
+            fun.autonomousParking(Functions.redOrBlue.BLUE, 0, 0, 5);
+            fun.gyroStrafe(3.14, 3.14, 40, 1, 10);
+            double blockPos = wallDis / 20.32;
+            fun.gyroStrafe(2.34, 2.34, 50, 1, 10);
+            fun.gyroStrafe(5.48, 0, 20, 1, 10);
 
-//    red side autonomous
-        } else if (robot.leftMarkerSwitch.getVoltage() < 3.0 && robot.rightMarkerSwitch.getVoltage() < 3.0) {
-            telemetry.addData("Running Red", "Waiting For Start");
-            telemetry.update();
-            waitForStart();
-//            fun.gyroStrafe(1.57, 1.57, 10, 0.5, 5);
-//            fun.resetRobotEncoders(telemetry);
-//            fun.stoneDetectionRed();
-//        fun.autonomousParking(Functions.direction.REVERSE, Functions.redOrBlue.RED);
-//            fun.gyroStrafe(3.1416,0,30,.3,10);
-//            fun.gyroStrafe(1.571, 0, 20, .5, 10);
-        } else {
-            telemetry.addData("Left", robot.leftMarkerSwitch.getVoltage());
-            telemetry.addData("Right", robot.rightMarkerSwitch.getVoltage());
-            telemetry.update();
-            fun.waitMilis(2000);
-            throw new RuntimeException("Check Markers");
+
         }
 
+
+        // Step through each leg of the path,
+        // Note: Reverse movement is obtained by setting a negative distance (not speed)
+
+
+        /*
+         *  Method to perform a relative move, based on encoder counts.
+         *  Encoders are not reset as the move is based on the current position.
+         *  Move will stop if any of three conditions occur:
+         *  1) Move gets to the desired position
+         *  2) Move runs out of time
+         *  3) Driver stops the opmode running.
+         */
+
+
     }
-
-
-    // Step through each leg of the path,
-    // Note: Reverse movement is obtained by setting a negative distance (not speed)
-
-
-    /*
-     *  Method to perform a relative move, based on encoder counts.
-     *  Encoders are not reset as the move is based on the current position.
-     *  Move will stop if any of three conditions occur:
-     *  1) Move gets to the desired position
-     *  2) Move runs out of time
-     *  3) Driver stops the opmode running.
-     */
-
-
 }

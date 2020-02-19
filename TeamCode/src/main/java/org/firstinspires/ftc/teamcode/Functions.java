@@ -406,15 +406,7 @@ public class Functions {
                 gyroStrafe(1.57, 1.57, 20, 0.25, 8);
                 waitMilis(250);
                 robot.conveyorServo.setPower(1);
-                gyroStrafe(4.71, 1.57, 35, 0.3, 8);
-
-
-//                gyroStrafe(1.571, 1.571, 5.657, 0.5, 20.0);
-//
-//                waitMilis(600);
-//
-//                gyroStrafe(4.7126, 1.571, 20, 0.6, 10);
-//                gyroStrafe(0.0, 0, (190 - (run * 12)), 0.6, 10);
+//                gyroStrafe(4.71, 1.57, 35, 0.7, 8);
 
                 return;
             } else {
@@ -433,32 +425,39 @@ public class Functions {
         boolean foundPos = false;
         int run = 0;
         runtime.reset();
-        gyroStrafe(1.571, 1.571, 69, 0.6, 10);
-        gyroStrafe(3.1416, 1.571, 38, 0.6, 10);
-        while ((!foundPos) && (timeoutS > runtime.seconds())) {
-            redU = (double) robot.leftColorSensor.red() / (double) robot.leftColorSensor.alpha();
-            greenU = (double) robot.leftColorSensor.green() / (double) robot.leftColorSensor.alpha();
-            blueU = (double) robot.leftColorSensor.blue() / (double) robot.leftColorSensor.alpha();
-
+        while (robot.rightRangeSensor.getDistance(DistanceUnit.CM) > 20) {
+            continuousGyroStrafe(2.17,1.57,.6);
+        }
+        while (robot.rightColorSensor.getDistance(DistanceUnit.CM) > 10) {
+            continuousGyroStrafe(1.57, 1.57, .4);
+        }
+        brake();
+        //gyroStrafe(1.571, 1.571, 40, 0.6, 10);
+        // gyroStrafe(0, 1.571, 35, 0.6, 10);
+        while (timeoutS > runtime.seconds() && !foundPos) {
+            redU = (double) robot.rightColorSensor.red() / (double) robot.rightColorSensor.alpha();
+            greenU = (double) robot.rightColorSensor.green() / (double) robot.rightColorSensor.alpha();
+            blueU = (double) robot.rightColorSensor.blue() / (double) robot.rightColorSensor.alpha();
+            //Sees skystone
+            //stafe to pos?
+            /** THESE VALUES ARE FOR BLUEEEEE IDK HOW TO FIX IT SO WE WAIT HERE FOR RAYMOND**/
             if (((greenU + redU) * hueValue) < blueU) {
                 //Sees skystone
-                foundPos = true;
 
                 //Sees skystone
                 //stafe to pos?
                 foundPos = true;
-//                gyroStrafe(3.1416, 1.571, 5, 0.4, 10);
-//
-//                gyroStrafe(1.571, 1.571, 5.657, 0.5, 20.0);
-//
-//                waitMilis(600);
-//
-//                gyroStrafe(4.7126, 1.571, 20, 0.6, 10);
-//                gyroStrafe(0.0, 0, (190 - (run * 12)), 0.6, 10);
+                brake();
+                gyroStrafe(3.14, 1.57, 5, 0.4, 5);
+                intake(intake.IN, 0.8);
+                gyroStrafe(1.57, 1.57, 20, 0.25, 8);
+                waitMilis(250);
+                robot.conveyorServo.setPower(1);
+//                gyroStrafe(4.71, 1.57, 35, 0.7, 8);
 
                 return;
             } else {
-                gyroStrafe(0, 1.571, 10, 0.4, 7.0);
+                continuousGyroStrafe(0, 1.57, .4);
                 run++;
             }
         }
@@ -476,8 +475,8 @@ public class Functions {
     public void autonomousParking(
             redOrBlue color,
             double heading,
-            double pose) {
-        double timeoutS = 7.0;
+            double pose,
+            double timeoutS) {
         double hueValueBlue = 0.5;
         double hueValueRed = 0.6;
         double power = 0.35;
