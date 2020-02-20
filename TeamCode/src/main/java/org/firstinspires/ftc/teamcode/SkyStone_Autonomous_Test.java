@@ -118,17 +118,8 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
         fun.waitMilis(100);
         fun.foundationLinerUpper(.2);
 */
-while(opModeIsActive()) {
-   // telemetry.addData("left see?", robot.leftRangeSensor.getDistance(DistanceUnit.CM));
-    telemetry.addData("right see?", robot.rightRangeSensor.getDistance(DistanceUnit.CM));
 
-//   double redU = (double) robot.leftColorSensor.red() / (double) robot.leftColorSensor.alpha();
-//   double greenU = (double) robot.leftColorSensor.green() / (double) robot.leftColorSensor.alpha();
-//   double blueU = (double) robot.leftColorSensor.blue() / (double) robot.leftColorSensor.alpha();
-//    telemetry.addData("left color distance",robot.leftColorSensor.getDistance(DistanceUnit.CM));
-//    telemetry.addData("left color less",((greenU + redU) * .35));
-//    telemetry.addData("left color more",(blueU));
-   telemetry.update();
+
 //}
 
 
@@ -160,7 +151,7 @@ while(opModeIsActive()) {
 //                robot.rightBackDrive.setPower(0.0);
 //            }
 //        }
-    }
+
 
     /*
      *  Method to perform a relative move, based on encoder counts.

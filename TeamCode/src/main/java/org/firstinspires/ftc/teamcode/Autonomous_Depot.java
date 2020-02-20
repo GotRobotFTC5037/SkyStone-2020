@@ -36,6 +36,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
@@ -130,12 +133,11 @@ public class Autonomous_Depot extends LinearOpMode {
             fun.gyroStrafe(3.5, 0, 140 - wallDis, .85, 10);
 
 
-
 //            while (robot.rightRangeSensor.getDistance(DistanceUnit.CM) < 65) {
 //                fun.continuousGyroStrafe(1.57,0.0,.75);
 //            }
             fun.autonomousParking(Functions.redOrBlue.BLUE, 3.14, 0.0, 3);
-            fun.intake(Functions.intake.IN,0);
+            fun.intake(Functions.intake.IN, 0);
             robot.conveyorServo.setPower(0);
             fun.gyroStrafe(3.14, 0.0, 100, .9, 10);
             robot.gripServo.setPosition(.7);
@@ -170,8 +172,9 @@ public class Autonomous_Depot extends LinearOpMode {
             robot.rightFoundation.setPosition(.2);
             robot.leftFoundation.setPosition(.9);
             fun.waitMilis(900);
-            while (robot.rightRangeSensor.getDistance(DistanceUnit.CM) > 40) {
-                fun.continuousGyroStrafe(4.71,6.28,.8);
+//    moving foundation
+            while (robot.rightRangeSensor.getDistance(DistanceUnit.CM) > 30) {
+                fun.continuousGyroStrafe(4.71, 6.28, .8);
             }
 //            fun.gyroStrafe(4.71, 6.28, 35, .75, 10);
             fun.waitMilis(500);
@@ -181,9 +184,14 @@ public class Autonomous_Depot extends LinearOpMode {
             robot.lift.setTargetPosition(-350);
             robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.lift.setPower(1);
-            fun.intake(Functions.intake.IN,.8);
+            fun.intake(Functions.intake.IN, .8);
             robot.conveyorServo.setPower(-1);
             fun.waitMilis(500);
+//    move away from wall
+            while (robot.rightRangeSensor.getDistance(DistanceUnit.CM) < 40) {
+                fun.continuousGyroStrafe(1.57, 0, 1);
+            }
+//    moving towards line
             while (robot.rightRangeSensor.getDistance(DistanceUnit.CM) < 50) {
                 fun.continuousGyroStrafe(1.1, 0, .8);
             }
@@ -191,24 +199,36 @@ public class Autonomous_Depot extends LinearOpMode {
             robot.lift.setTargetPosition(0);
             robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.lift.setPower(.7);
-            fun.waitMilis(700);
-            while (robot.rightRangeSensor.getDistance(DistanceUnit.CM) < 50){
-                fun.continuousGyroStrafe(1.57,0.0,1);
-            }
-            fun.autonomousParking(Functions.redOrBlue.BLUE, 0, 0, 5);
-            fun.gyroStrafe(0, 0, 20, 1, 10);
-            fun.gyroStrafe(0,0,wallDis/20.32,1,10);
+            fun.waitMilis(500);
+//            while (robot.rightRangeSensor.getDistance(DistanceUnit.CM) < 60){
+//                fun.continuousGyroStrafe(4.71,0.0,1);
+//            }
+            fun.autonomousParking(Functions.redOrBlue.BLUE, 0, 0, 4);
+            fun.gyroStrafe(0, 0, 10, 1, 10);
+            fun.gyroStrafe(0, 0, wallDis / 20.32, 1, 10);
             double blockPos = wallDis / 20.32;
             fun.gyroStrafe(.8, .8, 50, 1, 10);
-            fun.gyroStrafe(3.94, 3.14, 20, 1, 10);
-            while(robot.leftRangeSensor.getDistance(DistanceUnit.CM) < 50) {
-                fun.continuousGyroStrafe(1.57,3.14,1);
-            }
-            fun.autonomousParking(Functions.redOrBlue.BLUE,3.14,3.14,3);
-            fun.gyroStrafe(3.14,3.14,10,1,5);
-            fun.intake(Functions.intake.OUT,1);
-            fun.gyroStrafe(0,3.14,10,1,5);
 
+
+//            fun.gyroStrafe(4.71,3.14,30,1,5);
+            while (Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle - 3.14) > 0.08) {
+                fun.continuousGyroStrafe(3.14, 3.14, 0);
+            }
+            telemetry.addData("distance", robot.leftRangeSensor.getDistance(DistanceUnit.CM));
+            telemetry.update();
+            fun.waitMilis(100000);
+/**    ADD A MOVEMENT WHERE IF IT SEES SOMETHING IN THE CONVEYOR DISTANCE SENSOR IT WILL EXPEL THE EXTRA BLOCK     **/
+
+//    lining up to drive back through bridge
+            while (robot.leftRangeSensor.getDistance(DistanceUnit.CM) > 50) {
+                fun.continuousGyroStrafe(4.71, 3.14, 1);
+            }
+            fun.gyroStrafe(3.94, 3.14, 20, 1, 10);
+            fun.autonomousParking(Functions.redOrBlue.BLUE, 3.14, 3.14, 3);
+            fun.gyroStrafe(3.14, 3.14, 25, 1, 3);
+            fun.intake(Functions.intake.OUT, 1);
+            fun.waitMilis(250);
+            fun.gyroStrafe(0, 3.14, 15, 1, 5);
 
 
 /** red side autonomous **/
@@ -224,7 +244,7 @@ public class Autonomous_Depot extends LinearOpMode {
 /** fix this heading after blue is done **/
             fun.gyroStrafe(3.0, 3.14, 140 - wallDis, .85, 10);
             fun.autonomousParking(Functions.redOrBlue.BLUE, 3.14, 0.0, 3);
-            fun.intake(Functions.intake.IN,0);
+            fun.intake(Functions.intake.IN, 0);
             robot.conveyorServo.setPower(0);
             fun.gyroStrafe(0, 3.14, 100, .9, 10);
             robot.gripServo.setPosition(.7);
@@ -267,7 +287,7 @@ public class Autonomous_Depot extends LinearOpMode {
             robot.lift.setTargetPosition(-350);
             robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.lift.setPower(1);
-            fun.intake(Functions.intake.IN,.8);
+            fun.intake(Functions.intake.IN, .8);
             fun.waitMilis(500);
 //  FIX THIS AFTER BLUE IS DONE TOO
             while (robot.leftRangeSensor.getDistance(DistanceUnit.CM) < 60) {
