@@ -94,7 +94,7 @@ public class Autonomous_Parking extends LinearOpMode {
             waitForStart();
             fun.gyroStrafe(1.57, 1.57, 5, 1, 4);
             fun.resetRobotEncoders(telemetry);
-            fun.autonomousParking(Functions.redOrBlue.BLUE, 1.57, 1.57, 5);
+            fun.autonomousParking(Functions.redOrBlue.BLUE, 1.57, 1.57, opModeIsActive(), 5);
             fun.gyroStrafe(0,1.57,50,.5,10);
 
         } else if (robot.leftMarkerSwitch.getVoltage() < 3.0 && robot.rightMarkerSwitch.getVoltage() < 3.0) {
@@ -107,7 +107,7 @@ public class Autonomous_Parking extends LinearOpMode {
             while (robot.leftRangeSensor.getDistance(DistanceUnit.CM) > 5) {
                 fun.continuousGyroStrafe(4.71, 3.14, .7);
             }
-            fun.autonomousParking(Functions.redOrBlue.BLUE, 3.14, 3.14,5 );
+            fun.autonomousParking(Functions.redOrBlue.BLUE, 3.14, 3.14, opModeIsActive(), 5 );
         } else {
             telemetry.addData("Left", robot.leftMarkerSwitch.getVoltage());
             telemetry.addData("Right", robot.rightMarkerSwitch.getVoltage());

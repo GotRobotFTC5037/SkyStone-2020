@@ -97,6 +97,7 @@ public class Autonomous_Depot extends LinearOpMode {
          * Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
          */
+
         robot.init(hardwareMap);
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -108,7 +109,7 @@ public class Autonomous_Depot extends LinearOpMode {
         imu.initialize(parameters);
         Functions fun = new Functions(robot, imu);
 
-        fun.waitMilis(50);
+        fun.waitMilis(40);
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Resetting Encoders");    //
         telemetry.update();
@@ -120,7 +121,13 @@ public class Autonomous_Depot extends LinearOpMode {
                 robot.rightDrive.getCurrentPosition());
         telemetry.update();
         // Wait for the game to start (driver presses PLAY)
-//  RUNNING BLUE AUTONOMOUS
+
+
+/**   BLUE SIDE AUTONOMOUS blue side autonomous BLUE SIDE AUTONOMOUS blue side autonomous BLUE SIDE AUTONOMOUS   **/
+/**   BLUE SIDE AUTONOMOUS blue side autonomous BLUE SIDE AUTONOMOUS blue side autonomous BLUE SIDE AUTONOMOUS   **/
+/**   BLUE SIDE AUTONOMOUS blue side autonomous BLUE SIDE AUTONOMOUS blue side autonomous BLUE SIDE AUTONOMOUS   **/
+
+
         if (robot.leftMarkerSwitch.getVoltage() > 3.0 && robot.rightMarkerSwitch.getVoltage() > 3.0) {
             telemetry.addData("Running Blue", "Waiting For Start");
             telemetry.update();
@@ -136,7 +143,7 @@ public class Autonomous_Depot extends LinearOpMode {
 //            while (robot.rightRangeSensor.getDistance(DistanceUnit.CM) < 65) {
 //                fun.continuousGyroStrafe(1.57,0.0,.75);
 //            }
-            fun.autonomousParking(Functions.redOrBlue.BLUE, 3.14, 0.0, 3);
+            fun.autonomousParking(Functions.redOrBlue.BLUE, 3.14, 0.0, opModeIsActive(), 3);
             fun.intake(Functions.intake.IN, 0);
             robot.conveyorServo.setPower(0);
             fun.gyroStrafe(3.14, 0.0, 100, .9, 10);
@@ -162,7 +169,7 @@ public class Autonomous_Depot extends LinearOpMode {
             if (robot.retractedSwitch.getVoltage() > 3.0) {
                 robot.silverPlatter.setPower(-0.05);
             }
-            fun.gyroStrafe(4.71, 4.71, 5, 1, 5);
+            fun.gyroStrafe(4.71, 4.71, 7, 1, 5);
             fun.gyroStrafe(1.57, 4.71, 9, .7, 10);
 //    foundation line up
             fun.foundationLinerUpper(.1);
@@ -176,7 +183,6 @@ public class Autonomous_Depot extends LinearOpMode {
             while (robot.rightRangeSensor.getDistance(DistanceUnit.CM) > 30) {
                 fun.continuousGyroStrafe(4.71, 6.28, .8);
             }
-//            fun.gyroStrafe(4.71, 6.28, 35, .75, 10);
             fun.waitMilis(500);
             robot.leftFoundation.setPosition(0);
             robot.rightFoundation.setPosition(1.0);
@@ -200,50 +206,47 @@ public class Autonomous_Depot extends LinearOpMode {
             robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.lift.setPower(.7);
             fun.waitMilis(500);
-//            while (robot.rightRangeSensor.getDistance(DistanceUnit.CM) < 60){
-//                fun.continuousGyroStrafe(4.71,0.0,1);
-//            }
-            fun.autonomousParking(Functions.redOrBlue.BLUE, 0, 0, 4);
+
+            fun.gyroStrafe(0.0, 0.0, 28, 1, 5);
+            fun.autonomousParking(Functions.redOrBlue.BLUE, 0, 0, opModeIsActive(), 4);
             fun.gyroStrafe(0, 0, 10, 1, 10);
             fun.gyroStrafe(0, 0, wallDis / 20.32, 1, 10);
             double blockPos = wallDis / 20.32;
             fun.gyroStrafe(.8, .8, 50, 1, 10);
 
-
-//            fun.gyroStrafe(4.71,3.14,30,1,5);
-            while (Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle - 3.14) > 0.08) {
+            double turnTime = runtime.seconds();
+            while ((runtime.seconds() - turnTime) < 1) {
                 fun.continuousGyroStrafe(3.14, 3.14, 0);
             }
-            telemetry.addData("distance", robot.leftRangeSensor.getDistance(DistanceUnit.CM));
-            telemetry.update();
-            fun.waitMilis(100000);
-/**    ADD A MOVEMENT WHERE IF IT SEES SOMETHING IN THE CONVEYOR DISTANCE SENSOR IT WILL EXPEL THE EXTRA BLOCK     **/
 
 //    lining up to drive back through bridge
-            while (robot.leftRangeSensor.getDistance(DistanceUnit.CM) > 50) {
-                fun.continuousGyroStrafe(4.71, 3.14, 1);
-            }
-            fun.gyroStrafe(3.94, 3.14, 20, 1, 10);
-            fun.autonomousParking(Functions.redOrBlue.BLUE, 3.14, 3.14, 3);
-            fun.gyroStrafe(3.14, 3.14, 25, 1, 3);
+            fun.gyroStrafe(4, 3.14, 63, 1, 3);
+            fun.gyroStrafe(3.14, 3.14, 65, 1, 4);
             fun.intake(Functions.intake.OUT, 1);
-            fun.waitMilis(250);
-            fun.gyroStrafe(0, 3.14, 15, 1, 5);
+            fun.waitMilis(150);
+            fun.gyroStrafe(0, 3.14, 15, 1, 2);
 
 
-/** red side autonomous **/
+/** RED SIDE AUTONOMOUS red side autonomous RED SIDE AUTONOMOUS red side autonomous RED SIDE AUTONOMOUS red side autonomous **/
+/** RED SIDE AUTONOMOUS red side autonomous RED SIDE AUTONOMOUS red side autonomous RED SIDE AUTONOMOUS red side autonomous **/
+/** RED SIDE AUTONOMOUS red side autonomous RED SIDE AUTONOMOUS red side autonomous RED SIDE AUTONOMOUS red side autonomous **/
+
+
         } else if (robot.leftMarkerSwitch.getVoltage() < 3.0 && robot.rightMarkerSwitch.getVoltage() < 3.0) {
             telemetry.addData("Running Red", "Waiting For Start");
             telemetry.update();
             waitForStart();
             fun.gyroStrafe(1.57, 1.57, 5, 1, 5);
             fun.resetRobotEncoders(telemetry);
-//      stone detection
+//    stone detection
             fun.stoneDetectionRed();
             double wallDis = robot.leftRangeSensor.getDistance(DistanceUnit.CM);
-/** fix this heading after blue is done **/
-            fun.gyroStrafe(3.0, 3.14, 140 - wallDis, .85, 10);
-            fun.autonomousParking(Functions.redOrBlue.BLUE, 3.14, 0.0, 3);
+            fun.gyroStrafe(5.75, 3.14, 100 - wallDis, .85, 10);
+//    autonomous parking
+            while (robot.leftRangeSensor.getDistance(DistanceUnit.CM) < 50) {
+                fun.continuousGyroStrafe(1.57,3.14,.65);
+            }
+            fun.autonomousParking(Functions.redOrBlue.RED, 0, 3.14, opModeIsActive(), 4);
             fun.intake(Functions.intake.IN, 0);
             robot.conveyorServo.setPower(0);
             fun.gyroStrafe(0, 3.14, 100, .9, 10);
@@ -269,57 +272,62 @@ public class Autonomous_Depot extends LinearOpMode {
             if (robot.retractedSwitch.getVoltage() > 3.0) {
                 robot.silverPlatter.setPower(-0.05);
             }
-            fun.gyroStrafe(4.71, 4.71, 5, 1, 5);
+            fun.gyroStrafe(4.71, 4.71, 7, 1, 5);
             fun.gyroStrafe(1.57, 4.71, 9, .7, 10);
-//  foundation line up
+//    foundation line up
             fun.foundationLinerUpper(.1);
-            robot.gripServo.setPosition(1.0);
             robot.lift.setTargetPosition(0);
             robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.lift.setPower(.7);
+            robot.lift.setPower(1);
             robot.rightFoundation.setPosition(.2);
             robot.leftFoundation.setPosition(.9);
             fun.waitMilis(900);
-            fun.gyroStrafe(4.71, 3.14, 35, .75, 10);
+//    moving foundation
+            while (robot.leftRangeSensor.getDistance(DistanceUnit.CM) > 30) {
+                fun.continuousGyroStrafe(4.71, 3.14, .8);
+            }
             fun.waitMilis(500);
             robot.leftFoundation.setPosition(0);
             robot.rightFoundation.setPosition(1.0);
+            robot.gripServo.setPosition(1.0);
             robot.lift.setTargetPosition(-350);
             robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.lift.setPower(1);
             fun.intake(Functions.intake.IN, .8);
+            robot.conveyorServo.setPower(-1);
             fun.waitMilis(500);
-//  FIX THIS AFTER BLUE IS DONE TOO
-            while (robot.leftRangeSensor.getDistance(DistanceUnit.CM) < 60) {
-                fun.continuousGyroStrafe(1, 3.14, .8);
+//    move away from wall
+            while (robot.leftRangeSensor.getDistance(DistanceUnit.CM) < 40) {
+                fun.continuousGyroStrafe(1.57, 3.14, 1);
+            }
+//    moving towards line
+            while (robot.leftRangeSensor.getDistance(DistanceUnit.CM) < 50) {
+                fun.continuousGyroStrafe(2.04, 3.14, .8);
             }
             fun.gyroStrafe(3.14, 3.14, 10, .8, 3);
+            fun.gyroStrafe(3.14, 3.14, 28, 1, 5);
             robot.lift.setTargetPosition(0);
             robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.lift.setPower(.7);
-            fun.autonomousParking(Functions.redOrBlue.BLUE, 0, 0, 5);
-            fun.gyroStrafe(3.14, 3.14, 40, 1, 10);
+            fun.waitMilis(500);
+            fun.autonomousParking(Functions.redOrBlue.RED, 3.14, 3.14, opModeIsActive(), 4);
+            fun.gyroStrafe(3.14, 3.14, 10, 1, 10);
+            fun.gyroStrafe(3.14, 3.14, wallDis / 20.32, 1, 10);
             double blockPos = wallDis / 20.32;
             fun.gyroStrafe(2.34, 2.34, 50, 1, 10);
-            fun.gyroStrafe(5.48, 0, 20, 1, 10);
 
+            double turnTime = runtime.seconds();
+            while ((runtime.seconds() - turnTime) < 1) {
+                fun.continuousGyroStrafe(0, 0, 0);
+            }
+
+//    lining up to drive back through bridge
+            fun.gyroStrafe(5.42, 0, 63, 1, 3);
+            fun.gyroStrafe(0, 0, 65, 1, 4);
+            fun.intake(Functions.intake.OUT, 1);
+            fun.waitMilis(150);
+            fun.gyroStrafe(3.14, 0, 15, 1, 2);
 
         }
-
-
-        // Step through each leg of the path,
-        // Note: Reverse movement is obtained by setting a negative distance (not speed)
-
-
-        /*
-         *  Method to perform a relative move, based on encoder counts.
-         *  Encoders are not reset as the move is based on the current position.
-         *  Move will stop if any of three conditions occur:
-         *  1) Move gets to the desired position
-         *  2) Move runs out of time
-         *  3) Driver stops the opmode running.
-         */
-
-
     }
 }

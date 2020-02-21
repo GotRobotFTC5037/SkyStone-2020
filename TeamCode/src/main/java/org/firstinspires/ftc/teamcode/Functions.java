@@ -379,7 +379,7 @@ public class Functions {
         int run = 0;
         int zero = 0;
         runtime.reset();
-        while (robot.rightRangeSensor.getDistance(DistanceUnit.CM) > 20) {
+        while (robot.rightRangeSensor.getDistance(DistanceUnit.CM) > 22) {
             continuousGyroStrafe(.6,1.57,.6);
         }
         while (robot.rightColorSensor.getDistance(DistanceUnit.CM) > 10) {
@@ -425,22 +425,21 @@ public class Functions {
         boolean foundPos = false;
         int run = 0;
         runtime.reset();
-        while (robot.rightRangeSensor.getDistance(DistanceUnit.CM) > 20) {
-            continuousGyroStrafe(2.17,1.57,.6);
+        while (robot.leftRangeSensor.getDistance(DistanceUnit.CM) > 22) {
+            continuousGyroStrafe(2.54,1.57,.6);
         }
-        while (robot.rightColorSensor.getDistance(DistanceUnit.CM) > 10) {
+        while (robot.rightColorSensor.getDistance(DistanceUnit.CM) > 12) {
             continuousGyroStrafe(1.57, 1.57, .4);
         }
         brake();
         //gyroStrafe(1.571, 1.571, 40, 0.6, 10);
         // gyroStrafe(0, 1.571, 35, 0.6, 10);
         while (timeoutS > runtime.seconds() && !foundPos) {
-            redU = (double) robot.rightColorSensor.red() / (double) robot.rightColorSensor.alpha();
-            greenU = (double) robot.rightColorSensor.green() / (double) robot.rightColorSensor.alpha();
-            blueU = (double) robot.rightColorSensor.blue() / (double) robot.rightColorSensor.alpha();
+            redU = (double) robot.leftColorSensor.red() / (double) robot.leftColorSensor.alpha();
+            greenU = (double) robot.leftColorSensor.green() / (double) robot.leftColorSensor.alpha();
+            blueU = (double) robot.leftColorSensor.blue() / (double) robot.leftColorSensor.alpha();
             //Sees skystone
             //stafe to pos?
-            /** THESE VALUES ARE FOR BLUEEEEE IDK HOW TO FIX IT SO WE WAIT HERE FOR RAYMOND**/
             if (((greenU + redU) * hueValue) < blueU) {
                 //Sees skystone
 
@@ -457,7 +456,7 @@ public class Functions {
 
                 return;
             } else {
-                continuousGyroStrafe(0, 1.57, .4);
+                continuousGyroStrafe(0.0, 1.57, .4);
                 run++;
             }
         }
@@ -476,10 +475,12 @@ public class Functions {
             redOrBlue color,
             double heading,
             double pose,
+            boolean stopper,
             double timeoutS) {
         double hueValueBlue = 0.5;
         double hueValueRed = 0.6;
         double power = 0.35;
+        double redPower = .3;
         double distance = 2;
         double motorTimeOutS = 2;
         double redU = 0.0;
@@ -487,27 +488,28 @@ public class Functions {
         double blueU = 0.0;
         boolean foundRed = false;
         boolean foundBlue = false;
+
         runtime.reset();
 
         switch (color) {
             case RED:
-                while ((!foundRed) && (timeoutS > runtime.seconds())) {
+                while ((!foundRed) && (timeoutS > runtime.seconds()) && stopper) {
                     redU = (double) robot.bottomColorSensor.red() / (double) robot.bottomColorSensor.alpha();
                     greenU = (double) robot.bottomColorSensor.green() / (double) robot.bottomColorSensor.alpha();
                     blueU = (double) robot.bottomColorSensor.blue() / (double) robot.bottomColorSensor.alpha();
-                    if (2 <= redU) {
+                    if (.4 <= redU) {
                         robot.leftDrive.setPower(0.0);
                         robot.leftBackDrive.setPower(0.0);
                         robot.rightDrive.setPower(0.0);
                         robot.rightBackDrive.setPower(0.0);
                         foundRed = true;
                     } else {
-                        continuousGyroStrafe(heading, pose, power);
+                        continuousGyroStrafe(heading, pose, redPower);
                     }
                 }
                 break;
             case BLUE:
-                while ((!foundBlue) && (timeoutS > runtime.seconds())) {
+                while ((!foundBlue) && (timeoutS > runtime.seconds()) && stopper) {
                     redU = (double) robot.bottomColorSensor.red() / (double) robot.bottomColorSensor.alpha();
                     greenU = (double) robot.bottomColorSensor.green() / (double) robot.bottomColorSensor.alpha();
                     blueU = (double) robot.bottomColorSensor.blue() / (double) robot.bottomColorSensor.alpha();

@@ -90,6 +90,10 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
+        while (opModeIsActive()) {
+            telemetry.addData("Greater than or equal to 2", (double) robot.bottomColorSensor.red() / (double) robot.bottomColorSensor.alpha());
+            telemetry.update();
+        }
 //        robot.leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //        robot.rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //        robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -108,7 +112,7 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
 //            fun.waitMilis(50);
 //        }
         // fun.autonomousParking(Functions.direction.FORWARD, Functions.redOrBlue.BLUE);
-       // fun.foundationLinerUpper(.5);
+        // fun.foundationLinerUpper(.5);
 /** Foundation line up test **/
      /*   robot.lift.setTargetPosition(-350);
         robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -121,7 +125,6 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
 
 
 //}
-
 
 
         // fun.resetRobotEncoders(telemetry);
@@ -153,15 +156,15 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
 //        }
 
 
-    /*
-     *  Method to perform a relative move, based on encoder counts.
-     *  Encoders are not reset as the move is based on the current position.
-     *  Move will stop if any of three conditions occur:
-     *  1) Move gets to the desired position
-     *  2) Move runs out of time
-     *  3) Driver stops the opmode running.
-     */
+        /*
+         *  Method to perform a relative move, based on encoder counts.
+         *  Encoders are not reset as the move is based on the current position.
+         *  Move will stop if any of three conditions occur:
+         *  1) Move gets to the desired position
+         *  2) Move runs out of time
+         *  3) Driver stops the opmode running.
+         */
 
 
-}
+    }
 }
