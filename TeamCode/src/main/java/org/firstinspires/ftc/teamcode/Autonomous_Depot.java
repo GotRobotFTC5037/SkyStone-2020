@@ -301,11 +301,11 @@ public class Autonomous_Depot extends LinearOpMode {
                 fun.continuousGyroStrafe(1.57, 3.14, 1);
             }
 //    moving towards line
-            while (robot.leftRangeSensor.getDistance(DistanceUnit.CM) < 50) {
+            while (robot.leftRangeSensor.getDistance(DistanceUnit.CM) < 45) {
                 fun.continuousGyroStrafe(2.04, 3.14, .8);
             }
             fun.gyroStrafe(3.14, 3.14, 10, .8, 3);
-            fun.gyroStrafe(3.14, 3.14, 28, 1, 5);
+            fun.gyroStrafe(3.14, 3.14, 32, 1, 5);
             robot.lift.setTargetPosition(0);
             robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.lift.setPower(.7);

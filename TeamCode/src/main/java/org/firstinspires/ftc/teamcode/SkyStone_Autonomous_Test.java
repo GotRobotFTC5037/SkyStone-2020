@@ -90,16 +90,22 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
-        while (opModeIsActive()) {
-            telemetry.addData("Greater than or equal to 2", (double) robot.bottomColorSensor.red() / (double) robot.bottomColorSensor.alpha());
-            telemetry.update();
-        }
+//        while (opModeIsActive()) {
+//
+//        }
 //        robot.leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //        robot.rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //        robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //        robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //        fun.waitMilis(100);
-//        while (opModeIsActive()) {
+        while (opModeIsActive()) {
+            robot.conveyorServo.setPower(-1);
+            fun.intake(Functions.intake.IN,.8);
+            if (gamepad2.a) {
+                fun.intake(Functions.intake.STOP,0);
+                robot.conveyorServo.setPower(1);
+                fun.gyroStrafe(4.71,1.57,15,1,3);
+            }
 //            robot.leftDrive.setPower(.2);
 //            robot.rightDrive.setPower(.2);
 //            robot.leftBackDrive.setPower(.2);
@@ -110,7 +116,7 @@ public class SkyStone_Autonomous_Test extends LinearOpMode {
 //            telemetry.addData("br", robot.rightBackDrive.getCurrentPosition());
 //            telemetry.update();
 //            fun.waitMilis(50);
-//        }
+        }
         // fun.autonomousParking(Functions.direction.FORWARD, Functions.redOrBlue.BLUE);
         // fun.foundationLinerUpper(.5);
 /** Foundation line up test **/

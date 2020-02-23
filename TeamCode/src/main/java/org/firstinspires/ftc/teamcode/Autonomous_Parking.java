@@ -92,22 +92,28 @@ public class Autonomous_Parking extends LinearOpMode {
             telemetry.addData("Running Blue", "Waiting For Start");
             telemetry.update();
             waitForStart();
-            fun.gyroStrafe(1.57, 1.57, 5, 1, 4);
+            fun.gyroStrafe(1.57, 1.57, 5, .8, 4);
             fun.resetRobotEncoders(telemetry);
-            fun.autonomousParking(Functions.redOrBlue.BLUE, 1.57, 1.57, opModeIsActive(), 5);
-            fun.gyroStrafe(0,1.57,50,.5,10);
+            fun.gyroStrafe(0.0, 0.0, 15, .5, 10);
+//            fun.resetRobotEncoders(telemetry);
+//            fun.autonomousParking(Functions.redOrBlue.BLUE, 1.57, 1.57, opModeIsActive(), 5);
+//            if (robot.leftRangeSensor.getDistance(DistanceUnit.CM) < robot.rightRangeSensor.getDistance(DistanceUnit.CM)) {
+//                fun.gyroStrafe(3.14,1.57,50,.5,8);
+//            } else if (robot.leftRangeSensor.getDistance(DistanceUnit.CM) > robot.rightRangeSensor.getDistance(DistanceUnit.CM)) {
+//            fun.gyroStrafe(0,1.57,50,.5,8); }
+//            else {fun.waitMilis(20);}
 
         } else if (robot.leftMarkerSwitch.getVoltage() < 3.0 && robot.rightMarkerSwitch.getVoltage() < 3.0) {
             telemetry.addData("Running Red", "Waiting For Start");
             telemetry.update();
             waitForStart();
-            fun.gyroStrafe(1.57, 1.57, 5, 1, 4);
+            fun.gyroStrafe(1.57, 1.57, 5, .8, 4);
             fun.resetRobotEncoders(telemetry);
-            fun.gyroStrafe(3.14, 3.14, 30, .7, 10);
-            while (robot.leftRangeSensor.getDistance(DistanceUnit.CM) > 5) {
-                fun.continuousGyroStrafe(4.71, 3.14, .7);
-            }
-            fun.autonomousParking(Functions.redOrBlue.BLUE, 3.14, 3.14, opModeIsActive(), 5 );
+            fun.gyroStrafe(3.14, 3.14, 15, .5, 10);
+//            while (robot.leftRangeSensor.getDistance(DistanceUnit.CM) > 5) {
+//                fun.continuousGyroStrafe(4.71, 3.14, .7);
+//            }
+//            fun.autonomousParking(Functions.redOrBlue.BLUE, 3.14, 3.14, opModeIsActive(), 5 );
         } else {
             telemetry.addData("Left", robot.leftMarkerSwitch.getVoltage());
             telemetry.addData("Right", robot.rightMarkerSwitch.getVoltage());

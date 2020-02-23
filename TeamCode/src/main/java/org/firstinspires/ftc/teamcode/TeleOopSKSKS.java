@@ -329,8 +329,8 @@ public class TeleOopSKSKS extends LinearOpMode {
                     fun.intake(Functions.intake.IN, .5);
                     robot.conveyorServo.setPower(1.0);
                 } else if (left_trigger2) {
-                    fun.intake(Functions.intake.OUT, .5);
-                    robot.conveyorServo.setPower(-0.9);
+                    fun.intake(Functions.intake.OUT, .2);
+                    robot.conveyorServo.setPower(-0.7);
                 } else {
                     robot.leftIntake.setPower(.0);
                     robot.rightIntake.setPower(.0);
