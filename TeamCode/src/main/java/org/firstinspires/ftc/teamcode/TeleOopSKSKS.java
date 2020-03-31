@@ -345,7 +345,7 @@ public class TeleOopSKSKS extends LinearOpMode {
                         robot.lift.setPower(.9);
                         robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     } else if (liftState == 1) {
-                        robot.lift.setTargetPosition(liftValue * (liftState) + liftOffset);
+                        robot.lift.setTargetPosition((liftValue * (liftState) + liftOffset) + ((int)gamepad2.right_stick_y + 20));
                         robot.lift.setPower(.9);
                         robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     } else if (liftState == 2) {

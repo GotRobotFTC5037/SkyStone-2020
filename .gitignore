@@ -26,3 +26,12 @@ build/
 
 *ASUS_PC_01*
 
+FtcRobotController/src/main/assets/.Skystone 2.tflite.icloud
+libs/.FtcCommon-release 2.aar.icloud
+libs/.OnBotJava-release 2.aar.icloud
+libs/.RobotCore-release 2.aar.icloud
+libs/.RobotServer-release 2.aar.icloud
+libs/.tensorflow-lite-0.0.0-nightly 2.aar.icloud
+libs/.tfod-release 2.aar.icloud
+libs/arm64-v8a/.libVuforia 2.so.icloud
+libs/armeabi-v7a/.libVuforia 2.so.icloud
