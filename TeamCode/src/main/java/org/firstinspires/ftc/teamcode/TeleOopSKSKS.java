@@ -27,6 +27,7 @@ public class TeleOopSKSKS extends LinearOpMode {
     double oldTime = 0.0;
     double gunnerTime = 0.0;
     Functions fun = new Functions(robot, imu);
+    int liftJoy;
     double num = 0;
     double num1;
     private boolean automated = true;
@@ -84,8 +85,8 @@ public class TeleOopSKSKS extends LinearOpMode {
             fun.waitMilis(0);
             telemetry.addData("Speed", driveSpeed);
             telemetry.addData("LiftState", liftState);
-            telemetry.addData("start", gamepad1.back);
-            telemetry.addData("back", gamepad1.start);
+           // telemetry.addData("start", gamepad1.back);
+         //   telemetry.addData("back", gamepad1.start);
             telemetry.update();
             if (gamepad2.a) {
                 robot.gripServo.setPosition(0.5);
@@ -287,14 +288,17 @@ public class TeleOopSKSKS extends LinearOpMode {
 
 
             /** Gunner **/
+            liftJoy = liftJoy + (int)gamepad2.right_stick_y * 20;
             switch (gunnerState) {
                 case 0:
                     if (gamepad2.dpad_up) {
                         liftState++;
+                        liftJoy = 0;
                         gunnerTime = runtime.milliseconds();
                         gunnerState++;
                     } else if (gamepad2.dpad_down) {
                         liftState--;
+                        liftJoy = 0;
                         gunnerTime = runtime.milliseconds();
                         gunnerState++;
                     } //125 Ticks per inch for lift
@@ -323,6 +327,7 @@ public class TeleOopSKSKS extends LinearOpMode {
 
             if (gamepad2.x) {
                 liftState = 0;
+                liftJoy = 0;
             }
             if (autoState == 0) {
                 if (right_trigger2) {
@@ -341,27 +346,27 @@ public class TeleOopSKSKS extends LinearOpMode {
                 int liftOffset = -200;
                 if (liftMode = true) {
                     if (liftState == 0) {
-                        robot.lift.setTargetPosition(0);
+                        robot.lift.setTargetPosition(liftJoy);
                         robot.lift.setPower(.9);
                         robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     } else if (liftState == 1) {
-                        robot.lift.setTargetPosition((liftValue * (liftState) + liftOffset) + ((int)gamepad2.right_stick_y + 20));
+                        robot.lift.setTargetPosition((liftValue * (liftState) + liftOffset) + liftJoy);
                         robot.lift.setPower(.9);
                         robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     } else if (liftState == 2) {
-                        robot.lift.setTargetPosition(liftValue * (liftState) + liftOffset);
+                        robot.lift.setTargetPosition(liftValue * (liftState) + liftOffset + liftJoy);
                         robot.lift.setPower(.9);
                         robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     } else if (liftState == 3) {
-                        robot.lift.setTargetPosition(liftValue * (liftState) + liftOffset);
+                        robot.lift.setTargetPosition(liftValue * (liftState) + liftOffset + liftJoy);
                         robot.lift.setPower(.9);
                         robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     } else if (liftState == 4) {
-                        robot.lift.setTargetPosition(liftValue * (liftState) + liftOffset);
+                        robot.lift.setTargetPosition(liftValue * (liftState) + liftOffset + liftJoy);
                         robot.lift.setPower(.9);
                         robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     } else if (liftState == 5) {
-                        robot.lift.setTargetPosition(liftValue * (liftState) + liftOffset);
+                        robot.lift.setTargetPosition(liftValue * (liftState) + liftOffset + liftJoy);
                         robot.lift.setPower(.9);
                         robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     }
